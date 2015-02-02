@@ -1,0 +1,22 @@
+#the-question{ width:400px; display:block; margin:12px; }
+.poll-options li { list-style: none; }
+
+.dem-new-poll{ margin:15px auto; padding:20px; }
+.dem-new-poll input[type="text"], .dem-new-poll textarea { width:50%; min-width:400px; }
+.dem-del-button{ display:inline-block; cursor: pointer; line-height: 1; padding:0 5px; font-size:23px; color:#acacac; }
+.dem-del-button:hover{ color:#e34f23; }
+
+#democr_options{ padding:20px; }
+#democr_options .group{ padding-bottom:10px; padding-left:15px; }
+#democr_options .block{ position: relative; }
+/*#democr_options .block label{ display:block; }*/
+#democr_options .block em{ display:block; opacity:0; padding:5px 0 15px; font-size:95%; line-height:1.3; transition:opacity 500ms; }
+#democr_options .block:hover em{ opacity:0.8; }
+
+.polls-table{ margin-bottom:50px; }
+.polls-table tr:hover{ background: rgba(0,0,0,0.1); }
+.polls-table .shortcode{ cursor: pointer; }
+.polls-table .shortcode{ border-bottom:1px dashed rgba(0,0,0,.2); }
+.polls-table .shortcode:hover{ background:rgba(0, 0, 0,.5); color:#fff; }
+
+.button .dashicons, .button-primary .dashicons{ line-height: 1.3; opacity: 0.7; }

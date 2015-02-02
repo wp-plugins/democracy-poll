@@ -1,0 +1,88 @@
+/* общие */
+.democracy{ position:relative; margin:0 auto; }
+.democracy ul li{ list-style:none!important; background:none!important; }
+.democracy ul li:before{ display: none!important; } /* сброс оформления пунктов */
+.democracy .dem-footnote{ color: #ff4e00; }
+.democracy .dem-poll-note{ font-size:80%; padding:0.5em 0; opacity:0.7; line-height: 1.3; }
+.democracy sup{ font-size:90%; vertical-align: baseline; padding-left:0.3em; }
+
+.democracy input { vertical-align:middle; outline: none!important; }
+.democracy input[type='radio'] { margin-right:0.1em; }
+
+.dem-results{ line-height: 1.3em; }
+
+ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:3%!important; }
+
+
+
+/* оформление голосования */
+.dem-link{ display: inline-block; margin:0.8em 0; }
+.dem-link, .dem-archive-link{ font-size:90%; }
+.dem-archive-link{ text-align: right;  }
+.dem-revote-link:before, .dem-vote-link:before{ content:'← '; }
+
+.dem-add-answer{ position:relative; box-sizing: border-box; }
+.dem-add-answer > *{ display: block; }
+.dem-add-answer a{ display: inline-block; margin-top:0.5em; }
+.dem-add-answer-txt{ width:100%; }
+.add-answer-txt-close{ position: absolute; right:0; padding:0 .7em; cursor: pointer; }
+.add-answer-txt-close:hover{ color:#ff2700; }
+
+.dem-edit-link{ display: block; position:absolute; top:0; right:0; line-height:1; text-decoration:!important; border:none!important; }
+.dem-edit-link svg{ width:1.2em!important; opacity:0.4; fill:#5a5a5a; }
+.dem-edit-link:hover svg{ opacity:0.8; }
+
+.dem-poll-title{ display:block; margin-bottom:3%; font-size:120%; text-align: center; }
+
+
+
+/* оформление результатов */
+.dem-answers .label{ margin-bottom:.2em; line-height: 1.1; }
+.dem-answers li{ margin-bottom:0.7em; }
+.dem-graph{ background-color: #f2f2f2; position:relative; font-family:Arial, sans-serif; margin-bottom:0.6em; height:0.4em; line-height:0.4em; box-sizing:content-box; }
+.dem-graph > *{ font-size:80%; }
+.dem-graph .dem-fill{ position:absolute; top:0; left:0; height:100%; background:#ffe2b2; }
+.dem-winner .dem-graph .dem-fill{ opacity:0.9; }
+.dem-voted-this{ font-weight: bold; }
+.dem-voted-this .dem-fill{ background:#ffbeb2; }
+.dem-text-votes{ position:absolute; top:0; left:0; opacity:.8; margin-left: 0.3em; margin-top:0.08em; line-height:inherit; height:inherit; }
+
+.dem-vote label{ opacity:0.9; float:none; display:block; padding-bottom:0.5em; }
+.dem-vote label:hover{ opacity:1; }
+.dem-vote-info{ margin-bottom:1%; font-style: normal; }
+.dem-vote-info:after{ content:''; display: table; clear: both; }
+.dem-vote-info > *{ font-size:85%; display: inline-block; float: right; clear:both; text-align:right; opacity:0.7; line-height: 1.3; }
+
+.dem-label-percent-txt{ font-size:80%; opacity:0.8; }
+.dem-label-percent-txt:before{ content:'('; }
+.dem-label-percent-txt:after{ content:')'; }
+.dem-only-percent-txt{ display:none; }
+.dem-only-percent-txt:before{ content:' - '; }
+/* прячем */
+.dem-percent-text{ display:none; }
+.dem-begin-date{ display:none; }
+.dem-text-votes{ display:none; }
+/*.dem-label-percent-txt{ display:none; }*/
+
+/* кнопка */
+.dem-bottom{ text-align: center; }
+.dem-vote-button input[type="submit"], .dem-vote-link{
+	cursor:pointer;
+	color:#fff!important;
+	background: #4a80b5;
+	font-size:90%!important;
+	border:0!important;
+	padding:0.5em 1em!important;
+	text-transform: uppercase;
+}
+.dem-vote-button input[type="submit"]:hover, .dem-vote-link:hover{
+	background: #8b8b8b;
+}
+
+
+.dem-copyright{ position:absolute; bottom: -1em; right: -1.2em; text-decoration:none; color:#b2b2b2!important; opacity:0.7; line-height:1; }
+.dem-copyright:hover{ opacity:1; }
+
+
+/* архив */
+.dem-archives .democracy { margin-bottom:20px; padding-bottom:20px; border-bottom:1px dashed #ccc; }
