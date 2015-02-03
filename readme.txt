@@ -23,7 +23,7 @@ This plugin adds a clever and convenient system to create various Polls with dif
 * You can choose different design of a poll
 * and so on. See changelog
 
-It's very convenient plugin. I do press on easy admin features & fast performance. So you will have:
+It's very convenient plugin. I focus on "easy-admin" features & fast performance. So you will have:
 
 * Quick Edit button for Admin, right above a poll
 * Plugin menu in toolbar
@@ -124,6 +124,7 @@ Comming soon...
 
 
 == TODO ==
+* IMPORTANT: right working with cache plugins (wp total cache)
 * limit multiple answers select
 * set archive page ID in option
 * cron: shadule polls opening & activation
