@@ -7,10 +7,10 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: languages
-Version: 4.5.4
+Version: 4.5.5
 */
 
-define('DEM_VER', '4.5.4');
+define('DEM_VER', '4.5.5');
 
 // Перевод заголовка
 __('Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.');
@@ -66,7 +66,6 @@ function get_democracy_archives( $hide_active = false, $before_title = '', $afte
 	$output = '<div class="dem-archives">';
 	foreach( $ids as $poll_id ){
 		$poll = new DemPoll( $poll_id );
-		$poll->opt['archive_page_url'] = ''; // убираем ссылку на архив
 		
 		$show_results = isset( $_REQUEST['dem_act'] ) ? __query_poll_screen_choose( $poll ) : true;
 		

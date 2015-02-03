@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.5.4
+Stable tag: 4.5.5
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -133,6 +133,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.5.5 =
+* Fix: Archive link detection by ID not by url
+
 = 4.5.4 =
 * Fix: js code. Now All with jQuery
 * Fix: Separate js and css connections: css connect on all pages into the head, but js connected into the bottom just for page where it need

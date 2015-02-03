@@ -108,7 +108,6 @@ class Dem {
 		else {			
 			foreach( $def_options as $k => $v ){				
 				$value = isset( $_POST['dem'][ $k ] ) ? stripslashes( $_POST['dem'][ $k ] ) : 0; // именно 0/null, а не $v
-				if( $k == 'archive_page_url' ) $value = wp_make_link_relative( $value ); // относительная ссылка
 				$this->opt[ $k ] = $value;
 			}
 		}
@@ -125,14 +124,13 @@ class Dem {
 			'disable_js'       => 0, // Дебаг: отключает JS
 			'inline_js_css'    => 0, // встараивать стили и скрипты в HTML
 			'css_file_name'    => 'default.css', // название файла стилей который будет использоваться для опроса.
-//			'inline_css_code'  => '', // дополнительный css код
 			'logIPs'           => 1, // вести лог в БД
 			'graph_from_total' => 0,
 			'cookie_days'      => 365,
 			'order_answers'    => 1,
 			'before_title'     => '<strong class="dem-poll-title">',
 			'after_title'      => '</strong>',
-			'archive_page_url' => '',
+			'archive_page_id'  => 0,
 			'use_widget'       => 1,
 			'toolbar_menu'     => 1,
 			'tinymce_button'   => 1,
@@ -170,15 +168,13 @@ class Dem {
 	}
 	
 	## Делает предваритеьную проверку передавемых переменных запроса
-	function __sanitize_request_vars(){
-		$possible_act = array('vote','delVoted','view','vote_screen'); // доступные параметры для dem_act
-		
+	function __sanitize_request_vars(){		
 		// $_POST сильнее
 		$act  = @$_POST['dem_act'] ?: @$_GET['dem_act'];
 		$pid  = @$_POST['dem_pid'] ?: @$_GET['dem_pid'];
 		
 		return array(
-			'act'  => ( $act && in_array( $act, $possible_act ) ) ? $act : false,
+			'act'  => $act ? $act : false,
 			'pid'  => $pid ? absint( $pid ) : false,
 			'aids' => isset($_POST['answer_ids']) ? wp_unslash($_POST['answer_ids']) : false,
 		);
@@ -600,11 +596,11 @@ class Dem {
 
 		// Пробуем найти страницу с архивом
 		if( $page = $wpdb->get_row("SELECT * FROM $wpdb->posts WHERE post_content LIKE '[democracy_archives]' AND post_status = 'publish' LIMIT 1") ){
-			$url = get_permalink( $page->ID );
+			$page_id = $page->ID;
 		}
 		// Создаем новую страницу
 		else {
-			$post_id = wp_insert_post( array(
+			$page_id = wp_insert_post( array(
 				'post_title'   => __('Архив опросов','dem'),
 				'post_content' => '[democracy_archives]',
 				'post_status'  => 'publish',
@@ -612,15 +608,11 @@ class Dem {
 				'post_name'    => 'democracy-archives',
 			) );
 
-			if( ! $post_id ) return false;
-
-			$url = get_permalink( $post_id );
+			if( ! $page_id ) return false;
 		}
 
-		$relative_url = wp_make_link_relative( $url );
-
 		// обновляем опцию плагина
-		Dem::$inst->opt['archive_page_url'] = $relative_url;
+		Dem::$inst->opt['archive_page_id'] = $page_id;
 		update_option( Dem::OPT_NAME, Dem::$inst->opt );
 
 		wp_redirect( remove_query_arg('dem_create_archive_page') );

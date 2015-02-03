@@ -241,15 +241,17 @@ function dem_general_settings(){
 				</div>
 
 				<div class="block">
-					<label><?php _e('Выводить ссылку на архив опросов под каждым опросом?','dem'); ?></label><br>
-					<input type="text" size="25" value="<?php echo esc_attr($opt['archive_page_url']) ?>" name="dem[archive_page_url]" /> <?php _e('URL архива опросов.','dem') ?></label>
+					<label>
+						<input type="text" size="5" value="<?php echo esc_attr($opt['archive_page_id']) ?>" name="dem[archive_page_id]" />
+						<?php _e('ID архива опросов.','dem') ?>
+					</label>
 					<?php 
-					if( $opt['archive_page_url'] ) 
-						echo '<a href="'. home_url() . $opt['archive_page_url'] .'">'. __('Перейти на страницу архива','dem') .'</a>';
+					if( $opt['archive_page_id'] ) 
+						echo '<a href="'. get_permalink( $opt['archive_page_id'] )  .'">'. __('Перейти на страницу архива','dem') .'</a>';
 					else 
 						echo '<a class="button" href="'. ($_SERVER['REQUEST_URI'] .'&dem_create_archive_page') .'">'. __('Создать страницу архива','dem') .'</a>';
 					?>
-					<em><?php _e('Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. Пр. <code>/democracy</code>','dem') ?></em>
+					<em><?php _e('Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. Пр. <code>25</code>','dem') ?></em>
 				</div>
 			</div> 
 		
@@ -303,14 +305,6 @@ function dem_general_settings(){
 				   </label>
 				   <em><?php _e('Отключите эту опцию, если ваш сайт на русском.','dem') ?></em>
 				</div>
-<!--
-				
-				<div class="block">
-					<label><?php _e('Дополнительный css код:','dem') ?></label>
-					<textarea name="dem[load_textdomain]" style="min-width:500px;" rows="5"><?php echo stripslashes( $opt['inline_css_code'] ) ?></textarea> 
-					<em><?php _e('Отключите эту опцию, если ваш сайт на русском.','dem') ?></em>
-				</div>
--->
 				
 			</div>
 			

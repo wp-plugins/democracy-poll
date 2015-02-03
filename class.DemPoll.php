@@ -12,6 +12,7 @@ class DemPoll {
 	var $votedFor     = '';
 	var $blockVoting  = false; // блокировать голосование
 	var $blockForVisitor = false; // только для зарегистрированных
+	var $inArchive    = false; // для вывода опросов в архиве
 	
 	var $cookey;           // Название ключа cookie
 	
@@ -32,9 +33,8 @@ class DemPoll {
 		
 		if( ! $this->id ) return; // влияет на весь класс, важно!
 		
-		$this->cookey = 'demPoll_' . $this->id;
-
-		$this->poll   = $poll;		
+		$this->cookey    = 'demPoll_' . $this->id;
+		$this->poll      = $poll;		
 		
 		$this->setVotedData();
 
@@ -54,6 +54,8 @@ class DemPoll {
 	// displays the vote interface of a poll
 	function display( $show_results = false, $before_title = '', $after_title = '' ){
 	    if ( ! $this->id ) return false;
+		
+		$this->inArchive = ( $GLOBALS['post']->ID == Dem::$inst->opt['archive_page_id'] ) && is_singular();
 
 		if( $this->blockVoting ) $show_results = true;
 		
@@ -204,7 +206,8 @@ class DemPoll {
 				$output .= $this->poll->end    ? '<div class="dem-begin-date" title="'. __('Конец','dem') .'">'. date_i18n( get_option('date_format'), $this->poll->end ) .'</div>' : '';
 				$output .= $answer->added_by   ? '<div class="dem-added-by-user"><span class="dem-footnote">*</span>'. __(' - добавлен посетителем','dem') .'</div>' : '';
 				$output .= ! $this->poll->open ? '<div>'. __('Опрос закрыт','dem') .'</div>' : '';
-				$output .= Dem::$inst->opt['archive_page_url'] ? '<a class="dem-archive-link dem-link" rel="nofollow" href="'. Dem::$inst->opt['archive_page_url'] .'">'. __('Архив опросов','dem') .'</a>' : '';
+				if( ! $this->inArchive )
+					$output .= '<a class="dem-archive-link dem-link" rel="nofollow" href="'. get_permalink( Dem::$inst->opt['archive_page_id'] ) .'">'. __('Архив опросов','dem') .'</a>';
 			$output .= '</div>';
 
 			if( ! $this->blockVoting ){
