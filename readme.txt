@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.5.5
+Stable tag: 4.5.6
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -124,16 +124,20 @@ Comming soon...
 
 
 == TODO ==
-* IMPORTANT: right working with cache plugins (wp total cache)
 * limit multiple answers select
-* set archive page ID in option
 * cron: shadule polls opening & activation
-* add link to post in admin polls list if polls shortcode is used in post content
-* add link to selected css file in settings page, to conviniently copy or view the css code
-* in_archive check... to don't show poll in sidebar when on archive page
+* add link to the post in admin-polls-list if polls shortcode is used in post content
 
 
 == Changelog ==
+= 4.5.6 =
+* Added: right working with cache plugins (wp total cache, wp super cache ...)
+* Added: add link to selected css file in settings page, to conviniently copy or view the css code
+* Added: php 5.3+ needed check & notice if php unsuitable
+* Changed: archive page ID in option, but not link to the archive page
+* Fix: in_archive check... to not show archive link on archive page
+* Fix: many code improvements & some bug fix (hide archive page link if 0 set as ID, errors on activation, etc.)
+
 = 4.5.5 =
 * Fix: Archive link detection by ID not by url
 

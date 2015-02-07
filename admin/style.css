@@ -10,7 +10,7 @@
 #democr_options .group{ padding-bottom:10px; padding-left:15px; }
 #democr_options .block{ position: relative; }
 /*#democr_options .block label{ display:block; }*/
-#democr_options .block em{ display:block; opacity:0; padding:5px 0 15px; font-size:95%; line-height:1.3; transition:opacity 500ms; }
+#democr_options .block em{ display:block; opacity:0; padding:5px 0 15px; line-height:1.1; transition:opacity 500ms; }
 #democr_options .block:hover em{ opacity:0.8; }
 
 .polls-table{ margin-bottom:50px; }
