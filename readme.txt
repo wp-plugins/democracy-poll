@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.5.6
+Stable tag: 4.5.7
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -130,6 +130,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.5.7 =
+* BugFix: revote button didn't minus votes if "keep-logs" option was disabled
+
 = 4.5.6 =
 * Added: right working with cache plugins (wp total cache, wp super cache ...)
 * Added: add link to selected css file in settings page, to conviniently copy or view the css code
@@ -139,7 +142,7 @@ Comming soon...
 * Fix: many code improvements & some bug fix (hide archive page link if 0 set as ID, errors on activation, etc.)
 
 = 4.5.5 =
-* Fix: Archive link detection by ID not by url
+* Changed: Archive link detection by ID not by url
 
 = 4.5.4 =
 * Fix: js code. Now All with jQuery

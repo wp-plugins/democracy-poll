@@ -1,7 +1,7 @@
 <?php
-define('DEM_VER', '4.5.6');
+define('DEM_VER', '4.5.7');
 /*
-Version: 4.5.6
+Version: 4.5.7
 Plugin Name: Democracy Poll
 Description: Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.
 Author: Kama

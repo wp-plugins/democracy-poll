@@ -381,31 +381,40 @@ class DemPoll {
 	public function unsetVotedData(){
 	    if ( ! $this->id ) return false;
 	    if ( ! $this->poll->revote ) return false;
-		
-        global $wpdb;
-		
-		$this->unset_cookie();
         
-        // Прежде чем удалять, проверим есть записи о голосовании в БД, так как их могут удалить в другом браузере и тогда данные о голосовании пойдут в минус
-        if( Dem::$inst->opt['keep_logs'] && $res = $this->get_logs_voted_data() ){
-            $INaids = implode(',', $this->_sql_get_aids_from_str( $this->votedFor ) );
-            // сначала удалим добавленные пользователем ответы, если они есть и у них 0 или 1 голос.
-            $wpdb->query("DELETE FROM $wpdb->democracy_a WHERE added_by = 1 AND votes IN (0,1) AND aid IN ($INaids) ORDER BY aid DESC LIMIT 1");
-            // отнимаем голоса
-            $wpdb->query("UPDATE $wpdb->democracy_a SET votes = (votes-1) WHERE aid IN ($INaids)");
-
-            // удаляем записи о голосовании
-            $this->delete_logs_voted_data();            
+        // если опция логов не включена, то отнимаем по кукам, 
+        // тут голоса можно откручивать назад, потому что разные браузеры проверить не получится
+        if( ! Dem::$inst->opt['keep_logs'] )
+            $this->_minusVotedData_inDB();
+            
+        // Прежде чем удалять, проверим включена ли опция ведения логов и есть ли записи о голосовании в БД, 
+        // так как их могут удалить в другом браузере и тогда, если не проверить, данные о голосовании пойдут в минус
+        if( Dem::$inst->opt['keep_logs'] && $this->get_logs_voted_data() ){
+            $this->_minusVotedData_inDB();
+            $this->delete_logs_voted_data(); // чистим логи
         }
         
-
-        $this->hasVoted    = false;
-		$this->votedFor    = false;
-		$this->blockVoting = $this->poll->open ? false : true; // тут еще нужно учесть открыт опрос или нет...
+        $this->unset_cookie();
         
-        $this->set_answers(); // переустановим ответы, если ответ был удален
-		
+        $this->hasVoted    = false;
+        $this->votedFor    = false;
+        $this->blockVoting = $this->poll->open ? false : true; // тут еще нужно учесть открыт опрос или нет...
+
+        $this->set_answers(); // переустановим ответы, если вдруг добавленный ответ был удален
 	}
+    
+    ## отнимает голоса в БД
+    protected function _minusVotedData_inDB(){
+        global $wpdb;
+        
+        $INaids = implode(',', $this->_sql_get_aids_from_str( $this->votedFor ) );
+        // сначала удалим добавленные пользователем ответы, если они есть и у них 0 или 1 голос.
+        $r1 = $wpdb->query("DELETE FROM $wpdb->democracy_a WHERE added_by = 1 AND votes IN (0,1) AND aid IN ($INaids) ORDER BY aid DESC LIMIT 1");
+        // отнимаем голоса
+        $r2 = $wpdb->query("UPDATE $wpdb->democracy_a SET votes = (votes-1) WHERE aid IN ($INaids)");
+        
+        return ($r1 || $r2);
+    }
     
 	/**
 	 * Получает массив ID из переданной строки, где id разделены запятой.
