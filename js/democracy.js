@@ -14,11 +14,14 @@
 (function($){
 	'use strict';
 	
-	var demLoading;
 	var democracy  = '.democracy';
 	var demScreen  = '.dem-screen'; // селектор контейнера с результатами
 	var userAnswer = '.dem-add-answer-txt'; // класс поля ответа
     var demAjaxUrl = $(democracy).attr('data-ajax-url'); // URL ajax
+    
+    var loader;
+    var $demLoader = $(document).find('.dem-loader').first(); // loader
+    if( ! $demLoader.length ) $demLoader = false; 
 	
 	// загрузка для AJAX. Точки ...
 	$.fn.demLoadingDots = function(){
@@ -38,14 +41,20 @@
 			else
 				$the[0].innerHTML += '.';
 
-		demLoading = setTimeout( function(){ $the.demLoadingDots(); }, 200 );
+		loader = setTimeout( function(){ $the.demLoadingDots(); }, 200 );
 	};
-
-	$.fn.demSetLoadDots = function(){ var $the = this; demLoading = setTimeout( function(){ $the.demLoadingDots(); }, 50 ); return this; };
-	$.fn.demUnsetLoadDots = function(){ clearTimeout( demLoading ); return this; };
     
-	$.fn.demSetLoadClass = function(){ this.closest(democracy).addClass('dem-loading'); return this; };
-	$.fn.demUnsetLoadClass = function(){ this.closest(democracy).removeClass('dem-loading'); return this; };
+    // Loader
+	$.fn.demSetLoader   = function(){ var $the = this;
+        if( $demLoader ) $the.closest(demScreen).append( $demLoader.clone().css('display','table') );
+        else loader = setTimeout( function(){ $the.demLoadingDots(); }, 50 ); // dats
+        return this;
+    };
+	$.fn.demUnsetLoader = function(){
+        if( $demLoader ) this.closest(demScreen).find('.dem-loader').remove();
+        else clearTimeout( loader );
+        return this;
+    };
     
 	// Добавить ответ пользователя (ссылка)
 	$.fn.demAddAnswer = function(){
@@ -156,11 +165,11 @@
 		if( act == 'newAnswer' ){ $the.demAddAnswer(); return false; }
 		
 		// AJAX
-        $the.demSetLoadClass().demSetLoadDots();
+        $the.demSetLoader();
 		$.post( demAjaxUrl, data, 
 			function( respond ){
-                $the.demUnsetLoadClass().demUnsetLoadDots();
-				clearTimeout( demLoading ); // очистим операцию
+                $the.demUnsetLoader();
+            
 				// анимация
 				var speed = 300;
 				var $div  = $the.closest( demScreen );
@@ -234,7 +243,7 @@
                  
             // Если голосов нет в куках и опция плагина keep_logs включена, установим проверку
             // голосования через запрос в БД по событию (наведение мышки на блок),
-            if( ! is_answrs && $the.attr('data-keep_logs') == 1 ){
+            if( ! is_answrs && $the.attr('data-opt_logs') == 1 ){
                 var tmout;
                 var notcheck = function(){ clearTimeout( tmout ); };
                 var check = function(){
@@ -242,7 +251,9 @@
                         // Выполняем один раз!
                         if( $dem.hasClass('checkAnswDone') ) return;
                         $dem.addClass('checkAnswDone');
-
+                        
+                        var $forLoader = $dem.find('.dem-link').first();
+                        $forLoader.demSetLoader();
                         $.post( demAjaxUrl, 
                             {
                                 dem_pid: $dem.attr('data-pid'),
@@ -250,6 +261,7 @@
                                 action:  'dem_ajax'
                             },
                             function( answrs ){
+                                $forLoader.demUnsetLoader();
 //                    console.log( answrs );
                                 if( ! answrs ) return; // выходим если нет ответов
 

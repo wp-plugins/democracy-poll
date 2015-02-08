@@ -140,6 +140,7 @@ class Dem {
 			'load_textdomain'  => 1,
 			'show_copyright'   => 1,
 			'only_for_users'   => 0,			
+			'loader_fname'     => 'cube.svg',			
 			'disable_js'       => 0,   // Дебаг: отключает JS
 			'cookie_days'      => 365, // Дебаг
 		);

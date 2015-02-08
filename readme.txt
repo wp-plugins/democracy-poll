@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.5.7
+Stable tag: 4.5.8
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -124,12 +124,18 @@ Comming soon...
 
 
 == TODO ==
+* sorting on archive page
+* при закрытии ставить дату закрытия
 * limit multiple answers select
 * cron: shadule polls opening & activation
 * add link to the post in admin-polls-list if polls shortcode is used in post content
 
 
 == Changelog ==
+= 4.5.8 =
+* Added: AJAX loader images SVG & css3 collection
+* Added: Autoset close-date when you close poll
+
 = 4.5.7 =
 * BugFix: revote button didn't minus votes if "keep-logs" option was disabled
 

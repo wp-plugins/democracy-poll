@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Democracy\n"
-"POT-Creation-Date: 2015-02-07 22:29+0500\n"
-"PO-Revision-Date: 2015-02-07 22:32+0500\n"
+"POT-Creation-Date: 2015-02-08 13:14+0500\n"
+"PO-Revision-Date: 2015-02-08 13:18+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: admin\n"
 "X-Poedit-SearchPath-1: .\n"
 
-#: admin/admin_page.php:63 admin/admin_page.php:110
+#: admin/admin_page.php:63 admin/admin_page.php:110 admin/admin_page.php:263
 msgid "Нет"
 msgstr "No"
 
@@ -74,11 +74,11 @@ msgstr "Shortcode to insert into the post:"
 msgid "Редактировать"
 msgstr "Edit"
 
-#: admin/admin_page.php:137 admin/admin_page.php:484
+#: admin/admin_page.php:137 admin/admin_page.php:514
 msgid "Удалить"
 msgstr "Delete"
 
-#: admin/admin_page.php:137 admin/admin_page.php:484
+#: admin/admin_page.php:137 admin/admin_page.php:514
 msgid "Точно удалить?"
 msgstr "Are you sure?"
 
@@ -129,7 +129,7 @@ msgstr ""
 "How many days the user's browser remembers the votes. Default: 365. "
 "<strong>Note:</strong> works together with IP log."
 
-#: admin/admin_page.php:199 admin/admin_page.php:461
+#: admin/admin_page.php:199 admin/admin_page.php:491
 msgid "Голосовать могут только зарегистрированные пользователи."
 msgstr "Are only registered users allowed to vote?"
 
@@ -168,18 +168,56 @@ msgstr ""
 "Uncheck to order answers by date of creation, but not 'winners on the top'."
 
 #: admin/admin_page.php:221
+msgid "Обёртка заголовка опроса HTML тегами."
+msgstr "HTML tags to wrap the poll title."
+
+#: admin/admin_page.php:223
+msgid "вопрос опроса"
+msgstr "poll's question"
+
+#: admin/admin_page.php:225
+msgid ""
+"Например: <code>&lt;h2&gt;</code> и <code>&lt;/h2&gt;</code>. По умолчанию: "
+"<code>&lt;strong class=&quot;dem-poll-title&quot;&gt;</code> и <code>&lt;/"
+"strong&gt;</code>."
+msgstr ""
+"Example: <code>&lt;h2&gt;</code> и <code>&lt;/h2&gt;</code>. Default: "
+"<code>&lt;strong class=&quot;dem-poll-title&quot;&gt;</code> & <code>&lt;/"
+"strong&gt;</code>."
+
+#: admin/admin_page.php:231
+msgid "ID архива опросов."
+msgstr "Polls archive page ID."
+
+#: admin/admin_page.php:235
+msgid "Перейти на страницу архива"
+msgstr "Go to archive page"
+
+#: admin/admin_page.php:237
+msgid "Создать страницу архива"
+msgstr "Create archive page"
+
+#: admin/admin_page.php:239
+msgid ""
+"Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. "
+"Пр. <code>25</code>"
+msgstr ""
+"Specify the poll archive link to be in the poll legend. Example: <code>25</"
+"code>"
+
+#: admin/admin_page.php:243
 msgid "Внешний вид (тема) опроса:"
 msgstr "Design of a poll (theme):"
 
-#: admin/admin_page.php:223
+#: admin/admin_page.php:245
 msgid "- Не подключать файл стилей"
 msgstr "- Don't connect CSS file"
 
-#: admin/admin_page.php:233
+#: admin/admin_page.php:255
 msgid "cсылка на файл"
 msgstr "link to the file"
 
-#: admin/admin_page.php:234
+#: admin/admin_page.php:256
 msgid ""
 "Выберете какой файл стилей использовать для отображения опросов. Выберете "
 "\"- Не подключить...\", скопируйте файл стилей (используйте ссылку выше) в "
@@ -190,62 +228,37 @@ msgstr ""
 "the .css file (use link above) to the folder where your theme's styles are "
 "located. This way you can tune styles and avoid looses during updating."
 
-#: admin/admin_page.php:238
-msgid "Обёртка заголовка опроса HTML тегами."
-msgstr "HTML tags to wrap the poll title."
+#: admin/admin_page.php:260
+msgid "AJAX загрузчик:"
+msgstr "AJAX loader:"
 
-#: admin/admin_page.php:240
-msgid "<вопрос опроса>"
-msgstr "<poll question>"
-
-#: admin/admin_page.php:242
+#: admin/admin_page.php:286
 msgid ""
-"Например: <code>&lt;h2&gt;</code> и <code>&lt;/h2&gt;</code>. По умолчанию: "
-"<code>&lt;strong class=&quot;dem-poll-title&quot;&gt;</code> и <code>&lt;/"
-"strong&gt;</code>."
+"Картинка при AJAX загрузке. Если выбрать \"Нет\", то вместо картинки будут "
+"добавлятся \"...\". SVG картинки не работают в ранних версиях браузеров и в "
+"IE 11 и ниже."
 msgstr ""
-"Example: <code>&lt;h2&gt;</code> и <code>&lt;/h2&gt;</code>. Default: "
-"<code>&lt;strong class=&quot;dem-poll-title&quot;&gt;</code> & <code>&lt;/"
-"strong&gt;</code>."
+"If choose \"No\" then \"...\" will be added to the end of button text. SVG "
+"loaders have no animation in early browsers and in IE 11 or lower."
 
-#: admin/admin_page.php:248
-msgid "ID архива опросов."
-msgstr "Polls archive page ID."
-
-#: admin/admin_page.php:252
-msgid "Перейти на страницу архива"
-msgstr "Go to archive page"
-
-#: admin/admin_page.php:254
-msgid "Создать страницу архива"
-msgstr "Create archive page"
-
-#: admin/admin_page.php:256
-msgid ""
-"Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. "
-"Пр. <code>25</code>"
-msgstr ""
-"Specify the poll archive link to be in the poll legend. Example: <code>25</"
-"code>"
-
-#: admin/admin_page.php:261
+#: admin/admin_page.php:291
 msgid "Настройки плагина"
 msgstr "Plugin Settings"
 
-#: admin/admin_page.php:267
+#: admin/admin_page.php:297
 msgid "Включён"
 msgstr "ON"
 
-#: admin/admin_page.php:267
+#: admin/admin_page.php:297
 msgid "Выключен"
 msgstr "OFF"
 
-#: admin/admin_page.php:268
+#: admin/admin_page.php:298
 #, php-format
 msgid "Включить механихм работы с плагинами кэширования? Текущее состояние: %s"
-msgstr "Force enable gear to forking with cache plugins. The condition: %s"
+msgstr "Force enable gear to working with cache plugins. The condition: %s"
 
-#: admin/admin_page.php:271
+#: admin/admin_page.php:301
 msgid ""
 "Democracy умеет работать с плагинами страничного кэширования и автоматически "
 "включается, если такой плагин установлен и активен на вашем сайте. "
@@ -257,11 +270,11 @@ msgstr ""
 "site. But if you use unusual page caching plugin you can force enable this "
 "option."
 
-#: admin/admin_page.php:277
+#: admin/admin_page.php:307
 msgid "Подключать стили и скрипты прямо в HTML код (рекомендуется)?"
 msgstr "Add styles and scripts directly in the HTML code (recommended)?"
 
-#: admin/admin_page.php:279
+#: admin/admin_page.php:309
 msgid ""
 "Поставьте галочку, чтобы стили и скрипты плагина подключались в HTML код "
 "напрямую, а не как ссылки на файлы. Так вы сэкономите 2 запроса к серверу - "
@@ -271,27 +284,27 @@ msgstr ""
 "code, but not as links to .css and .js files. So you will save 2 requests to "
 "the server - it speeds up page download."
 
-#: admin/admin_page.php:285
+#: admin/admin_page.php:315
 msgid "Пункт меню в панели инструментов?"
 msgstr "Add plugin menu on the toolbar?"
 
-#: admin/admin_page.php:287
+#: admin/admin_page.php:317
 msgid "Уберите галочку, чтобы убрать меню плагина из панели инструментов."
 msgstr "Uncheck to remove the plugin menu from the toolbar."
 
-#: admin/admin_page.php:293
+#: admin/admin_page.php:323
 msgid "Добавить кнопку быстрой вставки опросов в редактор WordPress (TinyMCE)?"
 msgstr "Add fast Poll insert button to WordPress visual editor (TinyMCE)?"
 
-#: admin/admin_page.php:295
+#: admin/admin_page.php:325
 msgid "Уберите галочку, чтобы убрать кнопку из визуального редактора."
 msgstr "Uncheck to disable button in visual editor."
 
-#: admin/admin_page.php:301
+#: admin/admin_page.php:331
 msgid "Показывать ссылку на страницу плагина"
 msgstr "Show copyright"
 
-#: admin/admin_page.php:303
+#: admin/admin_page.php:333
 msgid ""
 "Ссылка на страницу плагина выводиться только на главной в виде значка "
 "&copy;. И помогает другим людям узнать что это за плагин и установить его "
@@ -301,19 +314,19 @@ msgstr ""
 "visitors to learn about the plugin and install it for themselves. Please "
 "don't disable this option without urgent needs. Thanks!"
 
-#: admin/admin_page.php:310
+#: admin/admin_page.php:340
 msgid "Сбросить настройки на начальные"
 msgstr "Reset Options"
 
-#: admin/admin_page.php:314
+#: admin/admin_page.php:344
 msgid "Другое"
 msgstr "Others"
 
-#: admin/admin_page.php:320
+#: admin/admin_page.php:350
 msgid "НЕ подключать JS файлы. (Дебаг)"
 msgstr "Don't connect JS files. (Debag)"
 
-#: admin/admin_page.php:322
+#: admin/admin_page.php:352
 msgid ""
 "Если включить, то .js файлы плагина НЕ будут подключены. Опция нужнда для "
 "Дебага работы плагина без JavaScript."
@@ -321,101 +334,101 @@ msgstr ""
 "If checked, the plugin's .js file will NOT be connected to front end. Enable "
 "this option to test the plugin's work without JavaScript."
 
-#: admin/admin_page.php:328
+#: admin/admin_page.php:358
 msgid "Подгружать файлы перевода?"
 msgstr "Load the translation files?"
 
-#: admin/admin_page.php:330
+#: admin/admin_page.php:360
 msgid ""
 "Отключите эту опцию, если ваш сайт на русском, но вы используете английскую "
 "версию WordPress"
 msgstr "Disable this option if you're Russian, but use English WordPress"
 
-#: admin/admin_page.php:336
+#: admin/admin_page.php:366
 msgid "Виджет"
 msgstr "Widget"
 
-#: admin/admin_page.php:338
+#: admin/admin_page.php:368
 msgid "Поставьте галочку, чтобы активировать виджет."
 msgstr "Check to activate the widget."
 
-#: admin/admin_page.php:351
+#: admin/admin_page.php:381
 msgid "Сохранить настройки"
 msgstr "Save Options"
 
-#: admin/admin_page.php:370 class.DemPoll.php:83
+#: admin/admin_page.php:400 class.DemPoll.php:83
 msgid "Редактировать опрос"
 msgstr "Edit poll"
 
-#: admin/admin_page.php:380
+#: admin/admin_page.php:410
 msgid "Добавить новый опрос"
 msgstr "Add new poll"
 
-#: admin/admin_page.php:394
+#: admin/admin_page.php:424
 msgid "Вопрос:"
 msgstr "Question:"
 
-#: admin/admin_page.php:399
+#: admin/admin_page.php:429
 msgid "Варианты ответов:"
 msgstr "Answers:"
 
-#: admin/admin_page.php:419
+#: admin/admin_page.php:449
 msgid "Добавить ответ"
 msgstr "Add an Answer"
 
-#: admin/admin_page.php:427
+#: admin/admin_page.php:457
 msgid "Сделать этот опрос активным."
 msgstr "Activate this poll."
 
-#: admin/admin_page.php:434
+#: admin/admin_page.php:464
 msgid "Разрешить пользователям добавлять свои ответы (democracy)."
 msgstr "Allow users to add answers (democracy)."
 
-#: admin/admin_page.php:440
+#: admin/admin_page.php:470
 msgid "Разрешить выбирать несколько ответов (множественный)."
 msgstr "Allow to choose multiple answers."
 
-#: admin/admin_page.php:446
-msgid "Дата окончания голосования, если нужно. Формат: dd-mm-yyyy."
-msgstr "Poll deadline, if needed. Format: dd-mm-yyyy."
+#: admin/admin_page.php:476
+msgid "Дата, когда опрос был/будет закрыт. Формат: dd-mm-yyyy."
+msgstr "Date, when poll was/will be closed. Format: dd-mm-yyyy."
 
-#: admin/admin_page.php:453
+#: admin/admin_page.php:483
 msgid "Разрешить изменять мнение (переголосование)."
 msgstr "Allow to change mind (revote)."
 
-#: admin/admin_page.php:466
+#: admin/admin_page.php:496
 msgid "Заметка: текст будет добавлен под опросом."
 msgstr "Note: This text will be added under poll."
 
-#: admin/admin_page.php:473
+#: admin/admin_page.php:503
 msgid "Внести изменения"
 msgstr "Save Changes"
 
-#: admin/admin_page.php:473 class.DemInit.php:73
+#: admin/admin_page.php:503 class.DemInit.php:73
 msgid "Добавить опрос"
 msgstr "Add Poll"
 
-#: admin/admin_page.php:519
+#: admin/admin_page.php:549
 msgid "← вернуться к опросам"
 msgstr "← back to polls"
 
-#: admin/admin_page.php:521
+#: admin/admin_page.php:551
 msgid "← Назад"
 msgstr "← Back"
 
-#: admin/admin_page.php:536
+#: admin/admin_page.php:566
 msgid "Активный"
 msgstr "Active"
 
-#: admin/admin_page.php:538
+#: admin/admin_page.php:568
 msgid "Неактивный"
 msgstr "Inactive"
 
-#: admin/admin_page.php:552
+#: admin/admin_page.php:582
 msgid "Голосование открыто"
 msgstr "Voting is Open"
 
-#: admin/admin_page.php:554
+#: admin/admin_page.php:584
 msgid "Голосование закрыто"
 msgstr "Voting is Closed"
 
@@ -435,39 +448,39 @@ msgstr "Settings"
 msgid "Опрос удален"
 msgstr "Poll Deleted"
 
-#: admin/class.DemAdminInit.php:138
+#: admin/class.DemAdminInit.php:139
 msgid "Опрос открыт"
 msgstr "Poll Opened"
 
-#: admin/class.DemAdminInit.php:138 class.DemPoll.php:250
+#: admin/class.DemAdminInit.php:139 class.DemPoll.php:258
 msgid "Опрос закрыт"
 msgstr "Voting is closed"
 
-#: admin/class.DemAdminInit.php:156
+#: admin/class.DemAdminInit.php:157
 msgid "Опрос активирован"
 msgstr "Poll Activated"
 
-#: admin/class.DemAdminInit.php:156
+#: admin/class.DemAdminInit.php:157
 msgid "Опрос деактивирован"
 msgstr "Poll Deactivated"
 
-#: admin/class.DemAdminInit.php:256
+#: admin/class.DemAdminInit.php:257
 msgid "Опрос обновлён"
 msgstr "Poll Updated"
 
-#: admin/class.DemAdminInit.php:276
+#: admin/class.DemAdminInit.php:277
 msgid "Вставка Опроса Democracy"
 msgstr "Insert Poll of Democracy"
 
-#: admin/class.DemAdminInit.php:277
+#: admin/class.DemAdminInit.php:278
 msgid "Введите ID опроса"
 msgstr "Insert Poll ID"
 
-#: admin/class.DemAdminInit.php:278
+#: admin/class.DemAdminInit.php:279
 msgid "Ошибка: ID - это число. Введите ID еще раз"
 msgstr "Error: ID is a integer. Enter ID again, please."
 
-#: admin/class.DemAdminInit.php:300 class.DemPoll.php:252
+#: admin/class.DemAdminInit.php:301 class.DemPoll.php:260
 msgid "Архив опросов"
 msgstr "Polls Archive"
 
@@ -508,61 +521,61 @@ msgstr "Updated"
 msgid "Скачать Опрос Democracy"
 msgstr "Download the Democracy Poll"
 
-#: class.DemPoll.php:164
+#: class.DemPoll.php:172
 msgid "Добавить свой ответ"
 msgstr "Add your answer"
 
-#: class.DemPoll.php:172 class.DemPoll.php:266
+#: class.DemPoll.php:180 class.DemPoll.php:274
 msgid "Голосовать"
 msgstr "Vote"
 
-#: class.DemPoll.php:175
+#: class.DemPoll.php:183
 msgid "Результаты"
 msgstr "Results"
 
-#: class.DemPoll.php:201
+#: class.DemPoll.php:209
 msgid "Ваш голос. "
 msgstr "Your vote."
 
-#: class.DemPoll.php:210
+#: class.DemPoll.php:218
 msgid "Ответ добавлен посетителем"
 msgstr "The answer was added by a visitor"
 
-#: class.DemPoll.php:213
+#: class.DemPoll.php:221
 #, php-format
 msgid "%s%% от всех голосов"
 msgstr "%s%% of all votes"
 
-#: class.DemPoll.php:221
+#: class.DemPoll.php:229
 msgid "голос"
 msgstr "vote"
 
-#: class.DemPoll.php:221
+#: class.DemPoll.php:229
 msgid "голоса"
 msgstr "votes"
 
-#: class.DemPoll.php:221
+#: class.DemPoll.php:229
 msgid "голосов"
 msgstr "votes"
 
-#: class.DemPoll.php:246
+#: class.DemPoll.php:254
 #, php-format
 msgid "Всего голосов: %s"
 msgstr "Total Votes: %s"
 
-#: class.DemPoll.php:247
+#: class.DemPoll.php:255
 msgid "Начало"
 msgstr "Begin"
 
-#: class.DemPoll.php:248
+#: class.DemPoll.php:256
 msgid "Конец"
 msgstr "End"
 
-#: class.DemPoll.php:249
+#: class.DemPoll.php:257
 msgid " - добавлен посетителем"
 msgstr " - added by visitor"
 
-#: class.DemPoll.php:258
+#: class.DemPoll.php:266
 #, php-format
 msgid ""
 "Голосовать могут только зарегистрированные пользователи. <a href=\"%s\" rel="
@@ -571,15 +584,15 @@ msgstr ""
 "Only registered users can vote. <a href=\"%s\" rel=\"nofollow\">Login</a> to "
 "vote."
 
-#: class.DemPoll.php:261
+#: class.DemPoll.php:269
 msgid "Точно отменить голоса?"
 msgstr "Are you sure you want cancel the votes?"
 
-#: class.DemPoll.php:262
+#: class.DemPoll.php:270
 msgid "Переголосовать"
 msgstr "Revote"
 
-#: class.DemPoll.php:278
+#: class.DemPoll.php:286
 msgid "Вы уже голосовали"
 msgstr "You have already voted"
 
@@ -592,27 +605,27 @@ msgstr ""
 "Allows to create democratic polls. Visitors can vote for more than one "
 "answer & add their own answers."
 
-#: democracy.php:172
+#: democracy.php:171
 msgid "Что для вас деньги?"
 msgstr "What does \"money\" mean to you?"
 
-#: democracy.php:180
+#: democracy.php:179
 msgid "Деньги - это универсальный продукт для обмена."
 msgstr " It is a universal product for exchange."
 
-#: democracy.php:181
+#: democracy.php:180
 msgid "Деньги - это бумага... Не в деньгах счастье..."
 msgstr "Money - is paper... Money is not the key to happiness..."
 
-#: democracy.php:182
+#: democracy.php:181
 msgid "Средство достижения цели."
 msgstr "Source to achieve the goal. "
 
-#: democracy.php:183
+#: democracy.php:182
 msgid "Кусочки дьявола :)"
 msgstr "Pieces of Evil :)"
 
-#: democracy.php:184
+#: democracy.php:183
 msgid "Это власть, - это \"Сила\", - это счастье..."
 msgstr "The authority, the  \"power\", the happiness..."
 
@@ -635,6 +648,12 @@ msgstr "- Active (random all active)"
 #: widget_democracy.php:79
 msgid "Какой опрос показывать?"
 msgstr "What poll to show?"
+
+#~ msgid "<вопрос опроса>"
+#~ msgstr "<poll question>"
+
+#~ msgid "Дата окончания голосования, если нужно. Формат: dd-mm-yyyy."
+#~ msgstr "Poll deadline, if needed. Format: dd-mm-yyyy."
 
 #~ msgid "Вести лог и учитывать IP?"
 #~ msgstr "Log data & take visitor IP into consideration?"

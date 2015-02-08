@@ -12,6 +12,9 @@
 /*#democr_options .block label{ display:block; }*/
 #democr_options .block em{ display:block; opacity:0; padding:5px 0 15px; line-height:1.1; transition:opacity 500ms; }
 #democr_options .block:hover em{ opacity:0.8; }
+#democr_options .loaders .left{ float:left; text-align:center; margin-right:15px; height:85px; }
+#democr_options .loaders .loader{ min-width:30px; margin-bottom: 5px; }
+#democr_options .loaders:after, #democr_options .loaders em{ content:''; display: table; clear: both; }
 
 .polls-table{ margin-bottom:50px; }
 .polls-table tr:hover{ background: rgba(0,0,0,0.1); }

@@ -1,7 +1,7 @@
 <?php
-define('DEM_VER', '4.5.7');
+define('DEM_VER', '4.5.8');
 /*
-Version: 4.5.7
+Version: 4.5.8
 Plugin Name: Democracy Poll
 Description: Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.
 Author: Kama
@@ -60,7 +60,6 @@ function democracy_poll( $id = 0, $before_title = '', $after_title = ''){
 	echo get_democracy_poll( $id, $before_title, $after_title );
 }
 function get_democracy_poll( $id = 0, $before_title = '', $after_title = '' ){
-//	die($before_title . $after_title);
 	$poll = new DemPoll( $id );
 	
 	$show_results = __query_poll_screen_choose( $poll );
@@ -80,7 +79,7 @@ function get_democracy_archives( $hide_active = false, $before_title = '', $afte
 	global $wpdb;
 		
 	$WHERE = $hide_active ? 'WHERE active = 0' : '';
-	$ids = $wpdb->get_col("SELECT id FROM $wpdb->democracy_q $WHERE ORDER BY active DESC, id DESC");
+	$ids = $wpdb->get_col("SELECT id FROM $wpdb->democracy_q $WHERE ORDER BY active DESC, open DESC, id DESC");
 
 	$output = '<div class="dem-archives">';
 	foreach( $ids as $poll_id ){

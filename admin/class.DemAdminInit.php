@@ -39,8 +39,8 @@ class DemAdminInit extends Dem{
 		wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css');
 		
 		// другие
-		wp_enqueue_script('democracy-scripts', $this->dir_url . 'admin/admin.js', array('jquery'), null, true );
-		wp_enqueue_style('democracy-styles', $this->dir_url . 'admin/style.css' );
+		wp_enqueue_script('democracy-scripts', $this->dir_url . 'admin/admin.js', array('jquery'), DEM_VER, true );
+		wp_enqueue_style('democracy-styles', $this->dir_url . 'admin/style.css', array(), DEM_VER );
 
 		## Обработка запросов
 		// запрос на создание страницы архива
@@ -120,7 +120,7 @@ class DemAdminInit extends Dem{
 	}
 	
 	/**
-	 * Запрещает/разрешает голосование
+	 * Закрывает/открывает голосование
 	 * @param int $poll_id ID опроса
 	 * @param bool $open Что сделать, открыть или закрыть голосование?
 	 */
@@ -133,6 +133,7 @@ class DemAdminInit extends Dem{
 		$new_data = array( 'open' => $open );
 		
 		if( $open ) $new_data['end'] = 0; // удаляем дату окончания при открытии голосования
+        else        $new_data['end'] = current_time('timestamp') - 10; // ставим дату закрытия опроса
 		
 		if( $wpdb->update( $wpdb->democracy_q, $new_data, array( 'id'=>$id ) ) )
 			$this->message[] = $open ? __('Опрос открыт','dem') : __('Опрос закрыт','dem');

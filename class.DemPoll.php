@@ -86,13 +86,21 @@ class DemPoll {
 		if( Dem::$inst->opt['show_copyright'] && ( is_home() || is_front_page() ) )
 			$___ .=  '<a class="dem-copyright" href="http://wp-kama.ru/?p=67" title="'. __('Скачать Опрос Democracy','dem') .'"> © </a>';
 		
+        // loader 
+        if( Dem::$inst->opt['loader_fname'] ){
+            static $loader; // оптимизация, чтобы один раз выводился код на странице
+            if( ! $loader ){
+                $loader = '<div class="dem-loader"><div>'. file_get_contents( Dem::$inst->dir_path .'loaders/'. Dem::$inst->opt['loader_fname'] ) .'</div></div>';
+                $___ .=  $loader;
+            }
+        }
 
 		$___ .=  "</div><!--democracy-->";
 		
 		
 		// Скрытый код если используется плагин страничного кэширования
 		if( Dem::$inst->is_cachegear_on() ){
-			$___ .= '<!--noindex--><div class="dem-cache-screens" style="display:none;" data-keep_logs="'. Dem::$inst->opt['keep_logs'] .'">';
+			$___ .= '<!--noindex--><div class="dem-cache-screens" style="display:none;" data-opt_logs="'. Dem::$inst->opt['keep_logs'] .'">';
 			
 			// запоминаем
 			$votedFor = $this->votedFor;
