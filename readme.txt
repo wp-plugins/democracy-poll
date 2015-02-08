@@ -38,6 +38,7 @@ This plugin is a reborn of once-has-been-famous Democracy Poll. Even if it hasn'
 What can it perform?
 
 * adding new polls;
+* work with cache plugins: wp total cache, wp super cache, etc...
 * users may add their own answers (Democracy), the option may be disabled if necessary;
 * multi-voting: users may multiple answers instead of a single one (may be disabled on demand);
 * closing the poll after the date specified beforehand;

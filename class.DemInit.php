@@ -172,6 +172,8 @@ class Dem {
         if( class_exists('HyperCache')  ) return true;
         // Quick Cache
         if( class_exists('quick_cache') && @\quick_cache\plugin()->options['enable'] ) return true;
+        // wp-fastest-cache
+        // aio-cache
         
         return false;
 	}
