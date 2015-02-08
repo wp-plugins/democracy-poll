@@ -131,6 +131,7 @@
         // получим нужную высоту
         var $_the  = $the.clone().html( html ).css({height:'auto'}).appendTo( $the ); // получим высоту
 		var newH = ($_the.css('box-sizing') == 'border-box') ? $_the.outerHeight() : $_the.height();
+		newH += 5; // запас 5px
         $_the.remove();
                                                                        
         // Анимируем до нужной выстоты

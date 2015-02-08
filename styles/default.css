@@ -1,6 +1,6 @@
 /* common */
 .democracy{ position:relative; margin:0 auto; }
-.democracy ul li{ list-style:none!important; background:none!important; }
+.democracy ul li{ list-style:none!important; background:none!important; border:none!important; }
 .democracy ul li:before{ display: none!important; } /* сброс оформления пунктов */
 .democracy .dem-footnote{ color: #ff4e00; }
 .democracy sup{ font-size:90%; vertical-align: baseline; padding-left:0.3em; }
@@ -14,6 +14,7 @@ ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:3%!important; }
 
 .democracy .dem-poll-note{ font-style:italic; font-size:90%; padding:1em 0; opacity:0.8; line-height: 1.1; }
 
+.dem-poll-title{ display:block; margin-bottom:3%; margin-top:3%; font-size:120%; }
 
 /* vote screen */
 .dem-link, .dem-archive-link{ font-style:italic; font-size:90%; }
@@ -26,8 +27,6 @@ ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:3%!important; }
 .dem-add-answer-txt{ width:100%; }
 .add-answer-txt-close{ position: absolute; right:0; padding:0 .7em; cursor: pointer; color:#333; }
 .add-answer-txt-close:hover{  color:#ff2700; }
-
-.dem-poll-title{ display:block; margin-bottom:3%; font-size:120%; }
 
 .dem-vote label{ float:none; display:block; padding-bottom:0.5em; }
 .dem-vote label:hover{ opacity:.8; }
