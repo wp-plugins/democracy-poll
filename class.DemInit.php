@@ -200,7 +200,7 @@ class DemFrontInit extends Dem{
 		if( ! $this->opt['inline_js_css'] ) $this->add_css(); // подключаем стили если инлайн то подключаем их непосредственно перед опросом
 
 		# для работы функции без AJAX
-		if( @$_POST['action'] != 'dem_ajax' ) $this->not_ajax_request_handler();
+		if( @$_POST['action'] != 'dem_ajax' ) add_action('plugins_loaded', array($this, 'not_ajax_request_handler') );
 		
 		# ajax request во frontend_init нельзя, потому что срабатывает только как is_admin()
 		add_action('wp_ajax_dem_ajax',        array( $this, 'ajax_request_handler') );
@@ -259,18 +259,19 @@ class DemFrontInit extends Dem{
 	## для работы функции без AJAX
 	function not_ajax_request_handler(){
 		extract( $this->__sanitize_request_vars() );
-		
-		if( ! $act || ! $pid ) return;
+		        
+		if( ! $act || ! $pid || ! isset($_SERVER['HTTP_REFERER']) ) return;
 
 		$poll = new DemPoll( $pid );
 		
-		// проверяем
 		if( $act == 'vote' && $aids ){
 			$poll->addVote( $aids );
+            wp_redirect( remove_query_arg( array('dem_act','dem_pid'), $_SERVER['HTTP_REFERER'] ) );
+            exit;
 		}
-		elseif( $act == 'delVoted' && isset( $_SERVER['HTTP_REFERER'] ) ){ // если это не AJAX запрос, возвращаем пользователя обратно
+		elseif( $act == 'delVoted' ){
 			$poll->unsetVotedData();
-			wp_redirect( $_SERVER['HTTP_REFERER'] );
+			wp_redirect( remove_query_arg( array('dem_act','dem_pid'), $_SERVER['HTTP_REFERER'] ) );
 			exit;
 		}
 	}

@@ -416,6 +416,9 @@ class DemPoll {
         global $wpdb;
         
         $INaids = implode(',', $this->_sql_get_aids_from_str( $this->votedFor ) );
+        
+        if( ! $INaids ) return false;
+        
         // сначала удалим добавленные пользователем ответы, если они есть и у них 0 или 1 голос.
         $r1 = $wpdb->query("DELETE FROM $wpdb->democracy_a WHERE added_by = 1 AND votes IN (0,1) AND aid IN ($INaids) ORDER BY aid DESC LIMIT 1");
         // отнимаем голоса

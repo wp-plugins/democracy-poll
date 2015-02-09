@@ -66,10 +66,10 @@ ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:1em !important; 
 input[type="submit"].dem-button,
 a.dem-button{
 	cursor:pointer;
-	font-size:90%;
+	font-size:80%;
     text-transform: uppercase;
 	color:#6c6c6c !important;
-	padding:0.5em 1em;
+	padding:0.7em 1.2em;
 	background: #d6d6d6;
 	background: linear-gradient(to bottom, #f5f5f5 0%, #e3e3e3 80%, #e8e8e8);
 	background: -webkit-linear-gradient(top, #f5f5f5 0%, #e3e3e3 80%, #e8e8e8);
