@@ -18,7 +18,6 @@
 	else
 		dem_pols_list();
 
-
 	?>
 
 </div>
@@ -244,7 +243,7 @@ function dem_general_settings(){
 					<select name="dem[css_file_name]">
 						<option value=""><?php _e('- Не подключать файл стилей','dem') ?></option>
 						<?php 
-						foreach( glob( Dem::$inst->dir_path . Dem::$inst->css_dirname . '*.css' ) as $file ){
+						foreach( glob( Dem::$inst->dir_path . 'styles/*.css' ) as $file ){
 							if( preg_match('~\.min~', $file ) ) continue;
 							$filename = basename( $file );
 							$sel = selected( Dem::$inst->opt['css_file_name'], $filename );
@@ -252,7 +251,7 @@ function dem_general_settings(){
 						}
 						?>
 					</select>
-                    <a href="<?php echo Dem::$inst->dir_url . Dem::$inst->css_dirname . Dem::$inst->opt['css_file_name'] ?>" target="_blank"><?php _e('cсылка на файл', 'dem'); echo ' ' . Dem::$inst->opt['css_file_name']; ?> </a>
+                    <a href="<?php echo Dem::$inst->dir_url . 'styles/' . Dem::$inst->opt['css_file_name'] ?>" target="_blank"><?php _e('cсылка на файл', 'dem'); echo ' ' . Dem::$inst->opt['css_file_name']; ?> </a>
 					<em><?php _e('Выберете какой файл стилей использовать для отображения опросов. Выберете "- Не подключить...", скопируйте файл стилей (используйте ссылку выше) в файл стилей вашей темы и измените его под себя. Так вы сможете настроить стили, чтобы при обновлении плагина изменения не потерялись.','dem') ?></em>
 				</li>				
 

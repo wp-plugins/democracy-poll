@@ -283,8 +283,25 @@ class DemAdminInit extends Dem{
 		return $mce_l10n + $l10n;
 	}
 	
-	
-	/**
+    /**
+     * Сжимает css YUICompressor
+     * @param str $input_css КОД css
+     * @return str min css.
+     * $minicss = Dem::$inst->cssmin( file_get_contents( Dem::$inst->dir_url . 'styles/' . Dem::$inst->opt['css_file_name'] ) );
+     */
+    function cssmin( $input_css ){
+        require_once $this->dir_path . 'admin/cssmin.php';
+        
+        $compressor = new CSSmin();
+
+        // Override any PHP configuration options before calling run() (optional)
+        // $compressor->set_memory_limit('256M');
+        // $compressor->set_max_execution_time(120);
+
+        return $compressor->run( $input_css );
+    }
+
+    /**
 	 * Создает страницу архива. Сохраняет УРЛ созданой страницы в опции плагина. Перед созданием проверят нет ли уже такой страницы.
 	 * Возвращает УРЛ созданной страницы или false
 	 */

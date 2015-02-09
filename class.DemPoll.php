@@ -177,10 +177,10 @@ class DemPoll {
             $___ .= '<div class="dem-bottom">';
                 $___ .= '<input type="hidden" name="dem_act" value="vote" />';
                 $___ .= '<input type="hidden" name="dem_pid" value="'. $this->id .'" />';
-                $___ .= '<div class="dem-vote-button"><input type="submit" value="'. __('Голосовать','dem') .'" data-dem-act="vote" /></div>';
+                $___ .= '<div class="dem-vote-button"><input class="dem-button" type="submit" value="'. __('Голосовать','dem') .'" data-dem-act="vote" /></div>';
 
                 $url   = add_query_arg( array('dem_act' => 'view', 'dem_pid' => $this->id) );
-                $___ .= '<a href="'. $url .'" class="dem-link dem-get-votes" data-dem-act="view" rel="nofollow">'. __('Результаты','dem') .'</a>';
+                $___ .= '<a href="'. $url .'" class="dem-link dem-results-link" data-dem-act="view" rel="nofollow">'. __('Результаты','dem') .'</a>';
             $___ .= '</div>';
 
         $___ .= '</form>';	
@@ -215,7 +215,7 @@ class DemPoll {
 				$is_winner     = ( $max == $votes );
 				
 				$li_class = ' class="'. ( $is_winner ? 'dem-winner':'' ) . ( $is_voted_this ? " $voted_class":'' ) .'"';
-				$sup = $answer->added_by ? ' <sup class="dem-footnote" title="'. __('Ответ добавлен посетителем','dem') .'">*</sup>' : '';
+				$sup = $answer->added_by ? ' <sup class="dem-star" title="'. __('Ответ добавлен посетителем','dem') .'">*</sup>' : '';
 				$percent = ( $votes > 0) ? round($votes / $total * 100) : 0;
 				
 				$percent_txt = sprintf( __("%s%% от всех голосов",'dem'), $percent );
@@ -254,7 +254,7 @@ class DemPoll {
 				$___ .= '<div class="dem-total-votes">'. sprintf( __('Всего голосов: %s','dem'), $total ) .'</div>';
 				$___ .= '<div class="dem-begin-date" title="'. __('Начало','dem') .'">'. date_i18n( get_option('date_format'), $this->poll->added ) .'</div>';
 				$___ .= $this->poll->end    ? '<div class="dem-begin-date" title="'. __('Конец','dem') .'">'. date_i18n( get_option('date_format'), $this->poll->end ) .'</div>' : '';
-				$___ .= $answer->added_by   ? '<div class="dem-added-by-user"><span class="dem-footnote">*</span>'. __(' - добавлен посетителем','dem') .'</div>' : '';
+				$___ .= $answer->added_by   ? '<div class="dem-added-by-user"><span class="dem-star">*</span>'. __(' - добавлен посетителем','dem') .'</div>' : '';
 				$___ .= ! $this->poll->open ? '<div>'. __('Опрос закрыт','dem') .'</div>' : '';
 				if( ! $this->inArchive && Dem::$inst->opt['archive_page_id'] )
 					$___ .= '<a class="dem-archive-link dem-link" href="'. get_permalink( Dem::$inst->opt['archive_page_id'] ) .'" rel="nofollow">'. __('Архив опросов','dem') .'</a>';
@@ -271,7 +271,7 @@ class DemPoll {
             </a>';
             // вернуться к голосованию
             $url = add_query_arg( array('dem_act' => 'vote_screen', 'dem_pid' => $this->id ) );
-            $html_backvote = '<a href="'. $url .'" class="dem-link dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __('Голосовать','dem') .'</a>';
+            $html_backvote = '<a href="'. $url .'" class="dem-button dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __('Голосовать','dem') .'</a>';
         
 			if( ! $this->cache_on && $this->blockForVisitor ){
                 $___ .= $html_only_users;
@@ -283,8 +283,8 @@ class DemPoll {
             }
         
             if( $this->cache_on ){
-                $___ .= '<div class="cache-notice dem-youarevote" style="display:none;">'. __('Вы уже голосовали','dem') .'</div>';
-                $___ .= str_replace( array('<div', 'class="'), array('<div style="display:none;"', 'class="cache-notice '), $html_only_users );
+                $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __('Вы уже голосовали','dem') .'</div>';
+                $___ .= str_replace( array('<div', 'class="'), array('<div style="display:none;"', 'class="dem-cache-notice '), $html_only_users );
             }
         }
         

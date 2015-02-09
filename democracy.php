@@ -40,7 +40,7 @@ require dirname(__FILE__) . '/admin/class.DemAdminInit.php';
 Dem::init();
 
 
-
+//die( $minicss = Dem::$inst->cssmin('.foo{ margin:10px;}    .foo{ margin:20px;  }') );
 
 ### активируем виджет, если включен
 if( Dem::$inst->opt['use_widget'] ) require 'widget_democracy.php';

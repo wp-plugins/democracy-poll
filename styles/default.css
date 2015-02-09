@@ -1,20 +1,17 @@
 /* common */
 .democracy{ position:relative; margin:0 auto; }
+.democracy:after{ content:'';display: table; clear: both; }
 .democracy ul li{ list-style:none!important; background:none!important; border:none!important; }
-.democracy ul li:before{ display: none!important; } /* сброс оформления пунктов */
-.democracy .dem-footnote{ color: #ff4e00; }
-.democracy sup{ font-size:90%; vertical-align: baseline; padding-left:0.3em; }
+.democracy ul li:before{ display: none!important; }
 
 .democracy input{ vertical-align:middle; outline: none!important; }
 .democracy input[type='radio'] { margin-right:0.1em; }
 
 .dem-screen{ position:relative; line-height: 1.3em; }
 
-ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:3%!important; }
+ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:1em !important; }
 
-.democracy .dem-poll-note{ font-style:italic; font-size:90%; padding:1em 0; opacity:0.8; line-height: 1.1; }
 
-.dem-poll-title{ display:block; margin-bottom:3%; margin-top:3%; font-size:120%; }
 
 /* vote screen */
 .dem-link, .dem-archive-link{ font-style:italic; font-size:90%; }
@@ -56,33 +53,37 @@ ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:3%!important; }
 .dem-label-percent-txt:before{ content:'('; }
 .dem-label-percent-txt:after{ content:')'; }
 
+.dem-bottom{ text-align: left; }
+
 /* hide */
 .dem-label-percent-txt{ display:none; }
 .dem-only-percent-txt{ display:none; }
 
 
 /* button */
-.dem-vote-button{ display:inline-block; }
-.dem-vote-button input[type="submit"]{
+.dem-vote-button{ float:left; }
+.dem-button{ display:inline-block; }
+input[type="submit"].dem-button,
+a.dem-button{
 	cursor:pointer;
 	font-size:90%;
-	color:#7E7E7E!important;
+    text-transform: uppercase;
+	color:#6c6c6c !important;
 	padding:0.5em 1em;
 	background: #d6d6d6;
 	background: linear-gradient(to bottom, #f5f5f5 0%, #e3e3e3 80%, #e8e8e8);
 	background: -webkit-linear-gradient(top, #f5f5f5 0%, #e3e3e3 80%, #e8e8e8);
 	border-radius: 4px;
-	border: 1px solid #c9c9c9!important;
-	margin-right:1em;
+	border: 1px solid #c9c9c9 !important;
+    line-height: 1;
 }
-.dem-vote-button input[type="submit"]:hover{
-	border: 1px solid #bbb!important;
-	color:#696969!important;
+input[type="submit"].dem-button:hover,
+a.dem-button:hover{
+	border: 1px solid #bbb !important;
+	color:#696969 !important;
 }
+.dem-results-link{ display: inline-block; line-height: 1; margin:0.5em 1em; }
 
-/* copyright */
-.dem-copyright{ position:absolute; bottom: -1em; right: -1.2em; text-decoration:none; color:#b2b2b2!important; opacity:0.7; line-height:1; }
-.dem-copyright:hover{ opacity:1; }
 
 
 /* archive */
@@ -90,7 +91,7 @@ ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:3%!important; }
 .dem-archives .dem-archive-link { display: none; }
 
 /* cache */
-.cache-notice{ width:100%; padding:.3em 1em; margin-bottom: 1em; background: rgba(238, 255, 85, 0.86); color:#534d1d; }
+.dem-cache-notice{ width:100%; padding:.3em 1em; margin-bottom: 1em; background: rgba(238, 255, 85, 0.86); color:#534d1d; }
 
 /* edit-link */
 .dem-edit-link{ display: block; position:absolute; top:0; right:0; line-height:1; text-decoration:!important; border:none!important; }
@@ -103,3 +104,12 @@ ul.dem-answers, ul.dem-vote{ padding:0!important; margin-bottom:3%!important; }
 .dem-loader svg{ width:20%; max-width:100px; margin-bottom:15%; }
 .dem-loader [class^="dem-"]{ margin-bottom:15%!important; }
 /*.dem-loader svg .fill{ fill:#0063b9!important; }*/
+/*.dem-loader svg .stroke{ stroke:#0063b9!important; }*/
+
+/* others */
+.dem-star{ font-size:90%; vertical-align: baseline; padding-left:0.3em; color: #ff4e00; }
+.dem-poll-note{ font-style:italic; font-size:90%; padding:1em; opacity:0.8; line-height: 1.1; }
+.dem-poll-title{ display:block; margin-bottom:3%; margin-top:3%; font-size:120%; }
+
+.dem-copyright{ position:absolute; bottom: -1em; right: -1.2em; text-decoration:none; color:#b2b2b2!important; opacity:0.7; line-height:1; }
+.dem-copyright:hover{ opacity:1; }

@@ -9,7 +9,6 @@ class Dem {
 	public $dir_path;
 	public $dir_url;
 	public $ajax_url;
-	public $css_dirname = 'styles/';
 	
 	public $message = array();
 	
@@ -295,7 +294,7 @@ class DemFrontInit extends Dem{
 					
 		// пробуем подключить сжатые версии файлов		
 		$css_name = rtrim( $css_name, '.css');
-		$css      = $this->css_dirname . $css_name;
+		$css      = 'styles/' . $css_name;
 		$cssurl   = $this->dir_url  . "$css.min.css";
 		$csspath  = $this->dir_path . "$css.min.css";
 		
