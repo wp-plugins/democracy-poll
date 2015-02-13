@@ -52,6 +52,6 @@
 </style>
 
 <div class="dem-squares">
-  <div class="cube1"></div>
-  <div class="cube2"></div>
+  <div class="cube1 css-fill"></div>
+  <div class="cube2 css-fill"></div>
 </div>

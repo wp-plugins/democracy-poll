@@ -12,12 +12,13 @@ class DemPoll {
 	var $votedFor     = '';
 	var $blockVoting  = false; // блокировать голосование
 	var $blockForVisitor = false; // только для зарегистрированных
-	var $inArchive    = false; // для вывода опросов в архиве
-	var $cache_on     = false; // для вывода опросов в архиве
+	
+    var $inArchive    = false; // для вывода опросов в архиве
+    
+	var $cachegear_on = false; // проверка включен ли механихм кэширвоания
+	var $for_cache    = false; 
 	
 	var $cookey;           // Название ключа cookie
-	
-    
     
 	function __construct( $id = 0 ){
 		global $wpdb;
@@ -37,7 +38,9 @@ class DemPoll {
 		if( ! $this->id ) return; // влияет на весь класс, важно!
 		
 		$this->cookey    = 'demPoll_' . $this->id;
-		$this->poll      = $poll;		
+		$this->poll      = $poll;
+        
+		$this->cachegear_on = Dem::$inst->is_cachegear_on();		
 		
 		$this->setVotedData();
         $this->set_answers(); // установим свойство $this->poll->answers
@@ -51,31 +54,32 @@ class DemPoll {
 
 		// блокировка возможности голосовать
 		if( $this->blockForVisitor || ! $this->poll->open || $this->hasVoted )   $this->blockVoting = true;
+        
 	}
 		
 	
     /**
      * Получает HTML опроса
-     * @param bool $voted_screen Какой экран показывать
+     * @param bool $show_screen Какой экран показывать: vote, voted, force_vote
      * @return HTML
      */
-	function get_screen( $voted_screen = false, $before_title = '', $after_title = '' ){
+	function get_screen( $show_screen = 'vote', $before_title = '', $after_title = '' ){
 	    if ( ! $this->id ) return false;
         		
-		$this->inArchive = ( $GLOBALS['post']->ID == Dem::$inst->opt['archive_page_id'] ) && is_singular();
+		$this->inArchive = ( @$GLOBALS['post']->ID == Dem::$inst->opt['archive_page_id'] ) && is_singular();
 
-		if( $this->blockVoting ) $voted_screen = true;
+		if( $this->blockVoting && $show_screen != 'force_vote' ) $show_screen = 'voted';
 			
 		if( ! Dem::$inst->opt['disable_js'] ) Dem::$inst->add_js(); // подключаем скрипты (срабатывает один раз)
 
 		$___ = '';
-		$___ .= Dem::$inst->opt['inline_js_css'] ? Dem::$inst->add_css() : ''; // подключаем стили
+		$___ .= Dem::$inst->add_css(); //Dem::$inst->opt['inline_js_css'] ? Dem::$inst->add_css() : ''; // подключаем стили
 			
 		$___ .= '<div class="democracy" data-ajax-url="'. Dem::$inst->ajax_url .'" data-pid="'. $this->id .'">';
 		    $___ .=  ( $before_title ?: Dem::$inst->opt['before_title'] ) . $this->poll->question . ( $after_title  ?: Dem::$inst->opt['after_title'] );
 		
 			// изменяемая часть
-			$___ .=  $this->get_screen_basis( $voted_screen );
+			$___ .=  $this->get_screen_basis( $show_screen );
 			// изменяемая часть
 		
 			$___ .= $this->poll->note ? '<div class="dem-poll-note">'. wpautop( $this->poll->note ) .'</div>' : '';
@@ -90,7 +94,7 @@ class DemPoll {
         if( Dem::$inst->opt['loader_fname'] ){
             static $loader; // оптимизация, чтобы один раз выводился код на странице
             if( ! $loader ){
-                $loader = '<div class="dem-loader"><div>'. file_get_contents( Dem::$inst->dir_path .'loaders/'. Dem::$inst->opt['loader_fname'] ) .'</div></div>';
+                $loader = '<div class="dem-loader"><div>'. file_get_contents( Dem::$inst->dir_path .'styles/loaders/'. Dem::$inst->opt['loader_fname'] ) .'</div></div>';
                 $___ .=  $loader;
             }
         }
@@ -99,20 +103,20 @@ class DemPoll {
 		
 		
 		// Скрытый код если используется плагин страничного кэширования
-		if( Dem::$inst->is_cachegear_on() ){
+		if( $this->cachegear_on ){
 			$___ .= '<!--noindex--><div class="dem-cache-screens" style="display:none;" data-opt_logs="'. Dem::$inst->opt['keep_logs'] .'">';
 			
 			// запоминаем
 			$votedFor = $this->votedFor;
 			$this->votedFor = false;
-            $this->cache_on = 1;
+            $this->for_cache = 1;
             
-			$compress = function( $str ){ return preg_replace("~[\n\r\t]~", '', preg_replace('~\s+~',' ',$str) ); };
-			$___ .= $compress( $this->get_screen_basis( true ) );  // voted_screen
+			$compress = function( $str ){ return preg_replace("~[\n\r\t]~u", '', preg_replace('~\s+~u',' ',$str) ); };
+			$___ .= $compress( $this->get_screen_basis('voted') );  // voted_screen
             if( $this->poll->open )
-                $___ .= $compress( $this->get_screen_basis( false ) ); // vote_screen
+                $___ .= $compress( $this->get_screen_basis('force_vote') ); // vote_screen
             
-            $this->cache_on = 0;
+            $this->for_cache = 0;
 			$this->votedFor = $votedFor; // возвращаем
 
 			$___ .=	'</div><!--/noindex-->';
@@ -124,13 +128,14 @@ class DemPoll {
 	
 	/**
      * Получает сердце HTML опроса (изменяемую часть)
-     * @param bool $voted_screen Parameter description.
+     * @param bool $show_screen 
      * @return HTML
      */
-	function get_screen_basis( $voted_screen = false ){
-        $class_suffix = $this->cache_on ? '-cache' : '';
-		$___ = '<div class="dem-screen'. $class_suffix .' '. ($voted_screen ? 'voted' : 'vote') .'">';
-		$___ .= $voted_screen ? $this->getResultScreen() : $this->getVoteScreen();
+	function get_screen_basis( $show_screen = 'vote' ){
+        $class_suffix = $this->for_cache ? '-cache' : '';
+        $screen = ( $show_screen == 'vote' || $show_screen == 'force_vote' ) ? 'vote' : 'voted';
+		$___ = '<div class="dem-screen'. $class_suffix .' '. $screen  .'">';
+		$___ .= ( $screen == 'vote' ) ? $this->getVoteScreen() : $this->getResultScreen();
 		$___ .=  '</div>';
 		
 		return $___;
@@ -237,7 +242,7 @@ class DemPoll {
 
 					
 					$percent_txt = "<div class='dem-percent-text'>". $percent_txt ."</div>";
-					$votes_txt   = "<div class='dem-text-votes'>$votes_txt <span class='dem-only-percent-txt'>". $percent ."%</span></div>";
+					$votes_txt   = "<div class='dem-votes-text'>$votes_txt <span class='dem-votes-text-percent'>". $percent ."%</span></div>";
 					if( $votes == 0 ){ $votes_txt = $percent_txt = ''; }
 					
 					$___ .= '<div class="dem-graph">';
@@ -250,7 +255,7 @@ class DemPoll {
 		$___ .= '</ul>';
 		
 		$___ .= '<div class="dem-bottom">';
-			$___ .= '<div class="dem-vote-info">';
+			$___ .= '<div class="dem-poll-info">';
 				$___ .= '<div class="dem-total-votes">'. sprintf( __('Всего голосов: %s','dem'), $total ) .'</div>';
 				$___ .= '<div class="dem-begin-date" title="'. __('Начало','dem') .'">'. date_i18n( get_option('date_format'), $this->poll->added ) .'</div>';
 				$___ .= $this->poll->end    ? '<div class="dem-begin-date" title="'. __('Конец','dem') .'">'. date_i18n( get_option('date_format'), $this->poll->end ) .'</div>' : '';
@@ -273,16 +278,16 @@ class DemPoll {
             $url = add_query_arg( array('dem_act' => 'vote_screen', 'dem_pid' => $this->id ) );
             $html_backvote = '<a href="'. $url .'" class="dem-button dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __('Голосовать','dem') .'</a>';
         
-			if( ! $this->cache_on && $this->blockForVisitor ){
+			if( ! $this->for_cache && $this->blockForVisitor ){
                 $___ .= $html_only_users;
             }else{
-                if( $this->cache_on || ($this->hasVoted && $this->poll->revote) )
+                if( $this->for_cache || ($this->hasVoted && $this->poll->revote) )
                     $___ .= $html_revote;
                 else
                     $___ .= $html_backvote;
             }
         
-            if( $this->cache_on ){
+            if( $this->for_cache ){
                 $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __('Вы уже голосовали','dem') .'</div>';
                 $___ .= str_replace( array('<div', 'class="'), array('<div style="display:none;"', 'class="dem-cache-notice '), $html_only_users );
             }
@@ -459,7 +464,7 @@ class DemPoll {
         }
         
         // если дошли до сюда, проверяем куки
-        if( isset( $_COOKIE[ $this->cookey ] ) ){
+        if( isset($_COOKIE[ $this->cookey ]) && $_COOKIE[ $this->cookey ] != 'notVote' ){
 			$this->hasVoted = true;
 			$this->votedFor = $_COOKIE[ $this->cookey ];
 		}
@@ -471,11 +476,17 @@ class DemPoll {
         return current_time('timestamp') + ( intval( Dem::$inst->opt['cookie_days'] ) * DAY_IN_SECONDS );
     }
     
-    // устаналвивает куки для опроса
-    public function set_cookie( $expire = false ){
+    /**
+     * Устанавливает куки для текущего опроса
+     * @param str $value Значение куки, по умолчанию текущие голоса.
+     * @param int $expire Время окончания кики.
+     * @return none.
+     */
+    public function set_cookie( $value = '', $expire = false ){
         $expire = $expire ?: $this->expire_time();
-	    setcookie( $this->cookey, $this->votedFor, $expire, COOKIEPATH );
-        $_COOKIE[ $this->cookey ] = $this->votedFor;
+        $value  = $value  ?: $this->votedFor;
+	    setcookie( $this->cookey, $value, $expire, COOKIEPATH );
+        $_COOKIE[ $this->cookey ] = $value;
     }
     
     public function unset_cookie(){

@@ -30,4 +30,4 @@
   }
 }</style>
 
-<div class="dem-cube"></div>
+<div class="dem-cube css-fill"></div>

@@ -56,6 +56,6 @@
 
 
 <div class="dem-whirling">
-  <div class="dot1"></div>
-  <div class="dot2"></div>
+  <div class="dot1 css-fill"></div>
+  <div class="dot2 css-fill"></div>
 </div>

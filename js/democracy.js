@@ -21,7 +21,6 @@
     
     var loader;
     var $demLoader = $(document).find('.dem-loader').first(); // loader
-    if( ! $demLoader.length ) $demLoader = false; 
 	
 	// загрузка для AJAX. Точки ...
 	$.fn.demLoadingDots = function(){
@@ -46,12 +45,12 @@
     
     // Loader
 	$.fn.demSetLoader   = function(){ var $the = this;
-        if( $demLoader ) $the.closest(demScreen).append( $demLoader.clone().css('display','table') );
+        if( $demLoader.length ) $the.closest(demScreen).append( $demLoader.clone().css('display','table') );
         else loader = setTimeout( function(){ $the.demLoadingDots(); }, 50 ); // dats
         return this;
     };
 	$.fn.demUnsetLoader = function(){
-        if( $demLoader ) this.closest(demScreen).find('.dem-loader').remove();
+        if( $demLoader.length ) this.closest(demScreen).find('.dem-loader').remove();
         else clearTimeout( loader );
         return this;
     };
@@ -79,7 +78,7 @@
 		// добавим кнопку удаления пользовательского текста
 		if( isMultiple ){
 			var $ua = $demScreen.find( userAnswer );
-			$('<span class="add-answer-txt-close">×</span>')
+			$('<span class="dem-add-answer-close">×</span>')
 			.insertBefore( $ua )
 			.css('line-height', $ua.outerHeight() + 'px' )
 			.click( function(){
@@ -180,7 +179,7 @@
 			}
 		);
 
-		return false; // !!!!
+		return false;
 	};
 	
 	/*
@@ -226,25 +225,31 @@
 
             var $res   = $dem.find( demScreen ).first(); // получим основной блок результатов
                                     
-            var dem_id = $dem.attr('data-pid');
-            var answrs = $.cookie('demPoll_' + dem_id);
-
-            // обрабатываем экраны, какой показать и что делать при этом
-//            var pollOpen  = $the.attr('data-poll_open') == 1;
-            var is_answrs = !(typeof answrs == 'undefined');
+            var dem_id    = $dem.attr('data-pid');
+            var pCookie   = $.cookie('demPoll_' + dem_id);
+            var notVoteFlag = ( pCookie == 'notVote' ) ? true : false; // Если уже проверялось, что пользователь не голосовал, не отправляем запрос еще раз
+            var isAnswrs = !(typeof pCookie == 'undefined') && ! notVoteFlag;
+            
+            
                                     
+            // обрабатываем экраны, какой показать и что делать при этом
             var voteHTML  = $the.find( demScreen + '-cache.vote' ).html();
             var votedHTML = $the.find( demScreen + '-cache.voted' ).html();
-            if( ! voteHTML ) return; // если опрос закрыт должны выводиться только результаты голосования
                                     
-            var HTML      = ( is_answrs ? votedHTML : voteHTML ) + '<!--cache-->';
-            $res.html( HTML ).demSetClick();
+            if( ! voteHTML ) return; // если опрос закрыт должны кэшироватьс только результаты голосования. Просто выходим
+                                    
+            var HTML =  voteHTML;
+            if( isAnswrs ) HTML =  votedHTML;
+            $res.html( HTML + '<!--cache-->' ).demSetHeight().demSetClick();
+
+            if( notVoteFlag ) return; // если уже проверялось, что пользователь не голосовал, выходим
             
-            if( is_answrs ) setAnswrs( $res, answrs );
+            var answrs = pCookie;
+            if( isAnswrs ) setAnswrs( $res, answrs );
                  
-            // Если голосов нет в куках и опция плагина keep_logs включена, установим проверку
-            // голосования через запрос в БД по событию (наведение мышки на блок),
-            if( ! is_answrs && $the.attr('data-opt_logs') == 1 ){
+            // Если голосов нет в куках и опция плагина keep_logs включена,
+            // отправляем запрос в БД на проверку, по событию (наведение мышки на блок),
+            if( ! isAnswrs && $the.attr('data-opt_logs') == 1 ){
                 var tmout;
                 var notcheck = function(){ clearTimeout( tmout ); };
                 var check = function(){
@@ -263,7 +268,6 @@
                             },
                             function( answrs ){
                                 $forLoader.demUnsetLoader();
-//                    console.log( answrs );
                                 if( ! answrs ) return; // выходим если нет ответов
 
                                 $res.html( votedHTML ).demSetHeight().demSetClick();;

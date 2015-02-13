@@ -24,9 +24,9 @@
 </style>
 
 <div class="dem-lines">
-  <div class="rect1"></div>
-  <div class="rect2"></div>
-  <div class="rect3"></div>
-  <div class="rect4"></div>
-  <div class="rect5"></div>
+  <div class="rect1 css-fill"></div>
+  <div class="rect2 css-fill"></div>
+  <div class="rect3 css-fill"></div>
+  <div class="rect4 css-fill"></div>
+  <div class="rect5 css-fill"></div>
 </div>

@@ -21,5 +21,28 @@ jQuery(document).ready(function($){
 	
 	// дата
 	$('[name="dmc_end"]').datepicker({ dateFormat : 'dd-mm-yy' });
-	
+    
+    
+    // DESIGN
+    $('.dem-screen').height(function(){ return $(this).outerHeight(); } );
+    
+    $('[data-dem-act], .democracy a').click(function(e){ e.preventDefault(); }); // отменяем клики
+    
+    // предпросмотр
+    var $demLoader = $(document).find('.dem-loader').first(); // loader
+    $('.poll.show-loader .dem-screen').append( $demLoader.css('display','table') );
+    
+    // wpColorPicker
+    $('.iris_color').wpColorPicker();
+    
+    
+    var myOptions ={};
+    var $preview = $('.polls-preview');
+    myOptions.change = function(event, ui){
+        var hexcolor = $(this).wpColorPicker('color');
+        $preview.css('background-color', hexcolor );
+        console.log( hexcolor );
+    };
+	$('.preview-bg').wpColorPicker( myOptions );
+
 });

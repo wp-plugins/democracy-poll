@@ -1,11 +1,11 @@
 === Plugin Name ===
-Stable tag: 4.5.8
+Stable tag: 4.6.0
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Contributors: Tkama
-Tags: democracy, poll, polls, polling, vote, survey, opinion, research, usability
+Tags: democracy, poll, polls, polling, vote, survey, opinion, research, usability, cache
 Donate link: wp-kama.ru
 
 Adds an AJAX democratic polls to you site. Visitors can vote more than one answer & add ther own answers.
@@ -23,7 +23,9 @@ This plugin adds a clever and convenient system to create various Polls with dif
 * You can choose different design of a poll
 * and so on. See changelog
 
-It's very convenient plugin. I focus on "easy-admin" features & fast performance. So you will have:
+Democracy works with cache plugins like: WP Total Cache, WP Super Cache, WordFence, Quick Cache etc.
+
+I focus on "easy-admin" features & fast performance. So you will have:
 
 * Quick Edit button for Admin, right above a poll
 * Plugin menu in toolbar
@@ -126,22 +128,30 @@ Comming soon...
 
 == TODO ==
 * sorting on archive page
-* при закрытии ставить дату закрытия
 * limit multiple answers select
 * cron: shadule polls opening & activation
 * add link to the post in admin-polls-list if polls shortcode is used in post content
 
 
 == Changelog ==
+= 4.6.0 =
+* Added: Poll themes management
+* Fix: some JS and CSS bugs
+* Fix: Unactivate pool when closing poll 
+
+= 4.5.9 =
+* Fix: CSS fixes, prepare to 4.6.0 version update
+* Added: Cache working. Wright/check cookie "notVote" for cache gear optimisation
+
 = 4.5.8 =
 * Added: AJAX loader images SVG & css3 collection
-* Added: Autoset close-date when you close poll
+* Added: Sets close date when closing poll
 
 = 4.5.7 =
 * BugFix: revote button didn't minus votes if "keep-logs" option was disabled
-
+        
 = 4.5.6 =
-* Added: right working with cache plugins (wp total cache, wp super cache ...)
+* Added: right working with cache plugins. Auto unable/dasable with wp total cache, wp super cache, WordFence, WP Rocket, Quick Cache. If you use the other plugin you can foorce enable this option.
 * Added: add link to selected css file in settings page, to conviniently copy or view the css code
 * Added: php 5.3+ needed check & notice if php unsuitable
 * Changed: archive page ID in option, but not link to the archive page

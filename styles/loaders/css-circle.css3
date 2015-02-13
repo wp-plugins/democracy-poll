@@ -46,6 +46,6 @@
 }</style>
 
 <div class="dem-circle">
-  <div class="double-bounce1"></div>
-  <div class="double-bounce2"></div>
+  <div class="double-bounce1 css-fill"></div>
+  <div class="double-bounce2 css-fill"></div>
 </div>

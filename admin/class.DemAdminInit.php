@@ -15,10 +15,6 @@ class DemAdminInit extends Dem{
 		// TinyMCE кнопка WP2.5+
 		if( $this->opt['tinymce_button'] ) $this->tinymce_button();
 		
-		
-		// обновляем опции
-		if( isset( $_POST['dem_save_options'] ) )  $this->update_options();
-		if( isset( $_POST['dem_reset_options'] ) ) $this->update_options( true );
 	}
 	
 	// Страница плагина
@@ -26,53 +22,9 @@ class DemAdminInit extends Dem{
 		$hook_name = add_options_page(__('Опрос Democracy','dem'), __('Опрос Democracy','dem'), 'manage_options', basename( $this->dir_path ), array( $this, 'admin_page_output') );
 		add_action("load-$hook_name", array( $this, 'admin_page_load') );
 	}
-	
-	// предватирельная загрузка страницы настроек плагина, подключение стилей, скриптов, запросов и т.д.
-	function admin_page_load(){
-		// обновляем опции и БД плагина если нужно
-		dem_last_version_up();
-
-		// добавляем стили и скрипты
-		// datepicker
-		wp_enqueue_script('jquery-ui-datepicker');
-		wp_enqueue_style('jquery-ui');
-		wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css');
-		
-		// другие
-		wp_enqueue_script('democracy-scripts', $this->dir_url . 'admin/admin.js', array('jquery'), DEM_VER, true );
-		wp_enqueue_style('democracy-styles', $this->dir_url . 'admin/style.css', array(), DEM_VER );
-
-		## Обработка запросов
-		// запрос на создание страницы архива
-		if( isset( $_GET['dem_create_archive_page'] ) ) $this->dem_create_archive_page();
-		// запрос на создание страницы архива
-		if( isset( $_GET['dem_clear_log'] ) )       $this->clear_log();
-		// Add a poll
-		if( isset( $_POST['dmc_create_poll'] ) )    $this->create_poll();
-		// Edit a poll
-		if( isset( $_POST['dmc_update_poll'] ) )    $this->update_poll( $_POST['dmc_update_poll'] );
-		// delete a poll
-		if( isset( $_GET['delete_poll'] ) )         $this->delete_poll( $_GET['delete_poll'] );
-		// activates a poll
-		if( isset( $_GET['dmc_activate_poll'] ) )   $this->poll_activation( $_GET['dmc_activate_poll'], true );
-		// deactivates a poll
-		if( isset( $_GET['dmc_deactivate_poll'] ) ) $this->poll_activation( $_GET['dmc_deactivate_poll'], false );	
-		// close voting a poll
-		if( isset( $_GET['dmc_close_poll'] ) )      $this->poll_opening( $_GET['dmc_close_poll'], 0 );
-		// open voting a poll
-		if( isset( $_GET['dmc_open_poll'] ) )       $this->poll_opening( $_GET['dmc_open_poll'], 1 );		
-	}
-	
-	// Очищает таблицу логов
-	function clear_log(){
-		global $wpdb;
-		$wpdb->query("TRUNCATE TABLE $wpdb->democracy_log");
-		wp_redirect( remove_query_arg('dem_clear_log') );
-		exit;
-	}
-	
+    
 	// admin page html
-	function admin_page_output(){		
+	function admin_page_output(){	
 		if( @$_GET['message'] == 'created' ) $this->message[] = __('Новый опрос создан','dem');
 		
 		// сообщения
@@ -94,7 +46,178 @@ class DemAdminInit extends Dem{
 		
 		return $actions; 
 	}
+    
+	
+	// предватирельная загрузка страницы настроек плагина, подключение стилей, скриптов, запросов и т.д.
+	function admin_page_load(){
+		// обновляем опции и БД плагина если нужно
+		dem_last_version_up();
+
+		// добавляем стили и скрипты
+		// datepicker
+		wp_enqueue_script('jquery-ui-datepicker');
+		wp_enqueue_style('jquery-ui');
+		wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css');
 		
+        // Iris Color Picker 
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_style('wp-color-picker');
+
+		// другие
+		wp_enqueue_script('democracy-scripts', $this->dir_url . 'admin/admin.js', array('jquery'), DEM_VER, true );
+		wp_enqueue_style('democracy-styles', $this->dir_url . 'admin/style.css', array(), DEM_VER );
+
+		## Обработка запросов
+        $up = false;
+		// обновляем основные опции
+		if( isset( $_POST['dem_save_main_options'] ) )    $up = $this->update_options('main');
+        // сбрасываем основные опции
+		if( isset( $_POST['dem_reset_main_options'] ) )   $up = $this->update_options('main_default');
+		// обновляем опции дизайна
+		if( isset( $_POST['dem_save_design_options'] ) )  $up = $this->update_options('design');
+        // сбрасываем опции дизайна
+		if( isset( $_POST['dem_reset_design_options'] ) ) $up = $this->update_options('design_default');
+        
+        if( $up ){
+            // костыль, чтобы сразу применялся результат при отключении/включении перевода
+            if( ! $this->opt['load_textdomain'] ) unload_textdomain('dem'); else Dem::$inst->load_textdomain();
+            // костыль, чтобы сразу применялся результат при отключении/включении тулбара
+            $this->opt['toolbar_menu'] ? add_action('admin_bar_menu', array( $this, 'toolbar'), 99) : remove_action('admin_bar_menu', array( $this, 'toolbar'), 99);
+        }
+        
+		// запрос на создание страницы архива
+		if( isset( $_GET['dem_create_archive_page'] ) ) $this->dem_create_archive_page();
+		// запрос на создание страницы архива
+		if( isset( $_GET['dem_clear_log'] ) )       $this->clear_log();
+		// Add a poll
+		if( isset( $_POST['dmc_create_poll'] ) )    $this->create_poll();
+		// Edit a poll
+		if( isset( $_POST['dmc_update_poll'] ) )    $this->update_poll( $_POST['dmc_update_poll'] );
+		// delete a poll
+		if( isset( $_GET['delete_poll'] ) )         $this->delete_poll( $_GET['delete_poll'] );
+		// activates a poll
+		if( isset( $_GET['dmc_activate_poll'] ) )   $this->poll_activation( $_GET['dmc_activate_poll'], true );
+		// deactivates a poll
+		if( isset( $_GET['dmc_deactivate_poll'] ) ) $this->poll_activation( $_GET['dmc_deactivate_poll'], false );	
+		// close voting a poll
+		if( isset( $_GET['dmc_close_poll'] ) )      $this->poll_opening( $_GET['dmc_close_poll'], 0 );
+		// open voting a poll
+		if( isset( $_GET['dmc_open_poll'] ) )       $this->poll_opening( $_GET['dmc_open_poll'], 1 );		
+	}
+    
+    
+    
+    
+    ### опции плагина
+	/**
+	 * Обнолвяет опции. Если опция не передана, то на её место будет записано 0
+	 * @param bool $type Какие опции обновлять: default, main_default, design_default, main, design
+	 * @return none
+	 */
+	function update_options( $type ){
+		$def_opt = $this->default_options();
+
+        // полный сброс
+        if( $type == 'default' ){
+            $this->update_options('main_default');
+            $this->update_options('design_default');
+        }
+            
+        // сброс основных опций и опций дизайна
+        if( $type == 'main_default' || $type == 'design_default' ){
+            $_type = str_replace('_default', '', $type );
+            foreach( $def_opt[ $_type ] as $k => $value )
+                $this->opt[ $k ] = $value;
+        }
+        
+        // обновление опций
+		if( $type == 'main' || $type == 'design' ){			
+			foreach( $def_opt[ $type ] as $k => $v ){                    
+				$value = isset( $_POST['dem'][ $k ] ) ? stripslashes( $_POST['dem'][ $k ] ) : 0; // именно 0/null, а не $v для checkbox
+				$this->opt[ $k ] = $value;
+			}
+		}
+        
+        // обновление опцию css стилей
+        if( $type == 'design' || $type == 'design_default' ){
+            $this->update_democracy_css();
+        }
+		
+        $up = update_option( self::OPT_NAME, $this->opt ); 
+        
+		if( $up ) $this->message[] = __('Обновленно','dem');
+        
+        return $up;
+	}
+    
+	/**
+	 * Получает опции по умолчанию
+	 * @return Массив
+	 */
+	function default_options(){
+        $arr = array();
+        
+		$arr['main'] = array(
+			'inline_js_css'    => 0,   // встараивать стили и скрипты в HTML
+			'keep_logs'        => 1, // вести лог в БД
+			'graph_from_total' => 0,
+			'order_answers'    => 1,
+			'before_title'     => '<strong class="dem-poll-title">',
+			'after_title'      => '</strong>',
+			'force_cachegear'  => 0,
+			'archive_page_id'  => 0,
+			'use_widget'       => 1,
+			'toolbar_menu'     => 1,
+			'tinymce_button'   => 1,
+			'load_textdomain'  => 1,
+			'show_copyright'   => 1,
+			'only_for_users'   => 0,			
+			'disable_js'       => 0,   // Дебаг: отключает JS
+			'cookie_days'      => 365, // Дебаг
+		);
+        
+        $arr['design'] = array(
+			'loader_fname'  => 'css-roller.css3',			
+			'css_file_name' => 'default.css', // название файла стилей который будет использоваться для опроса.
+			'css_button'    => 'default.css',
+			'loader_fill'   => '',
+            // colors
+			'dem_fill'      => '',
+			'dem_fill_voted'   => '',
+			'btn_bg_color'   => '',
+			'btn_color'   => '',
+			'btn_border_color'   => '',
+			'btn_hov_bg'   => '',
+			'btn_hov_color'   => '',
+			'btn_hov_border_color'   => '',
+        );
+        
+        return $arr;
+	}	
+
+    
+    
+    
+    /**
+     * Получает существующие полные css файлы из каталога плагина
+     * @return Возвращает массив имен (путей) к файлам
+     */
+    function _get_styles_files(){
+        $arr = array();
+        
+        foreach( glob( Dem::$inst->dir_path . 'styles/*.css' ) as $file ){
+            if( preg_match('~\.min|^_~', basename( $file ) ) ) continue;
+            
+            $arr[] = $file;
+        }
+        
+        return $arr;
+    }
+    
+    
+    
+    
+	### обработка запросов с вязанных с управлением опросами
 	/**
 	 * Конвертирует дату в UNIX time
 	 * @param (str) $date Дата в формате dd-mm-yyyy
@@ -132,8 +255,14 @@ class DemAdminInit extends Dem{
 		
 		$new_data = array( 'open' => $open );
 		
-		if( $open ) $new_data['end'] = 0; // удаляем дату окончания при открытии голосования
-        else        $new_data['end'] = current_time('timestamp') - 10; // ставим дату закрытия опроса
+        // удаляем дату окончания при открытии голосования
+		if( $open )
+            $new_data['end'] = 0;
+        // ставим дату при закрытии опроса и деактивируем опрос
+        else{
+            $new_data['end'] = current_time('timestamp') - 10;
+            $this->poll_activation( $poll_id, false );
+        }
 		
 		if( $wpdb->update( $wpdb->democracy_q, $new_data, array( 'id'=>$id ) ) )
 			$this->message[] = $open ? __('Опрос открыт','dem') : __('Опрос закрыт','dem');
@@ -258,6 +387,119 @@ class DemAdminInit extends Dem{
 		
 	}
 	
+    
+    
+    #### работа с css
+    /**
+     * Обновляет опцию "democracy_css".
+     * @param [in|out] type parameter_name Parameter description.
+     * @param [in|out] type parameter_name Parameter description.
+     * @return Description of returned value.
+     */
+    function update_democracy_css(){
+        $def_opt = $this->default_options();
+        
+        $additional = stripslashes( @$_POST['additional_css'] );
+        if( $additional ) $additional = "\n/* additional */\n" . $additional;
+        $full_css = $this->collect_base_css() . $additional;
+        
+        $opt_value = array(
+            'full'           => $full_css,
+            'minify'         => $this->cssmin( $full_css ),
+            'additional_css' => $additional,
+        );
+
+        update_option('democracy_css', $opt_value );        
+    }
+    
+    /**
+     * Собирает базовые стили
+     * @return css код стилей.
+     */
+    function collect_base_css(){
+        $stylepath  = $this->dir_path . 'styles/';
+        
+        $out = '';
+        
+        $base      = $this->opt['css_file_name'];
+        $button    = $this->opt['css_button'];
+        $loader    = $this->opt['loader_fill'];
+        
+        $out .= $base ? $this->parce_cssimport( $stylepath . $base ) : '';
+        $out .= $button ? "\n".file_get_contents( $stylepath .'buttons/'. $button ) : '';
+        if( $loader ){
+            $out .= "\n.dem-loader .fill{ fill: $loader !important; }\n";
+            $out .= ".dem-loader .css-fill{ background-color: $loader !important; }\n";
+            $out .= ".dem-loader .stroke{ stroke: $loader !important; }\n";
+        }
+        
+        // progress line
+        $dfill     = $this->opt['dem_fill'];
+        $dfillThis = $this->opt['dem_fill_voted'];
+        
+        if( $dfill ) $out .= "\n.dem-fill{ background-color: $dfill !important; }\n";
+        if( $dfillThis ) $out .= ".dem-voted-this .dem-fill{ background-color:$dfillThis !important; }\n";
+        
+        if( $button ){
+            // button
+            $bbackground = $this->opt['btn_bg_color'];
+            $bcolor = $this->opt['btn_color'];
+            $bbcolor = $this->opt['btn_border_color'];
+            // hover
+            $bh_bg = $this->opt['btn_hov_bg'];
+            $bh_color = $this->opt['btn_hov_color'];
+            $bh_bcolor = $this->opt['btn_hov_border_color'];
+
+            if( $bbackground ) $out .= "\n.dem-button{ background-color:$bbackground !important; }\n";
+            if( $bcolor )  $out .= ".dem-button{ color:$bcolor !important; }\n";
+            if( $bbcolor ) $out .= ".dem-button{ border-color:$bbcolor !important; }\n";
+
+            if( $bh_bg ) $out .= "\n.dem-button:hover{ background-color:$bh_bg !important; }\n";
+            if( $bh_color )  $out .= ".dem-button:hover{ color:$bh_color !important; }\n";
+            if( $bh_bcolor ) $out .= ".dem-button:hover{ border-color:$bh_bcolor !important; }\n";
+        }
+                    
+        return $out;
+    }
+
+    /**
+     * Сжимает css YUICompressor
+     * @param str $input_css КОД css
+     * @return str min css.
+     * $minicss = Dem::$inst->cssmin( file_get_contents( Dem::$inst->dir_url . 'styles/' . Dem::$inst->opt['css_file_name'] ) );
+     */
+    function cssmin( $input_css ){
+        require_once $this->dir_path . 'admin/cssmin.php';
+        
+        $compressor = new CSSmin();
+
+        // Override any PHP configuration options before calling run() (optional)
+        // $compressor->set_memory_limit('256M');
+        // $compressor->set_max_execution_time(120);
+
+        return $compressor->run( $input_css );
+    }
+    
+    /**
+     * Импортирует @import в css
+     * @param str $css_filepath Путь к вайлу css который нужно оработать.
+     * @return Возвращает полный код с импортируемыми данными
+     */
+    function parce_cssimport( $css_filepath ){
+        $filecode = file_get_contents( $css_filepath );
+        
+        $filecode = preg_replace_callback('~@import [\'"](.*?)[\'"]~', function( $m ) use ( $css_filepath ){
+            return file_get_contents( dirname( $css_filepath ) . '/' . $m[1] );
+        }, $filecode );
+
+        return $filecode;
+    }
+    
+
+    
+    
+    
+    ## others
 	// tinymce кнопка
 	function tinymce_button(){	
 		add_filter('mce_external_plugins', array($this, 'tinymce_plugin') ) ;
@@ -283,24 +525,7 @@ class DemAdminInit extends Dem{
 		return $mce_l10n + $l10n;
 	}
 	
-    /**
-     * Сжимает css YUICompressor
-     * @param str $input_css КОД css
-     * @return str min css.
-     * $minicss = Dem::$inst->cssmin( file_get_contents( Dem::$inst->dir_url . 'styles/' . Dem::$inst->opt['css_file_name'] ) );
-     */
-    function cssmin( $input_css ){
-        require_once $this->dir_path . 'admin/cssmin.php';
-        
-        $compressor = new CSSmin();
-
-        // Override any PHP configuration options before calling run() (optional)
-        // $compressor->set_memory_limit('256M');
-        // $compressor->set_max_execution_time(120);
-
-        return $compressor->run( $input_css );
-    }
-
+    
     /**
 	 * Создает страницу архива. Сохраняет УРЛ созданой страницы в опции плагина. Перед созданием проверят нет ли уже такой страницы.
 	 * Возвращает УРЛ созданной страницы или false
@@ -331,4 +556,13 @@ class DemAdminInit extends Dem{
 
 		wp_redirect( remove_query_arg('dem_create_archive_page') );
 	}
+    
+	// Очищает таблицу логов
+	function clear_log(){
+		global $wpdb;
+		$wpdb->query("TRUNCATE TABLE $wpdb->democracy_log");
+		wp_redirect( remove_query_arg('dem_clear_log') );
+		exit;
+	}
+	
 }

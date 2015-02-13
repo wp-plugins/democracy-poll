@@ -8,6 +8,7 @@ $wpdb->query("DROP TABLE {$table_prefix}democracy_q, {$table_prefix}democracy_a,
 delete_option('widget_democracy');
 delete_option('democracy_options');
 delete_option('democracy_version');
+delete_option('democracy_css');
 
 delete_transient('democracy_referer', '', 2 );
 

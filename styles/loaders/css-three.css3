@@ -46,7 +46,7 @@
 </style>
 
 <div class="dem-three">
-  <div class="bounce1"></div>
-  <div class="bounce2"></div>
-  <div class="bounce3"></div>
+  <div class="bounce1 css-fill"></div>
+  <div class="bounce2 css-fill"></div>
+  <div class="bounce3 css-fill"></div>
 </div>
