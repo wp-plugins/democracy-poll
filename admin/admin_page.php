@@ -59,11 +59,11 @@ function dem_polls_design(){
         $answers = wp_list_pluck( $poll->poll->answers, 'aid');
         $poll->votedFor = $answers[ array_rand($answers) ];
 
-        echo '<div class="poll"><p class="tit">'. __('Вид результатов:') .'</p>'. $poll->get_screen('voted') .'</div>';
+        echo '<div class="poll"><p class="tit">'. __('Вид результатов:','dem') .'</p>'. $poll->get_screen('voted') .'</div>';
         
-        echo '<div class="poll"><p class="tit">'. __('Вид голосования:') .'</p>'. $poll->get_screen('force_vote') .'</div>';
+        echo '<div class="poll"><p class="tit">'. __('Вид голосования:','dem') .'</p>'. $poll->get_screen('force_vote') .'</div>';
     
-        echo '<div class="poll show-loader"><p class="tit">'. __('Вид AJAX загрузчика:') .'</p>'. $poll->get_screen('vote') .'</div>';
+        echo '<div class="poll show-loader"><p class="tit">'. __('Вид AJAX загрузчика:','dem') .'</p>'. $poll->get_screen('vote') .'</div>';
         ?>
         <input type="text" class="iris_color preview-bg">
     </div>

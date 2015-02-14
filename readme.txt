@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.6.0
+Stable tag: 4.6.1
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -120,7 +120,15 @@ Comming soon...
 
 
 == Screenshots ==
-Comming soon...
+
+1. Single vote view.
+2. Single result view.
+3. Multiple vote view.
+4. Admin polls list page. For convenience there is add poll form.
+5. Admin edit poll page.
+6. Add poll admin page.
+7. Democracy general settings.
+8. Polls theme settings.
 
 
 
@@ -134,6 +142,10 @@ Comming soon...
 
 
 == Changelog ==
+= 4.6.1 =
+* Fix: some little changes about themes settings, translate, css.
+* Added screenshots to WP directory.
+
 = 4.6.0 =
 * Added: Poll themes management
 * Fix: some JS and CSS bugs

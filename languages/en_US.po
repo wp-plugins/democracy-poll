@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Democracy\n"
-"POT-Creation-Date: 2015-02-14 04:32+0500\n"
-"PO-Revision-Date: 2015-02-14 04:33+0500\n"
+"POT-Creation-Date: 2015-02-14 20:19+0500\n"
+"PO-Revision-Date: 2015-02-14 21:12+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -551,19 +551,19 @@ msgstr "Poll Deactivated"
 msgid "Опрос обновлён"
 msgstr "Poll Updated"
 
-#: admin/class.DemAdminInit.php:519
+#: admin/class.DemAdminInit.php:518
 msgid "Вставка Опроса Democracy"
 msgstr "Insert Poll of Democracy"
 
-#: admin/class.DemAdminInit.php:520
+#: admin/class.DemAdminInit.php:519
 msgid "Введите ID опроса"
 msgstr "Insert Poll ID"
 
-#: admin/class.DemAdminInit.php:521
+#: admin/class.DemAdminInit.php:520
 msgid "Ошибка: ID - это число. Введите ID еще раз"
 msgstr "Error: ID is a integer. Enter ID again, please."
 
-#: admin/class.DemAdminInit.php:543 class.DemPoll.php:265
+#: admin/class.DemAdminInit.php:542 class.DemPoll.php:265
 msgid "Архив опросов"
 msgstr "Polls Archive"
 
