@@ -30,10 +30,10 @@ ul.dem-answers, ul.dem-vote{ padding:0; margin-bottom:1em; }
 .dem-copyright{ position:absolute; bottom: -1em; right: -1.2em; text-decoration:none; color:#b2b2b2!important; opacity:0.7; line-height:1; }
 .dem-copyright:hover{ opacity:1; }
 
-.dem-add-answer{ position:relative; box-sizing: border-box; }
+.dem-add-answer{ position:relative; }
 .dem-add-answer > *{ display: block; }
 .dem-add-answer a{ display: inline-block; margin-top:0.5em; }
-.dem-add-answer-txt{ width:100%; }
+.dem-add-answer-txt{ width:100%; box-sizing: border-box; }
 .dem-add-answer-close{ position: absolute; right:0; padding:0 .7em; cursor: pointer; color:#333; }
 .dem-add-answer-close:hover{ color:#ff2700; }
 
