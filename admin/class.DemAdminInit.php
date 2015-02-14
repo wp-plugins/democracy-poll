@@ -400,8 +400,7 @@ class DemAdminInit extends Dem{
         $def_opt = $this->default_options();
         
         $additional = stripslashes( @$_POST['additional_css'] );
-        if( $additional ) $additional = "\n/* additional */\n" . $additional;
-        $full_css = $this->collect_base_css() . $additional;
+        $full_css = $this->collect_base_css() . "\n/* additional */\n" . $additional;
         
         $opt_value = array(
             'full'           => $full_css,
