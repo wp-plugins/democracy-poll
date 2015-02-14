@@ -91,21 +91,25 @@ Needs PHP 5.3 and above.
 2. Add such code in place you want Poll is appeared:
 
 ~~~
-<?php if( function_exists('democracy_poll') ){ ?>
-	<li>
-		<h2>Polls</h2>
-		<ul>
-			<li><?php democracy_poll();?></li>
-		</ul>
-	</li>
-<?php } ?>
+
+&lt;?php if( function_exists('democracy_poll') ){ ?&gt;
+	&lt;li&gt;
+		&lt;h2&gt;Polls&lt;/h2&gt;
+		&lt;ul&gt;
+			&lt;li&gt;&lt;?php democracy_poll();?&gt;&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/li&gt;
+&lt;?php } ?&gt;
+
 ~~~
 
 #### Display Archive ####
 For displaing archive polls use function:
 
 ~~~
-<?php democracy_archives( $hide_active, $before_title, $after_title ); ?>
+
+&lt;?php democracy_archives( $hide_active, $before_title, $after_title ); ?&gt;
+
 ~~~
 
 
