@@ -2,10 +2,6 @@
 input[type="submit"].dem-button,
 a.dem-button,
 .dem-button{
-    text-decoration: none; user-select: none; outline: none; line-height: 1; border:0;
-    
-    position: relative;
-  display: inline-block;
     padding:1em 1em;
   border-radius:100%;
   background: rgb(28,107,114) radial-gradient(150% 100% at 50% 5px, rgba(255,255,255,.2), rgba(0,0,0,0));

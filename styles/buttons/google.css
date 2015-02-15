@@ -2,9 +2,6 @@
 input[type="submit"].dem-button,
 a.dem-button,
 .dem-button{
-    text-decoration: none; user-select: none; outline: none; line-height: 1; border:0;
-
-    display: inline-block;
     font-family: arial,sans-serif;
     font-size:90%;
     font-weight: bold;

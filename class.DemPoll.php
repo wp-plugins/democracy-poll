@@ -221,7 +221,7 @@ class DemPoll {
 				
 				$li_class = ' class="'. ( $is_winner ? 'dem-winner':'' ) . ( $is_voted_this ? " $voted_class":'' ) .'"';
 				$sup = $answer->added_by ? ' <sup class="dem-star" title="'. __('Ответ добавлен посетителем','dem') .'">*</sup>' : '';
-				$percent = ( $votes > 0) ? round($votes / $total * 100) : 0;
+				$percent = ( $votes > 0 ) ? round($votes / $total * 100) : 0;
 				
 				$percent_txt = sprintf( __("%s%% от всех голосов",'dem'), $percent );
 				$title       = ( $is_voted_this ? $voted_txt : '' ) . ' '. $percent_txt;
@@ -234,16 +234,15 @@ class DemPoll {
 				$votes_txt = $sclonenie( $votes, array(__('голос','dem'),__('голоса','dem'),__('голосов','dem')) );
 
 				$___ .= '<li'. $li_class . $title .' data-aid="'. $answer->aid .'">';
-					$label_perc_txt = ' <span class="dem-label-percent-txt">'. $percent .'%, '. $votes_txt .'</span>';
-					$___ .= '<div class="label">'. $word . $sup . $label_perc_txt .'</div>';
-
-
-					$graph_percent = ( ! Dem::$inst->opt['graph_from_total'] && $percent != 0 ) ? round( $votes / $max * 100 ) : $percent;
-
-					
-					$percent_txt = "<div class='dem-percent-text'>". $percent_txt ."</div>";
-					$votes_txt   = "<div class='dem-votes-text'>$votes_txt <span class='dem-votes-text-percent'>". $percent ."%</span></div>";
-					if( $votes == 0 ){ $votes_txt = $percent_txt = ''; }
+                    $novoted_class = ( $votes == 0 ) ? ' dem-novoted' : '';
+					$label_perc_txt = ' <span class="dem-label-percent-txt'. $novoted_class .'">'. $percent .'%, '. $votes_txt .'</span>';
+					$percent_txt = '<div class="dem-percent-txt'. $novoted_class .'">'. $percent_txt .'</div>';
+                    $percent_txt_inline = ( $percent > 0 ) ? ' <span class="dem-votes-txt-percent">'. $percent .'%</span>' : '';
+					$votes_txt   = '<div class="dem-votes-txt'. $novoted_class .'">'. $votes_txt . $percent_txt_inline . '</div>';
+					                
+                    $___ .= '<div class="label">'. $word . $sup . $label_perc_txt .'</div>';
+				
+                    $graph_percent = ( ! Dem::$inst->opt['graph_from_total'] && $percent != 0 ) ? round( $votes / $max * 100 ) : $percent;
 					
 					$___ .= '<div class="dem-graph">';
 						$___ .= "<div class='dem-fill' style='width:{$graph_percent}%;'></div>";

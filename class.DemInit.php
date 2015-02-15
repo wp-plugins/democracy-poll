@@ -257,9 +257,8 @@ class Dem {
 		
         $demcss = get_option('democracy_css');
         $minify = @$demcss['minify'];
-//		$css_name = $this->opt['css_file_name'];
 		
-		if( ! $minify || ! $this->opt['css_file_name'] ) return;
+		if( ! $minify ) return;
 					
 		// пробуем подключить сжатые версии файлов		
 //		$css_name = rtrim( $css_name, '.css');

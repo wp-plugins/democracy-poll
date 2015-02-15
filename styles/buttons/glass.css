@@ -2,10 +2,6 @@
 input[type="submit"].dem-button,
 a.dem-button,
 .dem-button{
-    text-decoration: none; user-select: none; outline: none; line-height: 1; border:0;
-    
-  position: relative;
-  display: inline-block;
   color: #777674;
   font-weight: bold;
   text-shadow: rgba(255,255,255,.5) 1px 1px, rgba(100,100,100,.3) 3px 7px 3px;

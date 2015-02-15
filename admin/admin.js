@@ -44,5 +44,35 @@ jQuery(document).ready(function($){
         console.log( hexcolor );
     };
 	$('.preview-bg').wpColorPicker( myOptions );
+    
+    
+    // ACE
+    var $textarea = $('[name="additional_css"]').hide();
+    var aceEl = $('<pre style="font-size:100%;"></pre>');
+    $textarea.before( aceEl );
+    
+    var editor = ace.edit( aceEl[0] );
+    editor.setOptions({ maxLines: 'Infinity' } );
+    editor.setOption("minLines", 10);
+//    editor.getSession().setUseWrapMode( true );
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/css");
+    editor.getSession().setValue( $textarea.val() );
 
+    // set textarea value on change
+    var settxval = function(){ $textarea.val( editor.getSession().getValue() ); };
+    $textarea.closest('form').submit( settxval );
+    editor.getSession().on('change', settxval);  
+    
 });
+
+
+
+
+
+
+
+
+
+
+

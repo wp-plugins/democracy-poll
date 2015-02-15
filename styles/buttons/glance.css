@@ -2,16 +2,11 @@
 input[type="submit"].dem-button,
 a.dem-button,
 .dem-button{
-    text-decoration: none; user-select: none; outline: none; line-height: 1; border:0;
-    
-  position: relative;
-  display: inline-block;
     padding:.5em 1em;
   vertical-align: middle;
   text-align: center;
   text-shadow: 0 -1px 1px #777;
   color: #fff;
-  outline: none;
   border: 2px solid #F64C2B;
   border-radius: 5px;
   box-shadow: 0 0 0 60px rgba(0,0,0,0) inset, .1em .1em .2em #800;

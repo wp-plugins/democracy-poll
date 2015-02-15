@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.6.1
+Stable tag: 4.6.2
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -143,9 +143,14 @@ Comming soon...
 * limit multiple answers select
 * cron: shadule polls opening & activation
 * add link to the post in admin-polls-list if polls shortcode is used in post content
+* install "Ace" code editor for additional css styles edit
 
 
 == Changelog ==
+= 4.6.2 =
+* Fix: great changes about polls themes and css structure.
+* Added: Ace css editor. Now you can easely write your own themes by editing css in admin.
+
 = 4.6.1 =
 * Fix: some little changes about themes settings, translate, css.
 * Added screenshots to WP directory.

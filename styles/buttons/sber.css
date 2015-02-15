@@ -2,9 +2,6 @@
 input[type="submit"].dem-button,
 a.dem-button,
 .dem-button{
-    text-decoration: none; user-select: none; outline: none; line-height: 1; border:0;
-
-    display: inline-block;
   color: white;
   padding: .5em 2em;
   border-width: 2px 0;

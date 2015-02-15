@@ -64,7 +64,8 @@ class DemAdminInit extends Dem{
         wp_enqueue_style('wp-color-picker');
 
 		// другие
-		wp_enqueue_script('democracy-scripts', $this->dir_url . 'admin/admin.js', array('jquery'), DEM_VER, true );
+		wp_enqueue_script('ace', $this->dir_url . 'admin/ace/src-min-noconflict/ace.js', array(), DEM_VER, true );
+		wp_enqueue_script('democracy-scripts', $this->dir_url . 'admin/admin.js', array('jquery','ace'), DEM_VER, true );
 		wp_enqueue_style('democracy-styles', $this->dir_url . 'admin/style.css', array(), DEM_VER );
 
 		## Обработка запросов
@@ -178,18 +179,22 @@ class DemAdminInit extends Dem{
         
         $arr['design'] = array(
 			'loader_fname'  => 'css-roller.css3',			
-			'css_file_name' => 'default.css', // название файла стилей который будет использоваться для опроса.
-			'css_button'    => 'default.css',
+			'css_file_name' => 'alternate.css', // название файла стилей который будет использоваться для опроса.
+			'css_button'    => 'flat.css',
 			'loader_fill'   => '',
-            // colors
-			'dem_fill'      => '',
-			'dem_fill_voted'   => '',
-			'btn_bg_color'   => '',
-			'btn_color'   => '',
-			'btn_border_color'   => '',
-			'btn_hov_bg'   => '',
-			'btn_hov_color'   => '',
-			'btn_hov_border_color'   => '',
+            // progress
+            'line_bg'         => '',
+            'line_fill'       => '',
+            'line_height'   => '',
+            'line_fill_voted' => '',
+
+            // button
+			'btn_bg_color'         => '',
+			'btn_color'            => '',
+			'btn_border_color'     => '',
+			'btn_hov_bg'           => '',
+			'btn_hov_color'        => '',
+			'btn_hov_border_color' => '',
         );
         
         return $arr;
@@ -400,12 +405,14 @@ class DemAdminInit extends Dem{
         $def_opt = $this->default_options();
         
         $additional = stripslashes( @$_POST['additional_css'] );
-        $full_css = $this->collect_base_css() . "\n/* additional */\n" . $additional;
+        $base  =  $this->collect_base_css();
+        
+        $full_css = $base ? ($this->collect_base_css() . "\n\n\n/*\n---------------------------------------------------------------------\n custom styles\n--------------------------------------------------------------------- \n*/\n" . $additional) : ''; // если полных стилей нет, то не будем записывать в базу опцию full
         
         $opt_value = array(
             'full'           => $full_css,
-            'minify'         => $this->cssmin( $full_css ),
             'additional_css' => $additional,
+            'minify'         => $this->cssmin( $full_css ), // рабочий элемент, в html добавляется только он
         );
 
         update_option('democracy_css', $opt_value );        
@@ -416,15 +423,17 @@ class DemAdminInit extends Dem{
      * @return css код стилей.
      */
     function collect_base_css(){
-        $stylepath  = $this->dir_path . 'styles/';
+        $base = $this->opt['css_file_name'];
         
-        $out = '';
+        if( ! $base ) return; // выходим если не указан шаблон, тут будут использвоаться дополнитлеьные стили
         
-        $base      = $this->opt['css_file_name'];
         $button    = $this->opt['css_button'];
         $loader    = $this->opt['loader_fill'];
         
-        $out .= $base ? $this->parce_cssimport( $stylepath . $base ) : '';
+        $out = '';
+        $stylepath  = $this->dir_path . 'styles/';
+        
+        $out .= $this->parce_cssimport( $stylepath . $base );
         $out .= $button ? "\n".file_get_contents( $stylepath .'buttons/'. $button ) : '';
         if( $loader ){
             $out .= "\n.dem-loader .fill{ fill: $loader !important; }\n";
@@ -433,11 +442,15 @@ class DemAdminInit extends Dem{
         }
         
         // progress line
-        $dfill     = $this->opt['dem_fill'];
-        $dfillThis = $this->opt['dem_fill_voted'];
+        $d_bg       = $this->opt['line_bg'];
+        $d_fill     = $this->opt['line_fill'];
+        $d_height   = $this->opt['line_height'];
+        $d_fillThis = $this->opt['line_fill_voted'];
         
-        if( $dfill ) $out .= "\n.dem-fill{ background-color: $dfill !important; }\n";
-        if( $dfillThis ) $out .= ".dem-voted-this .dem-fill{ background-color:$dfillThis !important; }\n";
+        if( $d_bg )       $out .= "\n.dem-graph{ background: $d_bg !important; }\n";
+        if( $d_fill )     $out .= "\n.dem-fill{ background-color: $d_fill !important; }\n";
+        if( $d_fillThis ) $out .= ".dem-voted-this .dem-fill{ background-color:$d_fillThis !important; }\n";
+        if( $d_height )   $out .= ".dem-graph{ height:{$d_height}px; line-height:{$d_height}px; }\n";
         
         if( $button ){
             // button
@@ -480,6 +493,17 @@ class DemAdminInit extends Dem{
     }
     
     /**
+     * Сжимает css YUICompressor
+     * @param str $input_css КОД css
+     * @return str min css.
+     * $minicss = Dem::$inst->cssmin( file_get_contents( Dem::$inst->dir_url . 'styles/' . Dem::$inst->opt['css_file_name'] ) );
+     */
+    function csstidymin( $input_css ){
+
+        return $compressor->run( $input_css );
+    }
+    
+    /**
      * Импортирует @import в css
      * @param str $css_filepath Путь к вайлу css который нужно оработать.
      * @return Возвращает полный код с импортируемыми данными
@@ -487,7 +511,7 @@ class DemAdminInit extends Dem{
     function parce_cssimport( $css_filepath ){
         $filecode = file_get_contents( $css_filepath );
         
-        $filecode = preg_replace_callback('~@import [\'"](.*?)[\'"]~', function( $m ) use ( $css_filepath ){
+        $filecode = preg_replace_callback('~@import [\'"](.*?)[\'"];~', function( $m ) use ( $css_filepath ){
             return file_get_contents( dirname( $css_filepath ) . '/' . $m[1] );
         }, $filecode );
 

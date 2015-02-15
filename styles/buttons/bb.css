@@ -1,9 +1,7 @@
 /* button */
 input[type="submit"].dem-button,
 a.dem-button,
-.dem-button{
-    text-decoration: none; user-select: none; outline: none; line-height: 1; border:0;
-    
+.dem-button{    
   font-weight: 700;
   color: white;
   padding: .8em 1em calc(.8em + 3px);
