@@ -38,7 +38,7 @@ ul.dem-answers li{ padding-bottom:1em; }
 .dem-voted-this .dem-fill{ background-color:#FFC45A; }
 
 .dem-votes-txt,
-.dem-percent-txt{ position:relative; display:table-cell; vertical-align: middle; margin-left:.3em; font-size:90%; }
+.dem-percent-txt{ position:relative; display:table-cell; vertical-align: middle; font-size:90%; }
 .dem-novoted{ display:none; }
 
 /* dem-result-bottom */
@@ -73,7 +73,7 @@ ul.dem-answers li{ padding-bottom:1em; }
 .dem-add-answer-close{ position: absolute; right:0; padding:0 .7em; cursor: pointer; color:#333; }
 .dem-add-answer-close:hover{ color:#ff2700; }
 
-.dem-edit-link{ display: block; position:absolute; top:0; right:0; line-height:1; text-decoration:!important; border:none!important; }
+.dem-edit-link{ display: block; position:absolute; top:0; right:0; line-height:1; text-decoration:none !important; border:none !important; }
 .dem-edit-link svg{ width:1.2em!important; fill:#5a5a5a; }
 .dem-edit-link:hover svg{ fill:#c61700; }
 

@@ -166,6 +166,8 @@ function dem_polls_design(){
                 <div class="clear"></div>
                 <p><?php _dem_design_submit_button() ?></p>
                 
+            <?php } // if( $opt['css_file_name'] ) ?>
+                
                 <li class="block loaders">
                     <h3><?php _e('AJAX загрузчик:','dem'); ?></h3>
                     
@@ -213,7 +215,8 @@ function dem_polls_design(){
                     <?php _dem_design_submit_button() ?>
                 </li>
                 
-            <?php } // if( $opt['css_file_name'] ) ?>
+                <input type="submit" name="dem_reset_design_options" class="button" value="<?php _e('Сбросить настройки на начальные','dem') ?>" />
+                
 
                 
                 <li class="block" style="width:98%;">
@@ -228,7 +231,6 @@ function dem_polls_design(){
                 
                 <p>
                     <?php _dem_design_submit_button() ?>
-                    <input type="submit" name="dem_reset_design_options" class="button" value="<?php _e('Сбросить настройки на начальные','dem') ?>" />
                 </p>
                 
                 
@@ -236,7 +238,7 @@ function dem_polls_design(){
                     <h3><?php _e('Все CSS стили, которые используются сейчас:','dem'); ?></h3>
                      
                     <script>function select_kdfgu( that ){ var sel = (!!document.getSelection) ? document.getSelection() : (!!window.getSelection)   ? window.getSelection() : document.selection.createRange().text; if( sel == '' ) that.select(); }</script>
-                    <em style="opacity: 0.8;"><?php _e('Скопируйте этот код в файл стилей вашей темы и отключите подключение стилей в опции "База стилей (тема):".','dem') ?></em>
+                    <em style="opacity: 0.8;"><?php _e('Это все собранные css стили: тема, кнопка и другие настройки. Вы можете скопировать эти стили в поле "Произвольные/Дополнительные CSS стили:", отключить тему и изменить стили как вам нужно.','dem') ?></em>
                     <textarea onmouseup="select_kdfgu(this);" onfocus="this.style.height = '700px';" onblur="this.style.height = '100px';" readonly="true" style="width:100%;min-height:100px;"><?php echo $demcss['full'] ?></textarea>
                     
                     <p><?php _e('Сжатая версия (используется при подключении в HTML):','dem'); ?></p>

@@ -405,22 +405,22 @@ class DemAdminInit extends Dem{
         $def_opt = $this->default_options();
         
         $additional = stripslashes( @$_POST['additional_css'] );
-        $base  =  $this->collect_base_css();
+        $base  =  $this->collect_base_css(); // если нет то тема отключена
         
         $full_css = $base ? ($this->collect_base_css() . "\n\n\n/*\n---------------------------------------------------------------------\n custom styles\n--------------------------------------------------------------------- \n*/\n" . $additional) : ''; // если полных стилей нет, то не будем записывать в базу опцию full
         
         $opt_value = array(
             'full'           => $full_css,
             'additional_css' => $additional,
-            'minify'         => $this->cssmin( $full_css ), // рабочий элемент, в html добавляется только он
+            'minify'         => $this->cssmin( $full_css ?: $additional ), // рабочий элемент, в html добавляется только он
         );
 
         update_option('democracy_css', $opt_value );        
     }
     
     /**
-     * Собирает базовые стили
-     * @return css код стилей.
+     * Собирает базовые стили.
+     * @return css код стилей. Пусто, если шаблон отключен.
      */
     function collect_base_css(){
         $base = $this->opt['css_file_name'];
