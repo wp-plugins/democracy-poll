@@ -27,7 +27,7 @@ input[type="submit"].dem-button:focus, a.dem-button:focus, .dem-button:focus{
 .dem-screen{ position:relative; line-height: 1.3; }
 
 ul.dem-vote li{ padding-bottom:0; }
-.dem-vote label{ padding-bottom:1em; } /* to comfort hover */
+.dem-vote label{ padding-bottom:.6em; } /* to comfort hover */
 ul.dem-answers li{ padding-bottom:1em; }
 .dem-answers .label{ margin-bottom:.2em; line-height: 1.2; }
 
