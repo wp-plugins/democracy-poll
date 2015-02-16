@@ -38,7 +38,7 @@ ul.dem-answers li{ padding-bottom:1em; }
 .dem-voted-this .dem-fill{ background-color:#FFC45A; }
 
 .dem-votes-txt,
-.dem-percent-txt{ position:relative; display:table-cell; vertical-align: middle; font-size:90%; }
+.dem-percent-txt{ position:relative; display:table-cell; padding-left:.3em; vertical-align: middle; font-size:90%; }
 .dem-novoted{ display:none; }
 
 /* dem-result-bottom */
