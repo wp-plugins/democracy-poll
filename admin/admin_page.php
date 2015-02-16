@@ -223,7 +223,8 @@ function dem_polls_design(){
                     <h3><?php _e('Произвольные/Дополнительные CSS стили:','dem') ?></h3>
                     
                     <label><input type="radio" name="dem[css_file_name]" value="" <?php checked( $opt['css_file_name'], '') ?> ><?php _e('Не исползовать тему!','dem') ?></label>                    
-                    <p><i><?php _e('В этом поле вы можете дополнить или заменить css стили. Впишите сюда произвольные css стили и они будут добавлены винзу стилей текущей темы. Чтобы полностью заменить тему отметте "Не использовать тему" и впишите сюда свои стили. Это поле очищается только вручную, если сбросить стили или другую тему, то данные в этом поле остануться неизменны и просто будут добавлены к стилям текущей темы.','dem') ?></i></p>
+                    <p><i><?php _e('В этом поле вы можете дополнить или заменить css стили. Впишите сюда произвольные css стили и они будут добавлены винзу стилей текущей темы. Чтобы полностью заменить тему отметте "Не использовать тему" и впишите сюда свои стили.<br>
+                    Это поле очищается вручную, если сбросить стили или поставить другую тему, данные в этом поле сохраняться и просто будут добавлены внизу текущих css стилей.','dem') ?></i></p>
                     <textarea name="additional_css" style="width:100%;min-height:50px;height:<?php echo $additional ? '300px' : '50px' ?>;"><?php echo $additional ?></textarea>
                 </li>
                 
@@ -238,7 +239,7 @@ function dem_polls_design(){
                     <h3><?php _e('Все CSS стили, которые используются сейчас:','dem'); ?></h3>
                      
                     <script>function select_kdfgu( that ){ var sel = (!!document.getSelection) ? document.getSelection() : (!!window.getSelection)   ? window.getSelection() : document.selection.createRange().text; if( sel == '' ) that.select(); }</script>
-                    <em style="opacity: 0.8;"><?php _e('Это все собранные css стили: тема, кнопка и другие настройки. Вы можете скопировать эти стили в поле "Произвольные/Дополнительные CSS стили:", отключить тему и изменить стили как вам нужно.','dem') ?></em>
+                    <em style="opacity: 0.8;"><?php _e('Здесь все собранные css стили: тема, кнопка и настройки. Вы можете скопировать эти стили в поле "Произвольные/Дополнительные CSS стили:", отключить шаблон (тему) и изменить стили как вам нужно.','dem') ?></em>
                     <textarea onmouseup="select_kdfgu(this);" onfocus="this.style.height = '700px';" onblur="this.style.height = '100px';" readonly="true" style="width:100%;min-height:100px;"><?php echo $demcss['full'] ?></textarea>
                     
                     <p><?php _e('Сжатая версия (используется при подключении в HTML):','dem'); ?></p>
