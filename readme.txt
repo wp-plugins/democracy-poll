@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.6.3
+Stable tag: 4.6.4
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.6.4 =
+* Fix: when user send democratic answer, new answer couldn't have comma
+
 = 4.6.3 =
 * Fix: Widget showed screens uncorrectly because of some previous changes in code.
 * Improve: English localisation

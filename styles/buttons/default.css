@@ -18,7 +18,9 @@ a.dem-button,
 
 input[type="submit"].dem-button:hover,
 a.dem-button:hover,
-    .dem-button:hover{ border: 1px solid #bbb; background-color:#ddd;
+.dem-button:hover{
+    border: 1px solid #bbb; background-color:#ddd;
+    color:#555;
 }
 
 input[type="submit"].dem-button:active,

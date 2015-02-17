@@ -117,7 +117,7 @@
 			answ.push( userText );
 		}
 
-		answ = answ.join(',');
+		answ = answ.join('~');
 
 		return answ ? answ : '';
 	};

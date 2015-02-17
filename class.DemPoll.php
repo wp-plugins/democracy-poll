@@ -310,7 +310,7 @@ class DemPoll {
 		
 		if( ! is_array( $aids ) ){
 			$aids = trim( $aids );
-			$aids = explode(',', $aids );
+			$aids = explode('~', $aids );
 		}
 		$aids = array_map('trim', $aids);
 		// Добавка ответа пользователя. 
