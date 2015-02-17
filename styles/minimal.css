@@ -10,7 +10,7 @@
 .dem-vote-button{  }
 .dem-results-link{ display:none; }
 
-.dem-add-answer a{ text-decoration:none; margin-left:1.2em; border-bottom:1px dashed rgba(0,0,0,.5); color:inherit !important; }
+.dem-add-answer a{ text-decoration:none; margin-left:1.2em; color:inherit !important; }
 .dem-add-answer a:hover{ opacity:.8; }
 
 /* results screen */

@@ -14,7 +14,9 @@ a.dem-button,
 
 input[type="submit"].dem-button:hover,
 a.dem-button:hover,
-.dem-button:hover { background: linear-gradient(#f5ae00, #f59500) #f5ae00; }
+.dem-button:hover {
+    background: linear-gradient(#f5ae00, #f59500) #f5ae00;
+}
 
 input[type="submit"].dem-button:active,
 a.dem-button:active,
