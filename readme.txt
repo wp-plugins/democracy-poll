@@ -90,18 +90,16 @@ Needs PHP 5.3 and above.
 1. Open sidebar.php file of your theme: `wp-content/themes/<YOUR THEME NAME>/sidebar.php`
 2. Add such code in place you want Poll is appeared:
 
-~~~
-
-<?php if( function_exists('democracy_poll') ){ ?>
-	<li>
-		<h2>Polls</h2>
-		<ul>
-			<li><?php democracy_poll();?></li>
-		</ul>
-	</li>
-<?php } ?>
-
-~~~
+`
+    <?php if( function_exists('democracy_poll') ){ ?>
+        <li>
+            <h2>Polls</h2>
+            <ul>
+                <li><?php democracy_poll();?></li>
+            </ul>
+        </li>
+    <?php } ?>
+`
 
 #### Display Archive ####
 For displaing archive polls use function:
