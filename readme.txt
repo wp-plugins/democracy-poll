@@ -106,11 +106,8 @@ Needs PHP 5.3 and above.
 #### Display Archive ####
 For displaing archive polls use function:
 
-~~~
+    <?php democracy_archives( $hide_active, $before_title, $after_title ); ?>
 
-<?php democracy_archives( $hide_active, $before_title, $after_title ); ?>
-
-~~~
 
 
 
