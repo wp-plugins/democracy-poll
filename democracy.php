@@ -78,7 +78,7 @@ function get_democracy_archives( $hide_active = false, $before_title = '', $afte
 	foreach( $ids as $poll_id ){
 		$poll = new DemPoll( $poll_id );
 		
-		$show_results = isset( $_REQUEST['dem_act'] ) ? __query_poll_screen_choose( $poll ) : true;
+		$show_results = isset( $_REQUEST['dem_act'] ) ? __query_poll_screen_choose( $poll ) : 'voted';
 		
 		$output .= $poll->get_screen( $show_results, $before_title, $after_title );
 	}

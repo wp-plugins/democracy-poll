@@ -273,7 +273,7 @@ class Dem {
 
 		// inline HTML
 //		if( $this->opt['inline_js_css'] )
-			return '<!--democracy-->'. "\n" .'<style type="text/css" media="screen">'. $minify .'</style>'."\n";
+			return "\n<!--democracy-->\n" .'<style type="text/css">'. $minify .'</style>'."\n";
 		
 //		else{
 //			add_action('wp_enqueue_scripts', function() use ($cssurl){ wp_enqueue_style('democracy', $cssurl, array(), DEM_VER ); } );
