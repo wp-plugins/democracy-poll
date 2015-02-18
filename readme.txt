@@ -102,7 +102,7 @@ Needs PHP 5.3 and above.
 `
 
 * To show specific poll, use <?php get_poll( 3 ); ?> where 3 is your poll id.
-* To embed a specific poll in your post, use [democracy id="2"] where 2 is your poll id.
+* To embed a specific poll in your post, use `[democracy id="2"]` where 2 is your poll id.
 * To embed a random poll in your post, use `[democracy]`
 
 
