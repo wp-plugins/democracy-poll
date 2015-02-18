@@ -90,15 +90,16 @@ Needs PHP 5.3 and above.
 1. Open sidebar.php file of your theme: `wp-content/themes/<YOUR THEME NAME>/sidebar.php`
 2. Add such code in the place you want Poll is appeared:
 
-    <?php if( function_exists('democracy_poll') ){ ?>
-        <li>
-            <h2>Polls</h2>
-            <ul>
-                <li><?php democracy_poll();?></li>
-            </ul>
-        </li>
-    <?php } ?>
-
+```
+<?php if( function_exists('democracy_poll') ){ ?>
+    <li>
+        <h2>Polls</h2>
+        <ul>
+            <li><?php democracy_poll();?></li>
+        </ul>
+    </li>
+<?php } ?>
+```
 
 * To show specific poll, use <?php get_poll( 3 ); ?> where 3 is your poll id.
 * To embed a specific poll in your post, use [democracy id="2"] where 2 is your poll id.
