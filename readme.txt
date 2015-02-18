@@ -99,14 +99,14 @@ Needs PHP 5.3 and above.
         </li>
     <?php } ?>
 
-To add specified poll use poll ID:
 
 * To show specific poll, use <?php get_poll( 3 ); ?> where 3 is your poll id.
 * To embed a specific poll in your post, use [democracy id="2"] where 2 is your poll id.
 * To embed a random poll in your post, use `[democracy]`
 
+
 #### Display Archive ####
-For displaing archive polls use function:
+For display polls archive, use the function:
 
     <?php democracy_archives( $hide_active, $before_title, $after_title ); ?>
 
