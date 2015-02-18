@@ -46,7 +46,7 @@ ul.dem-answers li{ padding-bottom:1em; }
 
 /* vote screen */
 .dem-vote label{ float:none; display:block; }
-.dem-results-link{ display: inline-block; line-height: 1; margin:.6em 1em; }
+.dem-results-link{ display: inline-block; line-height: 1; margin:.8em 1em; }
 
 /* dem-bottom */
 .dem-bottom{ padding:1em 0; text-align: center; }
