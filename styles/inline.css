@@ -6,6 +6,7 @@
 .dem-link{ display: inline-block; margin:0.8em 0; }
 .dem-link{ font-size:90%; }
 
+
 /* vote screen */
 .dem-revote-link:before,
 .dem-vote-link:before{ content:'← '; }
@@ -19,7 +20,7 @@
 
 .dem-voted-this{ font-weight: bold; }
 
-.dem-label-percent-txt{ font-size:80%; opacity:0.8; }
+.dem-label-percent-txt{ display:inline; font-size:80%; opacity:0.8; }
 .dem-label-percent-txt:before{ content:'('; }
 .dem-label-percent-txt:after{ content:')'; }
 

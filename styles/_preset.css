@@ -31,7 +31,6 @@ ul.dem-vote li{ padding-bottom:0; }
 ul.dem-answers li{ padding-bottom:1em; }
 .dem-answers .label{ margin-bottom:.2em; line-height: 1.2; }
 
-
 /* result screen */
 .dem-graph{ position:relative; color:#555; color:rgba(0,0,0,.6); box-sizing:content-box; width:100%; display:table; height:1.2em; line-height:1.2em; /* because display:table; */ }
 .dem-fill{ position:absolute; top:0; left:0; height:100%; background-color:#7cb4dd; }
@@ -39,7 +38,6 @@ ul.dem-answers li{ padding-bottom:1em; }
 
 .dem-votes-txt,
 .dem-percent-txt{ position:relative; display:table-cell; padding-left:.3em; vertical-align: middle; font-size:90%; }
-.dem-novoted{ display:none; }
 
 /* dem-result-bottom */
 .dem-poll-info{ padding-bottom: 1em; }
@@ -48,6 +46,7 @@ ul.dem-answers li{ padding-bottom:1em; }
 
 /* vote screen */
 .dem-vote label{ float:none; display:block; }
+.dem-results-link{ display: inline-block; line-height: 1; margin:.6em 1em; }
 
 /* dem-bottom */
 .dem-bottom{ padding:1em 0; text-align: center; }

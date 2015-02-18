@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.6.4
+Stable tag: 4.6.5
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,10 @@ Comming soon...
 
 
 == Changelog ==
+= 4.6.5 =
+* Added: New theme "block.css"
+* Added: Preset theme (_preset.css) now visible and you can set it and wtite additional css styles to customize theme
+
 = 4.6.4 =
 * Fix: when user send democratic answer, new answer couldn't have comma
 

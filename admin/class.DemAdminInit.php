@@ -211,7 +211,8 @@ class DemAdminInit extends Dem{
         $arr = array();
         
         foreach( glob( Dem::$inst->dir_path . 'styles/*.css' ) as $file ){
-            if( preg_match('~\.min|^_~', basename( $file ) ) ) continue;
+//            if( preg_match('~\.min|^_~', basename( $file ) ) ) continue;
+            if( preg_match('~\.min~', basename( $file ) ) ) continue;
             
             $arr[] = $file;
         }

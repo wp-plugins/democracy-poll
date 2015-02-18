@@ -219,7 +219,8 @@ class DemPoll {
 				$is_voted_this = ( $this->hasVoted && in_array( $answer->aid, explode(',', $this->votedFor) ) );
 				$is_winner     = ( $max == $votes );
 				
-				$li_class = ' class="'. ( $is_winner ? 'dem-winner':'' ) . ( $is_voted_this ? " $voted_class":'' ) .'"';
+                $novoted_class = ( $votes == 0 ) ? ' dem-novoted' : '';
+				$li_class = ' class="'. ( $is_winner ? 'dem-winner':'' ) . ( $is_voted_this ? " $voted_class":'' ) . $novoted_class .'"';
 				$sup = $answer->added_by ? ' <sup class="dem-star" title="'. __('Ответ добавлен посетителем','dem') .'">*</sup>' : '';
 				$percent = ( $votes > 0 ) ? round($votes / $total * 100) : 0;
 				
@@ -234,11 +235,10 @@ class DemPoll {
 				$votes_txt = $sclonenie( $votes, array(__('голос','dem'),__('голоса','dem'),__('голосов','dem')) );
 
 				$___ .= '<li'. $li_class . $title .' data-aid="'. $answer->aid .'">';
-                    $novoted_class = ( $votes == 0 ) ? ' dem-novoted' : '';
-					$label_perc_txt = ' <span class="dem-label-percent-txt'. $novoted_class .'">'. $percent .'%, '. $votes_txt .'</span>';
-					$percent_txt = '<div class="dem-percent-txt'. $novoted_class .'">'. $percent_txt .'</div>';
+					$label_perc_txt = ' <span class="dem-label-percent-txt">'. $percent .'%, '. $votes_txt .'</span>';
+					$percent_txt = '<div class="dem-percent-txt">'. $percent_txt .'</div>';
                     $percent_txt_inline = ( $percent > 0 ) ? ' <span class="dem-votes-txt-percent">'. $percent .'%</span>' : '';
-					$votes_txt   = '<div class="dem-votes-txt'. $novoted_class .'">'. $votes_txt . $percent_txt_inline . '</div>';
+					$votes_txt   = '<div class="dem-votes-txt">'. $votes_txt . $percent_txt_inline . '</div>';
 					                
                     $___ .= '<div class="label">'. $word . $sup . $label_perc_txt .'</div>';
 				
