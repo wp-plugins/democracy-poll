@@ -92,14 +92,14 @@ Needs PHP 5.3 and above.
 
 ~~~
 
-&lt;?php if( function_exists('democracy_poll') ){ ?&gt;
-	&lt;li&gt;
-		&lt;h2&gt;Polls&lt;/h2&gt;
-		&lt;ul&gt;
-			&lt;li&gt;&lt;?php democracy_poll();?&gt;&lt;/li&gt;
-		&lt;/ul&gt;
-	&lt;/li&gt;
-&lt;?php } ?&gt;
+<?php if( function_exists('democracy_poll') ){ ?>
+	<li>
+		<h2>Polls</h2>
+		<ul>
+			<li><?php democracy_poll();?></li>
+		</ul>
+	</li>
+<?php } ?>
 
 ~~~
 
@@ -108,7 +108,7 @@ For displaing archive polls use function:
 
 ~~~
 
-&lt;?php democracy_archives( $hide_active, $before_title, $after_title ); ?&gt;
+<?php democracy_archives( $hide_active, $before_title, $after_title ); ?>
 
 ~~~
 
