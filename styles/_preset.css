@@ -73,8 +73,8 @@ ul.dem-answers li{ padding-bottom:1em; }
 .dem-add-answer-close:hover{ color:#ff2700; }
 
 .dem-edit-link{ display: block; position:absolute; top:0; right:0; line-height:1; text-decoration:none !important; border:none !important; }
-.dem-edit-link svg{ width:1.2em!important; fill:#5a5a5a; }
-.dem-edit-link:hover svg{ fill:#c61700; }
+.dem-edit-link svg{ width:1.2em!important; fill:#5a5a5a; fill:rgba(0,0,0,.6); }
+.dem-edit-link:hover svg{ fill:#35A91D;  }
 
 .dem-loader{ display:none; position: absolute; top:0; left:0; width: 100%; height: 100%; }
 .dem-loader > *{ display: table-cell; vertical-align: middle; text-align: center; }
