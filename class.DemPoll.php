@@ -287,7 +287,7 @@ class DemPoll {
             }
         
             if( $this->for_cache ){
-                $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __('Вы уже голосовали','dem') .'</div>';
+                $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __('Вы уже голосовали. Или с вашего IP.','dem') .'</div>';
                 $___ .= str_replace( array('<div', 'class="'), array('<div style="display:none;"', 'class="dem-cache-notice '), $html_only_users );
             }
         }
@@ -451,7 +451,7 @@ class DemPoll {
 	protected function setVotedData(){
 		if( ! $this->id ) return false;
         
-        // база приоритетнее куков, потому в одном раузере можно отменить голосование, а куки в другому будут показывать что голосовал...
+        // база приоритетнее куков, потому что в одном браузере можно отменить голосование, а куки в другому будут показывать что голосовал...
         // ЗАМЕТКА: обновим куки, если не совпадают. Потому что в разных браузерах могут быть разыне. 
         // Не работает потому что куки нужно устанавливать перед выводом данных и вообще так делать нельзя, 
         // потмоу что проверка по кукам становится не нужной в целом...
@@ -515,12 +515,17 @@ class DemPoll {
         global $wpdb;
         
         $user_ip = ip2long( $_SERVER['REMOTE_ADDR'] );
-        $user_id = get_current_user_id();
-
-        // Ищем пользвоателя или IP в базе 
-        $sql = $wpdb->prepare("SELECT * FROM $wpdb->democracy_log WHERE qid = %d AND (ip = %d OR userid = %d)", $this->id, $user_ip, $user_id );
-        $res = $wpdb->get_results( $sql );
+        $AND = $wpdb->prepare('AND ip = %d', $user_ip );
         
+        // нужно проверять пользователя и IP отдельно! А то есил пользователь не залогинен у него id 0 и он будет совпадать со всеми другими незалогиненными пользователями
+        if( $user_id = get_current_user_id() ) 
+            $AND = $wpdb->prepare('AND (userid = %d OR ip = %d)', $user_id, $user_ip );
+        
+        
+        // Ищем пользвоателя или IP в базе
+        $sql = $wpdb->prepare("SELECT * FROM $wpdb->democracy_log WHERE qid = %d $AND", $this->id );
+        $res = $wpdb->get_results( $sql );
+     
         if( $res ) $res = array_shift( $res );
         
         return $res;

@@ -199,9 +199,26 @@
 	}); };
     
     
-    
 	// Механихм обработки кэша. Для плагинов страничного кэширования
 	$.fn.demCacheInit = function(){
+        
+        // показывает заметку
+        $.fn.demCacheShowNotice = function( type ){
+            var $the = this.first();
+
+            // уведомление что уже голосовал
+            var $notice = $the.find('.dem-youarevote').first();
+            // уведомление если на опрос могут овтечать только зарегистрированные
+            if( type == 'blockForVisitor' ){
+                $the.find('.dem-revote-link').remove(); // удаляем переголосовать
+                $notice = $the.find('.dem-only-users').first();
+            }
+            $the.prepend( $notice.show() );
+            setTimeout( function(){ $notice.slideUp('slow'); }, 3000 ); // удалим заметку                                   
+
+            return this;
+        }
+        
         // устанавливает метки ответов пользователя в блоке результатов
         var setAnswrs = function( $res, answrs ){
             var $dema = $res.find('.dem-answers');
@@ -258,29 +275,23 @@
                         if( $dem.hasClass('checkAnswDone') ) return;
                         $dem.addClass('checkAnswDone');
                         
-                        var $forLoader = $dem.find('.dem-link').first();
-                        $forLoader.demSetLoader();
+                        var $forDotsLoader = $dem.find('.dem-link').first();
+                        $forDotsLoader.demSetLoader();
                         $.post( demAjaxUrl, 
                             {
                                 dem_pid: $dem.attr('data-pid'),
                                 dem_act: 'getVotedIds',
                                 action:  'dem_ajax'
                             },
-                            function( answrs ){
-                                $forLoader.demUnsetLoader();
-                                if( ! answrs ) return; // выходим если нет ответов
+                            function( reply ){
+                                $forDotsLoader.demUnsetLoader();
+                                if( ! reply ) return; // выходим если нет ответов
 
-                                $res.html( votedHTML ).demSetHeight().demSetClick();;
-                                setAnswrs( $res, answrs );
-
-                                var $notice = $res.find('.dem-youarevote').first();
-                                // уведомление если на опрос могут овтечать только зарегистрированные
-                                if( answrs == 'blockForVisitor' ){
-                                    $res.find('.dem-revote-link').remove(); // удаляем переголосовать
-                                    $notice = $res.find('.dem-only-users').first();
-                                }
-                                $res.prepend( $notice.show() );
-                                setTimeout( function(){ $notice.slideUp('slow'); }, 3000 ); // удалим заметку                                   
+                                $res.html( votedHTML ).demSetHeight().demSetClick();
+                                setAnswrs( $res, reply );
+                                
+                                // выводим сообщение о том что голосовал или только для пользователей
+                                $res.demCacheShowNotice( reply );
                             } 
                         );
                     }, 700 ); // 700 для оптимизации, чтобы моментально не отправлялся запрос, если мышкой просто провели по опросу...

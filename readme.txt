@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.6.5
+Stable tag: 4.6.6
 Tested up to: 4.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,10 @@ Comming soon...
 
 
 == Changelog ==
+= 4.6.6 =
+* Fix: Huge bug about checking is user already vote or not. This is must have release!
+* Change: a little changes in js code
+
 = 4.6.5 =
 * Added: New theme "block.css"
 * Added: Preset theme (_preset.css) now visible and you can set it and wtite additional css styles to customize theme

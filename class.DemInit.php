@@ -193,7 +193,10 @@ class Dem {
 		// голосуем и выводим результаты
 		if( $act == 'vote' && $aids ){
 			$poll->addVote( $aids );
-			echo $poll->getResultScreen();
+            // если пользователь голосует с другого браузера и он уже голосовал, ставим куки и уведомляем
+            if( $poll->cachegear_on && $poll->votedFor ) $poll->set_cookie();
+
+            echo $poll->getResultScreen();
 		}
 		// удаляем результаты
 		elseif( $act == 'delVoted' ){
@@ -215,7 +218,8 @@ class Dem {
                 echo 'blockForVisitor'; // чтобы вывести заметку
             }
             else{
-                $poll->set_cookie('notVote');
+                // если не голосовал ставим куки на день, чтобы не делать эту првоерку каждый раз
+                $poll->set_cookie('notVote', (current_time('timestamp') + DAY_IN_SECONDS) );
             }
         }
 
