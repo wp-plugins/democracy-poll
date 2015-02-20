@@ -193,8 +193,8 @@ class Dem {
 		// голосуем и выводим результаты
 		if( $act == 'vote' && $aids ){
 			$poll->addVote( $aids );
-            // если пользователь голосует с другого браузера и он уже голосовал, ставим куки и уведомляем
-            if( $poll->cachegear_on && $poll->votedFor ) $poll->set_cookie();
+            // если пользователь голосует с другого браузера и он уже голосовал, ставим куки
+            //if( $poll->cachegear_on && $poll->votedFor ) $poll->set_cookie();
 
             echo $poll->getResultScreen();
 		}
