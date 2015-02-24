@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Democracy\n"
-"POT-Creation-Date: 2015-02-17 01:38+0500\n"
-"PO-Revision-Date: 2015-02-17 01:50+0500\n"
+"POT-Creation-Date: 2015-02-20 06:14+0500\n"
+"PO-Revision-Date: 2015-02-20 06:16+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -547,43 +547,43 @@ msgstr "Settings"
 msgid "Обновленно"
 msgstr "Updated"
 
-#: admin/class.DemAdminInit.php:247
+#: admin/class.DemAdminInit.php:248
 msgid "Опрос удален"
 msgstr "Poll Deleted"
 
-#: admin/class.DemAdminInit.php:273
+#: admin/class.DemAdminInit.php:274
 msgid "Опрос открыт"
 msgstr "Poll Opened"
 
-#: admin/class.DemAdminInit.php:273 class.DemPoll.php:262
+#: admin/class.DemAdminInit.php:274 class.DemPoll.php:262
 msgid "Опрос закрыт"
 msgstr "Voting is closed"
 
-#: admin/class.DemAdminInit.php:291
+#: admin/class.DemAdminInit.php:292
 msgid "Опрос активирован"
 msgstr "Poll Activated"
 
-#: admin/class.DemAdminInit.php:291
+#: admin/class.DemAdminInit.php:292
 msgid "Опрос деактивирован"
 msgstr "Poll Deactivated"
 
-#: admin/class.DemAdminInit.php:391
+#: admin/class.DemAdminInit.php:392
 msgid "Опрос обновлён"
 msgstr "Poll Updated"
 
-#: admin/class.DemAdminInit.php:542
+#: admin/class.DemAdminInit.php:543
 msgid "Вставка Опроса Democracy"
 msgstr "Insert Poll of Democracy"
 
-#: admin/class.DemAdminInit.php:543
+#: admin/class.DemAdminInit.php:544
 msgid "Введите ID опроса"
 msgstr "Insert Poll ID"
 
-#: admin/class.DemAdminInit.php:544
+#: admin/class.DemAdminInit.php:545
 msgid "Ошибка: ID - это число. Введите ID еще раз"
 msgstr "Error: ID is a integer. Enter ID again, please."
 
-#: admin/class.DemAdminInit.php:566 class.DemPoll.php:264
+#: admin/class.DemAdminInit.php:567 class.DemPoll.php:264
 msgid "Архив опросов"
 msgstr "Polls Archive"
 
@@ -636,24 +636,24 @@ msgstr "Results"
 msgid "Ваш голос. "
 msgstr "Your vote."
 
-#: class.DemPoll.php:223
+#: class.DemPoll.php:224
 msgid "Ответ добавлен посетителем"
 msgstr "The answer was added by a visitor"
 
-#: class.DemPoll.php:226
+#: class.DemPoll.php:227
 #, php-format
 msgid "%s%% от всех голосов"
 msgstr "%s%% of all votes"
 
-#: class.DemPoll.php:234
+#: class.DemPoll.php:235
 msgid "голос"
 msgstr "vote"
 
-#: class.DemPoll.php:234
+#: class.DemPoll.php:235
 msgid "голоса"
 msgstr "votes"
 
-#: class.DemPoll.php:234
+#: class.DemPoll.php:235
 msgid "голосов"
 msgstr "votes"
 
@@ -692,8 +692,8 @@ msgid "Переголосовать"
 msgstr "Revote"
 
 #: class.DemPoll.php:290
-msgid "Вы уже голосовали"
-msgstr "You have already voted"
+msgid "Вы или с вашего IP уже голосовали."
+msgstr "You or your IP has already voted."
 
 #: democracy.php:21
 msgid ""
@@ -747,3 +747,6 @@ msgstr "- Active (random all active)"
 #: widget_democracy.php:79
 msgid "Какой опрос показывать?"
 msgstr "What poll to show?"
+
+#~ msgid "Вы уже голосовали"
+#~ msgstr "You have already voted"

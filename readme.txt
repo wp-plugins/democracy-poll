@@ -1,6 +1,6 @@
 === Plugin Name ===
-Stable tag: 4.6.6
-Tested up to: 4.1
+Stable tag: 4.6.7
+Tested up to: 4.1.1
 Requires at least: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -23,7 +23,7 @@ This plugin adds a clever and convenient system to create various Polls with dif
 * You can choose different design of a poll
 * and so on. See changelog
 
-Democracy works with cache plugins like: WP Total Cache, WP Super Cache, WordFence, Quick Cache etc.
+Democracy Poll works with cache plugins: WP Total Cache, WP Super Cache, WordFence, Quick Cache etc.
 
 I focus on "easy-admin" features & fast performance. So you will have:
 
@@ -146,9 +146,13 @@ Comming soon...
 
 
 == Changelog ==
+= 4.6.7 =
+* Added: check for current user has an capability to edit polls. Now toolbar doesn't shown if user logged in but not have capability
+
 = 4.6.6 =
 * Fix: Huge bug about checking is user already vote or not. This is must have release!
 * Change: a little changes in js code
+* 'notVote' cookie check set to 1 hour
 
 = 4.6.5 =
 * Added: New theme "block.css"

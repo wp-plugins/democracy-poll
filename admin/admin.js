@@ -52,9 +52,12 @@ jQuery(document).ready(function($){
     $textarea.before( aceEl );
     
     var editor = ace.edit( aceEl[0] );
-    editor.setOptions({ maxLines: 'Infinity' } );
-    editor.setOption("minLines", 10);
-//    editor.getSession().setUseWrapMode( true );
+	editor.setOptions({
+		maxLines: 'Infinity',
+		minLines: 10,
+		printMargin: false
+	} );
+	//    editor.getSession().setUseWrapMode( true );
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/css");
     editor.getSession().setValue( $textarea.val() );

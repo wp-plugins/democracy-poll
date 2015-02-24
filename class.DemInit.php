@@ -13,6 +13,8 @@ class Dem {
 	public $dir_url;
 	public $ajax_url;
 	
+	public $user_access; // доступ пользователя к админ-функциям Democracy
+	
 	public $message = array();
 	
 	public $opt;
@@ -43,8 +45,6 @@ class Dem {
 		$this->dir_url  = plugin_dir_url(__FILE__);
 		$this->ajax_url = admin_url('admin-ajax.php'); //$this->dir_url . 'ajax_request.php';
         
-        $this->opt      = $this->get_options(); // !!! должна идти после установки путей
-        
         add_action('plugins_loaded', array($this, 'dem_init') );
 	}
     
@@ -52,11 +52,15 @@ class Dem {
      * Инициализирует основные хуки Democracy вешается на хук plugins_loaded.
      */
     function dem_init(){
+        $this->opt      = $this->get_options(); // !!! должна идти после установки путей
+		
+		$this->user_access = current_user_can('manage_options');
+		
 		// файл перевода
 		if( $this->opt['load_textdomain'] ) $this->load_textdomain();
         
 		// меню в панели инструментов
-		if( $this->opt['toolbar_menu'] ) add_action('admin_bar_menu', array( $this, 'toolbar'), 99);
+		if( $this->opt['toolbar_menu'] && $this->user_access ) add_action('admin_bar_menu', array( $this, 'toolbar'), 99);
     }
 				
 	## подключаем файл перевода
@@ -192,9 +196,10 @@ class Dem {
 		// switch
 		// голосуем и выводим результаты
 		if( $act == 'vote' && $aids ){
-			$poll->addVote( $aids );
             // если пользователь голосует с другого браузера и он уже голосовал, ставим куки
             //if( $poll->cachegear_on && $poll->votedFor ) $poll->set_cookie();
+			
+            $poll->addVote( $aids );
 
             echo $poll->getResultScreen();
 		}

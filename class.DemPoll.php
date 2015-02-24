@@ -287,7 +287,7 @@ class DemPoll {
             }
         
             if( $this->for_cache ){
-                $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __('Вы уже голосовали. Или с вашего IP.','dem') .'</div>';
+                $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __('Вы или с вашего IP уже голосовали.','dem') .'</div>';
                 $___ .= str_replace( array('<div', 'class="'), array('<div style="display:none;"', 'class="dem-cache-notice '), $html_only_users );
             }
         }
@@ -518,8 +518,10 @@ class DemPoll {
         $AND = $wpdb->prepare('AND ip = %d', $user_ip );
         
         // нужно проверять пользователя и IP отдельно! А то есил пользователь не залогинен у него id 0 и он будет совпадать со всеми другими незалогиненными пользователями
-        if( $user_id = get_current_user_id() ) 
-            $AND = $wpdb->prepare('AND (userid = %d OR ip = %d)', $user_id, $user_ip );
+        if( $user_id = get_current_user_id() ){
+            $AND = $wpdb->prepare('AND userid = %d', $user_id ); // только для пользователей, IP не учитывается, т.е. если вы голосовали как посетитель, а потом залогинились, то можено будет голосовать еще раз
+            //$AND = $wpdb->prepare('AND (userid = %d OR ip = %d)', $user_id, $user_ip );   
+        }
         
         
         // Ищем пользвоателя или IP в базе
