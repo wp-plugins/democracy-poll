@@ -44,6 +44,8 @@ class Dem {
 		$this->dir_path = plugin_dir_path(__FILE__);
 		$this->dir_url  = plugin_dir_url(__FILE__);
 		$this->ajax_url = admin_url('admin-ajax.php'); //$this->dir_url . 'ajax_request.php';
+		
+        $this->opt      = $this->get_options(); // !!! должна идти после установки путей
         
         add_action('plugins_loaded', array($this, 'dem_init') );
 	}
@@ -52,8 +54,6 @@ class Dem {
      * Инициализирует основные хуки Democracy вешается на хук plugins_loaded.
      */
     function dem_init(){
-        $this->opt      = $this->get_options(); // !!! должна идти после установки путей
-		
 		$this->user_access = current_user_can('manage_options');
 		
 		// файл перевода
@@ -288,15 +288,7 @@ class Dem {
 //			add_action('wp_enqueue_scripts', function() use ($cssurl){ wp_enqueue_style('democracy', $cssurl, array(), DEM_VER ); } );
 //		}
 	}
-    
-    /**
-     * Собирает стили воедино.
-     * Возвращает все стили опроса
-     */
-    function collect_css(){
-        
-    }
-	
+    	
 	## добавляет скрипты в подвал
 	function add_js(){
 		static $once; if( $once ) return; $once=1; // выполняем один раз!

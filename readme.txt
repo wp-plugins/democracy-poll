@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.6.7
+Stable tag: 4.6.8
 Tested up to: 4.1.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.6.8 =
+* Fix: options bug appers in 4.6.7
+
 = 4.6.7 =
 * Added: check for current user has an capability to edit polls. Now toolbar doesn't shown if user logged in but not have capability
 
