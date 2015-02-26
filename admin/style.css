@@ -1,4 +1,5 @@
 #the-question{ width:400px; display:block; margin:12px; }
+.poll-options{ margin-top:25px; }
 .poll-options li { list-style: none; }
 
 .dem-new-poll{ margin:15px auto; padding:20px; }

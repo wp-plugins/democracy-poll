@@ -607,23 +607,27 @@ function poll_edit_form( $poll_id = false ){
 				foreach( $answers as $answer ){
 					$by_user = $answer->added_by ? '<i>*</i>' : '';
 					echo '
-					<li>
-						<input type="text" name="dmc_old_answers['. $answer->aid .'][answer]" value="'. esc_attr( stripslashes( $answer->answer ) ) .'" />
+					<li class="answ">
+						<input class="answ-text" type="text" name="dmc_old_answers['. $answer->aid .'][answer]" value="'. esc_attr( stripslashes( $answer->answer ) ) .'" />
 						<input type="text" name="dmc_old_answers['. $answer->aid .'][votes]" value="'. $answer->votes .'" style="width:50px;min-width:50px;" />
 						'. $by_user .'
 					</li>';
 				}
 			} 
 			else {
-				for( $i = 0; $i < 4; $i++ )
-					echo '<li><input type="text" name="dmc_new_answers[]" value="" /></li>';				
+				for( $i = 0; $i < 2; $i++ )
+					echo '<li class="answ"><input type="text" name="dmc_new_answers[]" value="" /></li>';				
 			}
 			?>
-
-			<span class="demAddAnswer button"><?php _e('Добавить ответ','dem') ?></span>
+			
+			<li>
+				<label>
+					<input type="checkbox" name="dmc_is_democratic" value="1" <?php checked( (!isset($poll->democratic) || $poll->democratic), 1 ) ?> > 
+					<?php _e('Разрешить пользователям добавлять свои ответы (democracy).','dem') ?>
+				</label>
+			</li>		
 		</ol>
 		
-
 		<ol class="poll-options">				
 			<li>
 				<label>
@@ -632,12 +636,6 @@ function poll_edit_form( $poll_id = false ){
 				</label>
 			</li>
 			
-			<li>
-				<label>
-					<input type="checkbox" name="dmc_is_democratic" value="1" <?php checked( (!isset($poll->democratic) || $poll->democratic), 1 ) ?> > 
-					<?php _e('Разрешить пользователям добавлять свои ответы (democracy).','dem') ?>
-				</label>
-			</li>
 			<li>
 				<label>
 					<input type="checkbox" name="dmc_multiple" value="1" <?php checked( @$poll->multiple, 1) ?> > 
