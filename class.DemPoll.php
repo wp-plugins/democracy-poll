@@ -241,11 +241,13 @@ class DemPoll {
 					$votes_txt   = '<div class="dem-votes-txt">'. $votes_txt . $percent_txt_inline . '</div>';
 					                
                     $___ .= '<div class="label">'. $word . $sup . $label_perc_txt .'</div>';
-				
-                    $graph_percent = ( ! Dem::$inst->opt['graph_from_total'] && $percent != 0 ) ? round( $votes / $max * 100 ) : $percent;
+					
+					// css процент
+                    $graph_percent = ( ( ! Dem::$inst->opt['graph_from_total'] && $percent != 0 ) ? round( $votes / $max * 100 ) : $percent ) . '%';
+                    if( $graph_percent == 0 ) $graph_percent = '1px';
 					
 					$___ .= '<div class="dem-graph">';
-						$___ .= "<div class='dem-fill' style='width:{$graph_percent}%;'></div>";
+						$___ .= '<div class="dem-fill" style="width:'. $graph_percent .';"></div>';
 						$___ .= $votes_txt;
 						$___ .= $percent_txt;
 					$___ .= "</div>";

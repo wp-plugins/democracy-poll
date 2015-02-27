@@ -161,8 +161,6 @@ class DemAdminInit extends Dem{
 		$arr['main'] = array(
 			'inline_js_css'    => 0,   // встараивать стили и скрипты в HTML
 			'keep_logs'        => 1, // вести лог в БД
-			'graph_from_total' => 0,
-			'order_answers'    => 1,
 			'before_title'     => '<strong class="dem-poll-title">',
 			'after_title'      => '</strong>',
 			'force_cachegear'  => 0,
@@ -181,13 +179,14 @@ class DemAdminInit extends Dem{
 			'loader_fname'  => 'css-roller.css3',			
 			'css_file_name' => 'alternate.css', // название файла стилей который будет использоваться для опроса.
 			'css_button'    => 'flat.css',
-			'loader_fill'   => '',
+			'loader_fill'   => '', // как заполнять шкалу прогресса
+			'graph_from_total' => 1,
+			'order_answers'    => 1,
             // progress
             'line_bg'         => '',
             'line_fill'       => '',
             'line_height'   => '',
             'line_fill_voted' => '',
-
             // button
 			'btn_bg_color'         => '',
 			'btn_color'            => '',

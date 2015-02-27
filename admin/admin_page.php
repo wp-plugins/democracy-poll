@@ -89,6 +89,26 @@ function dem_polls_design(){
                     }
                     ?>
 				</li>
+				
+				
+				<li class="block">
+					<h3><?php _e('Вид ответов:','dem'); ?></h3>
+					
+					<?php _e( 'Как закрашивать прогресс каждого ответа?', 'dem') ?>
+					<select name="dem[graph_from_total]">
+					   <option value="0" <?php selected( $opt['graph_from_total'], 0 )?>><?php _e( 'победитель - 100%, остальные в % от него', 'dem') ?></option>
+					   <option value="1" <?php selected( $opt['graph_from_total'], 1 )?>><?php _e( 'как % от всех голосов', 'dem') ?></option>
+					</select>
+
+					<br><br>
+					<?php _e('Как сортирвоать ответы?', 'dem') ?>
+					<select name="dem[order_answers]">
+					   <option value="0" <?php selected( $opt['order_answers'], 0 )?>><?php _e( 'В порядке добавления (по ID)', 'dem') ?></option>
+					   <option value="1" <?php selected( $opt['order_answers'], 1 )?>><?php _e( 'Выигрывающие вверху', 'dem') ?></option>
+					</select>					
+				</li>
+
+
                 
             <?php if( $opt['css_file_name'] ){ ?>
 				<li class="block">
@@ -396,7 +416,6 @@ function dem_general_settings(){
 	<div id="democr_options">
 		<form action="" method="post">
 			
-			<h3><?php _e('Настройки опросов','dem') ?></h3>
 			<ul class="group">
 				<li class="block">
 				   <label>
@@ -426,22 +445,6 @@ function dem_general_settings(){
 				</li>
 
 				<li class="block">
-				   <label>
-						<input <?php checked( $opt[ 'graph_from_total'], 1) ?> type="checkbox" value="1" name="dem[graph_from_total]" />
-						<?php _e( 'Показывать результаты в % от общего числа голосов.', 'dem') ?>
-					</label>
-				   <em><?php _e('По умолчанию, выигрывающий ответ заполняется полностью, а остальные в процентах от него. Поставьте галочку, чтобы каждый ответ заполнялся как % от всех голосов.','dem') ?></em>
-				</li>
-
-				<li class="block">
-				   <label>
-					   <input <?php echo checked( $opt['order_answers'], 1) ?> type="checkbox" value="1" name="dem[order_answers]" /> 
-					   <?php _e('Сортировать ответы по количеству голосов.','dem') ?>
-				   </label>
-				   <em><?php _e('Уберите галочку, чтобы ответы располагались в порядке их создания, а не выигрывающие сверху.','dem') ?></em>
-				</li>
-
-				<li class="block">
 					<label><?php _e('Обёртка заголовка опроса HTML тегами.','dem') ?></label><br>
 					<input type="text" size="35" value="<?php echo esc_attr( $opt['before_title'] ) ?>" name="dem[before_title]" /> 
 					<i><?php _e('вопрос опроса','dem') ?></i> 
@@ -463,11 +466,7 @@ function dem_general_settings(){
 					<em><?php _e('Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. Пр. <code>25</code>','dem') ?></em>
 				</li>
 				
-			</ul> 
-		
-		
-			<h3><?php _e('Настройки плагина','dem') ?></h3>
-			<ul class="group">
+
 				<li class="block">
 				   <label>
                        <input type="checkbox" value="1" name="dem[force_cachegear]" <?php checked( $opt['force_cachegear'], 1) ?> />
