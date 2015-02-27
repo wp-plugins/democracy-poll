@@ -148,6 +148,7 @@ Comming soon...
 == Changelog ==
 = 4.7.0 =
 * Change: "progress fill type" & "answers order" options now on "Design option page"
+* Fix: english localisation 
 
 = 4.6.9 =
 * Change: delete "add new answer" button on Add new poll and now field for new answerr adds when you focus on last field.
