@@ -437,20 +437,13 @@ function dem_general_settings(){
 				</li>
 
 				<li class="block">
-				   <label>
-					   <input type="checkbox" value="1" name="dem[only_for_users]" <?php checked( $opt['only_for_users'], 1) ?> />
-					   <?php _e('Голосовать могут только зарегистрированные пользователи.','dem') ?>
-					</label>
-				   <em><?php _e('Включите опцию, чтобы голосовать могли только зарегистрированные пользователи. Влияет на все опросы! Если НЕ включать, то такую настройку можно будет делать для каждого опроса в отдельности.','dem') ?></em>
-				</li>
-
-				<li class="block">
 					<label><?php _e('Обёртка заголовка опроса HTML тегами.','dem') ?></label><br>
 					<input type="text" size="35" value="<?php echo esc_attr( $opt['before_title'] ) ?>" name="dem[before_title]" /> 
 					<i><?php _e('вопрос опроса','dem') ?></i> 
 					<input type="text" size="15" value="<?php echo esc_attr( $opt['after_title'] ) ?>" name="dem[after_title]" /> 
 					<em><?php _e('Например: <code>&lt;h2&gt;</code> и <code>&lt;/h2&gt;</code>. По умолчанию: <code>&lt;strong class=&quot;dem-poll-title&quot;&gt;</code> и <code>&lt;/strong&gt;</code>.','dem') ?></em>
 				</li>
+				
 
 				<li class="block">
 					<label>
@@ -466,7 +459,32 @@ function dem_general_settings(){
 					<em><?php _e('Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. Пр. <code>25</code>','dem') ?></em>
 				</li>
 				
+				<hr><br>
+				<li class="block">
+				   <label>
+					   <input type="checkbox" value="1" name="dem[only_for_users]" <?php checked( $opt['only_for_users'], 1) ?> />
+					   <?php _e('Голосовать могут только зарегистрированные пользователи (глобальная опция).','dem') ?>
+					</label>
+				   <em><?php _e('Эта опция доступна для каждого опроса отдельно, но если вы хотите включить эту опцию для всех опросов сразу, поставьте галочку.','dem') ?></em>
+				</li>
+				
+				<li class="block">
+				   <label>
+					   <input type="checkbox" value="1" name="dem[democracy_off]" <?php checked( $opt['democracy_off'], 1) ?> />
+					   <?php _e('Запретить пользователям добавлять свои ответы (глобальная опция Democracy).','dem') ?>
+					</label>
+				   <em><?php _e('Эта опция доступна для каждого опроса отдельно, но если вы хотите отключить эту опцию для всех опросов сразу, поставьте галочку.','dem') ?></em>
+				</li>
 
+				<li class="block">
+				   <label>
+					   <input type="checkbox" value="1" name="dem[revote_off]" <?php checked( $opt['revote_off'], 1) ?> />
+					   <?php _e('Удалить возможность преголосовать (глобальная опция).','dem') ?>
+					</label>
+				   <em><?php _e('Эта опция доступна для каждого опроса отдельно, но если вы хотите отключить эту опцию для всех опросов сразу, поставьте галочку.','dem') ?></em>
+				</li>
+				<hr><br>
+				
 				<li class="block">
 				   <label>
                        <input type="checkbox" value="1" name="dem[force_cachegear]" <?php checked( $opt['force_cachegear'], 1) ?> />
@@ -619,12 +637,14 @@ function poll_edit_form( $poll_id = false ){
 			}
 			?>
 			
+			<?php if( ! Dem::$inst->opt['democracy_off'] ){ ?>
 			<li>
 				<label>
 					<input type="checkbox" name="dmc_is_democratic" value="1" <?php checked( (!isset($poll->democratic) || $poll->democratic), 1 ) ?> > 
 					<?php _e('Разрешить пользователям добавлять свои ответы (democracy).','dem') ?>
 				</label>
-			</li>		
+			</li>
+			<?php } ?>
 		</ol>
 		
 		<ol class="poll-options">				
@@ -648,13 +668,14 @@ function poll_edit_form( $poll_id = false ){
 				</label>
 			</li>
 			
+			<?php if( ! Dem::$inst->opt['revote_off'] ){ ?>
 			<li>
 				<label>
 					<input type="checkbox" name="dmc_revote" value="1" <?php checked( (!isset($poll->revote) || $poll->revote), 1 ) ?> > 
 					<?php _e('Разрешить изменять мнение (переголосование).','dem') ?>
 				</label>
 			</li>
-			
+			<?php } ?>
 			<?php if( ! Dem::$inst->opt['only_for_users'] ){ ?>
 			<li>
 				<label>

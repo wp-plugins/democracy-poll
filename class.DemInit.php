@@ -47,7 +47,8 @@ class Dem {
 		
         $this->opt      = $this->get_options(); // !!! должна идти после установки путей
         
-        add_action('plugins_loaded', array($this, 'dem_init') );
+//        add_action('plugins_loaded', array($this, 'dem_init') );
+        $this->dem_init();
 	}
     
     /**
@@ -65,7 +66,7 @@ class Dem {
 				
 	## подключаем файл перевода
 	function load_textdomain(){
-		load_textdomain('dem', Dem::$inst->dir_path . 'languages/' . get_locale() . '.mo' );
+		load_textdomain('dem', $this->dir_path . 'languages/' . get_locale() . '.mo' );
 	}
 	
 	## Добавляет пункты меню в панель инструментов
@@ -163,7 +164,7 @@ class Dem {
 		//if( ! $this->opt['inline_js_css'] ) $this->add_css(); // подключаем стили как файл, если не инлайн
 
 		# для работы функции без AJAX
-		if( @$_POST['action'] != 'dem_ajax' ) add_action('plugins_loaded', array($this, 'not_ajax_request_handler'), 99 );
+		if( @$_POST['action'] != 'dem_ajax' ) $this->not_ajax_request_handler();
 		
 		# ajax request во frontend_init нельзя, потому что срабатывает только как is_admin()
 		add_action('wp_ajax_dem_ajax',        array( $this, 'ajax_request_handler') );

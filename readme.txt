@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.7.0
+Stable tag: 4.7.1
 Tested up to: 4.1.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,10 @@ Comming soon...
 
 
 == Changelog ==
+= 4.7.1 =
+* Added: "on general options page": global "revote" and "democratic" functionality disabling ability
+* Added: localisation POT file & english transtation
+
 = 4.7.0 =
 * Change: "progress fill type" & "answers order" options now on "Design option page"
 * Fix: english localisation 

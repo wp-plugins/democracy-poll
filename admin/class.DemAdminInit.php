@@ -7,7 +7,8 @@ class DemAdminInit extends Dem{
         parent::__construct();
         
 		// add the management page to the admin nav bar
-		add_action('admin_menu', array( $this, 'register_option_page') );
+		if( $this->user_access )
+			add_action('admin_menu', array( $this, 'register_option_page') );
 		
 		// ссылка на настойки
 		add_filter('plugin_action_links', array( $this, 'setting_page_link'), 10, 2 );
@@ -171,6 +172,8 @@ class DemAdminInit extends Dem{
 			'load_textdomain'  => 1,
 			'show_copyright'   => 1,
 			'only_for_users'   => 0,			
+			'democracy_off'    => 1,  // глобальная опция democracy
+			'revote_off'       => 0,  // глобальная опция переголосование
 			'disable_js'       => 0,   // Дебаг: отключает JS
 			'cookie_days'      => 365, // Дебаг
 		);

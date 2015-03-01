@@ -37,8 +37,13 @@ class DemPoll {
 		
 		if( ! $this->id ) return; // влияет на весь класс, важно!
 		
-		$this->cookey    = 'demPoll_' . $this->id;
-		$this->poll      = $poll;
+		$this->cookey = 'demPoll_' . $this->id;
+		$this->poll   = $poll;
+		
+		// отключим демокраси опцию
+		if( Dem::$inst->opt['democracy_off'] ) $this->poll->democratic = false;
+		// отключим опцию переголосования
+		if( Dem::$inst->opt['revote_off'] ) $this->poll->revote = false;
         
 		$this->cachegear_on = Dem::$inst->is_cachegear_on();		
 		
@@ -237,8 +242,10 @@ class DemPoll {
 				$___ .= '<li'. $li_class . $title .' data-aid="'. $answer->aid .'">';
 					$label_perc_txt = ' <span class="dem-label-percent-txt">'. $percent .'%, '. $votes_txt .'</span>';
 					$percent_txt = '<div class="dem-percent-txt">'. $percent_txt .'</div>';
-                    $percent_txt_inline = ( $percent > 0 ) ? ' <span class="dem-votes-txt-percent">'. $percent .'%</span>' : '';
-					$votes_txt   = '<div class="dem-votes-txt">'. $votes_txt . $percent_txt_inline . '</div>';
+					$votes_txt = '<div class="dem-votes-txt">
+						<span class="dem-votes-txt-votes">'. $votes_txt .'</span>
+						'. ( ( $percent > 0 ) ? ' <span class="dem-votes-txt-percent">'. $percent .'%</span>' : '' ) . '
+						</div>';
 					                
                     $___ .= '<div class="label">'. $word . $sup . $label_perc_txt .'</div>';
 					

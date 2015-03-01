@@ -7,9 +7,9 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: languages
-Version: 4.7.0
+Version: 4.7.1
 */
-define('DEM_VER', '4.7.0');
+define('DEM_VER', '4.7.1');
 
 // Abort loading if WordPress is upgrading
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
@@ -18,7 +18,7 @@ if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
 if( ! require dirname(__FILE__) . '/admin/is_php53.php' ) return;
 
 // Перевод заголовка
-__('Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.');
+__('Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.', 'dem');
 
 
 // регистрируем таблицы
@@ -31,12 +31,15 @@ $wpdb->democracy_log = $wpdb->prefix . 'democracy_log';
 require dirname(__FILE__) . '/class.DemInit.php';
 require dirname(__FILE__) . '/class.DemPoll.php';
 
-//add_action('plugins_loaded', array('Dem','init') ); // так нельзя, все события вешаются на хуки внутри класса
-Dem::init();
+### активируем плагин
+add_action('plugins_loaded', array('Dem','init') );
 
 
 ### активируем виджет, если включен
-if( Dem::$inst->opt['use_widget'] ) require 'widget_democracy.php';
+add_action('plugins_loaded', function(){
+	if( Dem::$inst->opt['use_widget'] ) require dirname(__FILE__) . '/widget_democracy.php';
+} );
+
 
 
 
