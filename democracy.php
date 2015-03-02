@@ -100,7 +100,6 @@ function __query_poll_screen_choose( $poll ){
 
 
 
-
 		
 #### Активаниция плагина
 register_activation_hook( __FILE__, 'democracy_activate' );

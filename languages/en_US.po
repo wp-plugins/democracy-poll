@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Democracy\n"
 "POT-Creation-Date: 2015-03-01 00:12+0500\n"
-"PO-Revision-Date: 2015-03-01 00:34+0500\n"
+"PO-Revision-Date: 2015-03-02 02:01+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -167,12 +167,12 @@ msgstr "Custom/Additional CSS styles:"
 msgid "Не исползовать тему!"
 msgstr "Don't use theme!"
 
-# In this field you can add some new css properties to existence one or completely replace css styles. Write here css and it will be added at the bottom of current Democracy css. To complete replace styles, check \"Don't use theme!\" and describe all styles for Democracy. <br> This field cleaned manually, if you reset options of this page or change/set another theme, despite of it all changes of the field will be save.
+# In this field you can add some new css properties to existence one or completely replace css styles. Write here css and it will be added at the bottom of current Democracy css. To complete replace styles, check \"Don't use theme!\" and describe all styles for Democracy. <br> This field cleaned manually, if you reset options of this page or change/set another theme, the field will be save.
 #: admin/admin_page.php:246
 msgid ""
 "В этом поле вы можете дополнить или заменить css стили. Впишите сюда произвольные css стили и они будут добавлены винзу стилей текущей темы. Чтобы полностью заменить тему отметте \"Не использовать тему\" и впишите сюда свои стили.<br>\n"
 "                    Это поле очищается вручную, если сбросить стили или поставить другую тему, данные в этом поле сохраняться и просто будут добавлены внизу текущих css стилей."
-msgstr "In this field you can add some new css properties to existence one or completely replace css styles. Write here css and it will be added at the bottom of current Democracy css. To complete replace styles, check \"Don't use theme!\" and describe all styles for Democracy. <br> This field cleaned manually, if you reset options of this page or change/set another theme, despite of it all changes of the field will be save."
+msgstr "In this field you can add some new css properties to existence one or completely replace css styles. Write here css and it will be added at the bottom of current Democracy css. To complete replace styles, check \"Don't use theme!\" and describe all styles for Democracy. <br> This field cleaned manually, if you reset options of this page or change/set another theme, the field will be save."
 
 # All CSS styles, that uses now:
 #: admin/admin_page.php:259

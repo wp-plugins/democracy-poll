@@ -172,7 +172,7 @@ class DemAdminInit extends Dem{
 			'load_textdomain'  => 1,
 			'show_copyright'   => 1,
 			'only_for_users'   => 0,			
-			'democracy_off'    => 1,  // глобальная опция democracy
+			'democracy_off'    => 0,  // глобальная опция democracy
 			'revote_off'       => 0,  // глобальная опция переголосование
 			'disable_js'       => 0,   // Дебаг: отключает JS
 			'cookie_days'      => 365, // Дебаг
