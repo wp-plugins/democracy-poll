@@ -1,7 +1,7 @@
 @import '_preset.css';
 
 /* block theme -------------------------------------------------------------- */
-.democracy{ border-color:#ccc; border: 1px solid rgba(0,0,0,.2); padding:1em; background-color: #eee; background-color:rgba(0,0,0,.1);  }
+.democracy{ border-color:#ccc; border: 1px solid rgba(0,0,0,.2); padding:1em; padding-bottom:0; background-color: #eee; background-color:rgba(0,0,0,.1);  }
 
 .dem-poll-title{ margin:0; font-size:115%; margin:-.9em; margin-bottom:1em; text-align: center; padding:1em; border-bottom: 1px solid rgba(0,0,0,.15); }
 
