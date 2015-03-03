@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.7.1
+Stable tag: 4.7.2
 Tested up to: 4.1.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,10 @@ Comming soon...
 
 
 == Changelog ==
+= 4.7.2 =
+* Change: in main js cache result/vote view was setted with animation. Now it sets without animation & so the view change invisible for users. Also, fix with democracy wrap block height set, now it's sets on "load" action, but not "document.ready".
+* Change: "block.css" theme improvements for better design.
+
 = 4.7.1 =
 * Added: "on general options page": global "revote" and "democratic" functionality disabling ability
 * Added: localisation POT file & english transtation
