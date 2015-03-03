@@ -44,7 +44,7 @@
 	};
     
     // Loader
-	$.fn.demSetLoader   = function(){ var $the = this;
+	$.fn.demSetLoader = function(){ var $the = this;
         if( $demLoader.length ) $the.closest(demScreen).append( $demLoader.clone().css('display','table') );
         else loader = setTimeout( function(){ $the.demLoadingDots(); }, 50 ); // dats
         return this;
@@ -123,19 +123,24 @@
 	};
     
     // Устанавливает высоту жестко.
-    $.fn.demSetHeight = function( speed ){ return this.each(function(){ var $the = $(this);
-        if( ! speed ) speed = 300;
-        var html = $the.html();
-                                                                       
-        // получим нужную высоту
-        var $_the  = $the.clone().html( html ).css({height:'auto'}).appendTo( $the ); // получим высоту
-		var newH = ($_the.css('box-sizing') == 'border-box') ? $_the.outerHeight() : $_the.height();
-		newH += 5; // запас 5px
-        $_the.remove();
-                                                                       
-        // Анимируем до нужной выстоты
-        $the.css({ opacity:0 }).animate({ height: newH }, speed, function(){ $(this).animate({opacity:1}, speed*1.5); } );
-    }); };
+    $.fn.demSetHeight = function( noanimation ){
+		return this.each(function(){
+			var $the = $(this);
+			var speed = 300;
+			var html = $the.html();
+
+			// получим нужную высоту
+			var $_the  = $the.clone().html( html ).css({height:'auto'}).appendTo( $the ); // получим высоту
+			var newH = ($_the.css('box-sizing') == 'border-box') ? $_the.outerHeight() : $_the.height();
+			//newH += 5; // запас 5px
+			$_the.remove();
+
+			if( ! noanimation  ) // Анимируем до нужной выстоты
+				$the.css({ opacity:0 }).animate({ height: newH }, speed, function(){ $(this).animate({opacity:1}, speed*1.5); } );
+			else
+				$the.css({ height: newH });
+		});
+	};
 		
 	$.fn.demShake=function(){return this.each(function(){var a=$(this).css("position");a&&"static"!==a||$(this).css("position","relative");for(a=1;2>=a;a++)$(this).animate({left:-10},50).animate({left:10},100).animate({left:0},50)})};
 		
@@ -234,7 +239,9 @@
             });
         };
         
-        return this.each(function(){ var $the = $(this);
+        return this.each(function(){
+			var $the = $(this);
+			
             // ищем главный блок
             var $dem   = $the.prev( democracy );
             if( ! $dem.length ) $dem   = $the.closest( democracy );
@@ -246,18 +253,17 @@
             var pCookie   = $.cookie('demPoll_' + dem_id);
             var notVoteFlag = ( pCookie == 'notVote' ) ? true : false; // Если уже проверялось, что пользователь не голосовал, не отправляем запрос еще раз
             var isAnswrs = !(typeof pCookie == 'undefined') && ! notVoteFlag;
-            
-            
                                     
             // обрабатываем экраны, какой показать и что делать при этом
             var voteHTML  = $the.find( demScreen + '-cache.vote' ).html();
             var votedHTML = $the.find( demScreen + '-cache.voted' ).html();
                                     
-            if( ! voteHTML ) return; // если опрос закрыт должны кэшироватьс только результаты голосования. Просто выходим
-                                    
+            if( ! voteHTML ) return; // если опрос закрыт должны кэшироваться только результаты голосования. Просто выходим.
+            
+			// устанавливаем нужный кэш
             var HTML =  voteHTML;
             if( isAnswrs ) HTML =  votedHTML;
-            $res.html( HTML + '<!--cache-->' ).demSetHeight().demSetClick();
+            $res.html( HTML + '<!--cache-->' ).demSetHeight(1).demSetClick();
 
             if( notVoteFlag ) return; // если уже проверялось, что пользователь не голосовал, выходим
             
@@ -300,16 +306,13 @@
                 $dem.click( check );
             }
 
-            $res.demSetHeight();
-
         });
     };
-    
-
-	$(document).ready(function($){
+    	
+	$(window).load(function() {
 		// Основные события Democracy для всех блоков
 		$( demScreen ).filter(':visible').demSetClick().demSetHeight(1);
-	
+		
 		/*
 		 * Обработка кэша.
 		 * Нужен установленный jQuery Cookie Plugin 
@@ -320,7 +323,6 @@
             //console.log('Democracy cache gear ON');
 			$cache.demCacheInit();
 		}
-	
 	});
 
 
