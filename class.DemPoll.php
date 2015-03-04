@@ -179,7 +179,7 @@ class DemPoll {
                     } 
                     else {
                         $url = add_query_arg( array('show_addanswerfield'=>1, 'dem_pid' => $this->id, 'dem_act'=>null ) );
-                        $___ .= '<li class="dem-add-answer"><a href="'. $url .'" rel="nofollow" data-dem-act="newAnswer" class="dem-link">'. __('Добавить свой ответ','dem') .'</a></li>';
+                        $___ .= '<li class="dem-add-answer"><a href="'. $url .'" rel="nofollow" data-dem-act="newAnswer" class="dem-link">'. __dem('Добавить свой ответ') .'</a></li>';
                     }
                 }		
             $___ .= "</ul>";
@@ -187,10 +187,10 @@ class DemPoll {
             $___ .= '<div class="dem-bottom">';
                 $___ .= '<input type="hidden" name="dem_act" value="vote" />';
                 $___ .= '<input type="hidden" name="dem_pid" value="'. $this->id .'" />';
-                $___ .= '<div class="dem-vote-button"><input class="dem-button" type="submit" value="'. __('Голосовать','dem') .'" data-dem-act="vote" /></div>';
+                $___ .= '<div class="dem-vote-button"><input class="dem-button" type="submit" value="'. __dem('Голосовать') .'" data-dem-act="vote" /></div>';
 
                 $url   = add_query_arg( array('dem_act' => 'view', 'dem_pid' => $this->id) );
-                $___ .= '<a href="'. $url .'" class="dem-link dem-results-link" data-dem-act="view" rel="nofollow">'. __('Результаты','dem') .'</a>';
+                $___ .= '<a href="'. $url .'" class="dem-link dem-results-link" data-dem-act="view" rel="nofollow">'. __dem('Результаты') .'</a>';
             $___ .= '</div>';
 
         $___ .= '</form>';	
@@ -216,7 +216,7 @@ class DemPoll {
 		}
 		
 		$voted_class = 'dem-voted-this';
-		$voted_txt   = __('Ваш голос. ','dem');
+		$voted_txt   = __dem('Это Ваш голос. ');
 		$___ .= '<ul class="dem-answers" data-voted-class="'. $voted_class .'" data-voted-txt="'. $voted_txt .'">';
 			foreach ( $this->poll->answers as $answer ){
 				$word          = stripslashes( $answer->answer );
@@ -226,10 +226,10 @@ class DemPoll {
 				
                 $novoted_class = ( $votes == 0 ) ? ' dem-novoted' : '';
 				$li_class = ' class="'. ( $is_winner ? 'dem-winner':'' ) . ( $is_voted_this ? " $voted_class":'' ) . $novoted_class .'"';
-				$sup = $answer->added_by ? ' <sup class="dem-star" title="'. __('Ответ добавлен посетителем','dem') .'">*</sup>' : '';
+				$sup = $answer->added_by ? ' <sup class="dem-star" title="'. __dem('Ответ добавлен посетителем') .'">*</sup>' : '';
 				$percent = ( $votes > 0 ) ? round($votes / $total * 100) : 0;
 				
-				$percent_txt = sprintf( __("%s%% от всех голосов",'dem'), $percent );
+				$percent_txt = sprintf( __dem("%s%% от всех голосов"), $percent );
 				$title       = ( $is_voted_this ? $voted_txt : '' ) . ' '. $percent_txt;
 				$title       = " title='$title'";
 				
@@ -237,7 +237,7 @@ class DemPoll {
 				$sclonenie = function( $number, $titles ){ $cases = array (2, 0, 1, 1, 1, 2);
 					return $number .' '. $titles[ ($number%100 > 4 && $number %100 < 20) ? 2 : $cases[min($number%10, 5)] ];
 				};
-				$votes_txt = $sclonenie( $votes, array(__('голос','dem'),__('голоса','dem'),__('голосов','dem')) );
+				$votes_txt = $sclonenie( $votes, array( __dem('голос'),__dem('голоса'),__dem('голосов') ) );
 
 				$___ .= '<li'. $li_class . $title .' data-aid="'. $answer->aid .'">';
 					$label_perc_txt = ' <span class="dem-label-percent-txt">'. $percent .'%, '. $votes_txt .'</span>';
@@ -264,27 +264,27 @@ class DemPoll {
 		
 		$___ .= '<div class="dem-bottom">';
 			$___ .= '<div class="dem-poll-info">';
-				$___ .= '<div class="dem-total-votes">'. sprintf( __('Всего голосов: %s','dem'), $total ) .'</div>';
-				$___ .= '<div class="dem-begin-date" title="'. __('Начало','dem') .'">'. date_i18n( get_option('date_format'), $this->poll->added ) .'</div>';
-				$___ .= $this->poll->end    ? '<div class="dem-begin-date" title="'. __('Конец','dem') .'">'. date_i18n( get_option('date_format'), $this->poll->end ) .'</div>' : '';
-				$___ .= $answer->added_by   ? '<div class="dem-added-by-user"><span class="dem-star">*</span>'. __(' - добавлен посетителем','dem') .'</div>' : '';
-				$___ .= ! $this->poll->open ? '<div>'. __('Опрос закрыт','dem') .'</div>' : '';
+				$___ .= '<div class="dem-total-votes">'. sprintf( __dem('Всего голосов: %s'), $total ) .'</div>';
+				$___ .= '<div class="dem-begin-date" title="'. __dem('Начало') .'">'. date_i18n( get_option('date_format'), $this->poll->added ) .'</div>';
+				$___ .= $this->poll->end    ? '<div class="dem-begin-date" title="'. __dem('Конец') .'">'. date_i18n( get_option('date_format'), $this->poll->end ) .'</div>' : '';
+				$___ .= $answer->added_by   ? '<div class="dem-added-by-user"><span class="dem-star">*</span>'. __dem(' - добавлен посетителем') .'</div>' : '';
+				$___ .= ! $this->poll->open ? '<div>'. __dem('Опрос закрыт') .'</div>' : '';
 				if( ! $this->inArchive && Dem::$inst->opt['archive_page_id'] )
-					$___ .= '<a class="dem-archive-link dem-link" href="'. get_permalink( Dem::$inst->opt['archive_page_id'] ) .'" rel="nofollow">'. __('Архив опросов','dem') .'</a>';
+					$___ .= '<a class="dem-archive-link dem-link" href="'. get_permalink( Dem::$inst->opt['archive_page_id'] ) .'" rel="nofollow">'. __dem('Архив опросов') .'</a>';
 			$___ .= '</div>';
 
         if( $this->poll->open ){
             // заметка для незарегистрированных пользователей
             $url = esc_url( wp_login_url( $_SERVER['REQUEST_URI'] ) );
-            $html_only_users = '<div class="dem-only-users">'. sprintf( __('Голосовать могут только зарегистрированные пользователи. <a href="%s" rel="nofollow">Войдите</a> для голосования.','dem'), $url ) .'</div>';
+            $html_only_users = '<div class="dem-only-users">'. sprintf( __dem('Голосовать могут только зарегистрированные пользователи. <a href="%s" rel="nofollow">Войдите</a> для голосования.'), $url ) .'</div>';
             // переголосовать
             $url = add_query_arg( array('dem_act' => 'delVoted', 'dem_pid' => $this->id ) );
-            $html_revote = '<a class="dem-revote-link dem-link" href="'. $url .'" data-dem-act="delVoted" data-confirm-text="'. __('Точно отменить голоса?','dem') .'" rel="nofollow">
-                '. __('Переголосовать', 'dem') .'
+            $html_revote = '<a class="dem-revote-link dem-link" href="'. $url .'" data-dem-act="delVoted" data-confirm-text="'. __dem('Точно отменить голоса?') .'" rel="nofollow">
+                '. __dem('Переголосовать') .'
             </a>';
             // вернуться к голосованию
             $url = add_query_arg( array('dem_act' => 'vote_screen', 'dem_pid' => $this->id ) );
-            $html_backvote = '<a href="'. $url .'" class="dem-button dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __('Голосовать','dem') .'</a>';
+            $html_backvote = '<a href="'. $url .'" class="dem-button dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __dem('Голосовать') .'</a>';
         
 			if( ! $this->for_cache && $this->blockForVisitor ){
                 $___ .= $html_only_users;
@@ -296,7 +296,7 @@ class DemPoll {
             }
         
             if( $this->for_cache ){
-                $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __('Вы или с вашего IP уже голосовали.','dem') .'</div>';
+                $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __dem('Вы или с вашего IP уже голосовали.') .'</div>';
                 $___ .= str_replace( array('<div', 'class="'), array('<div style="display:none;"', 'class="dem-cache-notice '), $html_only_users );
             }
         }

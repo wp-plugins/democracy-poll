@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.7.2
+Stable tag: 4.7.3
 Tested up to: 4.1.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.7.3 =
+* Added: Custom front-end localisation - as single settings page. Now you can translate all phrases of Poll theme as you like.
+
 = 4.7.2 =
 * Change: in main js cache result/vote view was setted with animation. Now it sets without animation & so the view change invisible for users. Also, fix with democracy wrap block height set, now it's sets on "load" action, but not "document.ready".
 * Change: "block.css" theme improvements for better design.

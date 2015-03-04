@@ -18,6 +18,10 @@
 	elseif( isset( $_GET['subpage'] ) && $_GET['subpage'] == 'design') {
 		dem_polls_design();
 	}
+	// Дизайн 
+	elseif( isset( $_GET['subpage'] ) && $_GET['subpage'] == 'l10n') {
+		dem_l10n_options();
+	}
 	// список опросов
 	else
 		dem_pols_list();
@@ -33,6 +37,97 @@
 <?php 
 
 ### функции
+function __dem_polls_preview(){
+	?>
+	<ul class="group">
+		<li class="block polls-preview">
+			<?php
+			$poll = new DemPoll();
+			$poll->cachegear_on = false;
+
+			$poll->hasVoted = 1;
+			$answers = wp_list_pluck( $poll->poll->answers, 'aid');
+			$poll->votedFor = $answers[ array_rand($answers) ];
+
+			echo '<div class="poll"><p class="tit">'. __('Вид результатов:','dem') .'</p>'. $poll->get_screen('voted') .'</div>';
+
+			echo '<div class="poll"><p class="tit">'. __('Вид голосования:','dem') .'</p>'. $poll->get_screen('force_vote') .'</div>';
+
+			echo '<div class="poll show-loader"><p class="tit">'. __('Вид AJAX загрузчика:','dem') .'</p>'. $poll->get_screen('vote') .'</div>';
+			?>
+			<input type="text" class="iris_color preview-bg">
+		</li>
+    </ul>
+	<?php
+}
+
+/**
+ * Страница локализации
+ */
+function dem_l10n_options(){
+	demenu(); // меню
+	
+	?>
+	
+	<h2><?php _e('Изменение текстов Опроса','dem') ?></h2>
+	
+	<?php __dem_polls_preview(); ?>
+	
+	<div class="local-n">
+		<form method="POST" action="">
+			<?php
+			// получим все переводы из файлов
+			$strs = array();
+			foreach( glob( Dem::$inst->dir_path . '*' ) as $file ){
+				if( is_dir( $file ) ) continue;
+				if( ! preg_match('~\.php$~', basename( $file ) ) ) continue;
+
+				preg_match_all('~__dem\(\s?[\'"](.*?)[\'"]\s?\)~', file_get_contents( $file ), $match );
+				if( $match[1] ) $strs = array_merge( $strs, $match[1] );
+			}
+			$strs = array_unique( $strs );
+			// выводим таблицу
+	
+			// отпарсим английский перевод из файла
+			$mofile = Dem::$inst->dir_path . 'languages/en_US.mo';
+			$en_US = new MO();
+			$en_US->import_from_file( $mofile );
+			$en_US = $en_US->entries;
+
+			$i = 0;
+			$_l10n = get_option('democracy_l10n');
+			echo '<table class="wp-list-table widefat fixed posts">
+			<thead>
+				<tr>
+					<th>'. __('Оригинал','dem') .'</th>
+					<th>'. __('Ваш вариант','dem') .'</th>
+				</tr>
+			</thead>
+			<tbody id="the-list">
+			';
+	
+			foreach( $strs as $str ){
+				$i++;
+				$en_str = $en_US[ $str ]->translations[0];
+				
+				echo '
+				<tr class="'. ($i%2?'alternate':'') .'">
+					<td>'. (( get_locale() == 'ru_RU' ) ? $str : $en_str) .'</td>
+					<td><textarea style="width:100%;height:50px;" name="l10n['. esc_attr( $str ) .']">'. ( @$_l10n[ $str ] ?: __dem( $str ) ) .'</textarea></td>
+				</tr>';
+
+			}
+			echo '<tbody>
+			</table>';
+			?>
+			<p>
+				<input class="button-primary" type="submit" name="dem_save_l10n" value="<?php _e('Сохранить тексты','dem'); ?>">
+				<input class="button" type="submit" name="dem_reset_l10n" value="<?php _e('Сбростиь на начальные','dem'); ?>">
+			</p>
+		</form>
+	</div>
+	<?php
+}
 
 /**
  * Старница дизайн
@@ -51,32 +146,14 @@ function dem_polls_design(){
 
 	<h2><?php _e('Настройки Дизайна','dem') ?></h2>	
     
-    <div class="polls-preview">
-        <?php
-        $poll = new DemPoll();
-        $poll->cachegear_on = false;
-    
-        $poll->hasVoted = 1;
-        $answers = wp_list_pluck( $poll->poll->answers, 'aid');
-        $poll->votedFor = $answers[ array_rand($answers) ];
-
-        echo '<div class="poll"><p class="tit">'. __('Вид результатов:','dem') .'</p>'. $poll->get_screen('voted') .'</div>';
-        
-        echo '<div class="poll"><p class="tit">'. __('Вид голосования:','dem') .'</p>'. $poll->get_screen('force_vote') .'</div>';
-    
-        echo '<div class="poll show-loader"><p class="tit">'. __('Вид AJAX загрузчика:','dem') .'</p>'. $poll->get_screen('vote') .'</div>';
-        ?>
-        <input type="text" class="iris_color preview-bg">
-    </div>
-
-	<div id="democr_options">
+	<div class="democr_options">
+		<?php __dem_polls_preview(); ?>
+		
 		<form action="" method="post">
 			
 			<ul class="group">
-				
-				<li class="block">
-					<h3><?php _e('Выберете тему:','dem'); ?></h3>
-                                        
+				<li class="title"><?php _e('Выберете тему:','dem'); ?></li>				
+				<li class="block">                        
                     <?php 
                     foreach( Dem::$inst->_get_styles_files() as $file ){
                         $filename = basename( $file );
@@ -89,42 +166,44 @@ function dem_polls_design(){
                     }
                     ?>
 				</li>
+			</ul>
 				
-				
-				<li class="block">
-					<h3><?php _e('Вид ответов:','dem'); ?></h3>
-					
-					<?php _e( 'Как закрашивать прогресс каждого ответа?', 'dem') ?>
+			<ul class="group">
+				<li class="title"><?php _e('Вид ответов:','dem'); ?></li>		
+				<li class="block">					
 					<select name="dem[graph_from_total]">
 					   <option value="0" <?php selected( $opt['graph_from_total'], 0 )?>><?php _e( 'победитель - 100%, остальные в % от него', 'dem') ?></option>
 					   <option value="1" <?php selected( $opt['graph_from_total'], 1 )?>><?php _e( 'как % от всех голосов', 'dem') ?></option>
 					</select>
+					<?php _e( 'Как закрашивать прогресс каждого ответа?', 'dem') ?>
 
 					<br><br>
-					<?php _e('Как сортирвоать ответы?', 'dem') ?>
 					<select name="dem[order_answers]">
 					   <option value="0" <?php selected( $opt['order_answers'], 0 )?>><?php _e( 'В порядке добавления (по ID)', 'dem') ?></option>
 					   <option value="1" <?php selected( $opt['order_answers'], 1 )?>><?php _e( 'Выигрывающие вверху', 'dem') ?></option>
 					</select>					
+					<?php _e('Как сортирвоать ответы?', 'dem') ?>
 				</li>
-
-
+	
+            </ul>
+            
                 
             <?php if( $opt['css_file_name'] ){ ?>
+            <ul class="group">
+            	<li class="title"><?php _e('Настройки линии прогресса:','dem'); ?></li>               
 				<li class="block">
-					<h3><?php _e('Настройки линии прогресса:','dem'); ?></h3>
                     <label><?php _e('Цвет линии:','dem') ?> <input type="text" class="iris_color" name="dem[line_fill]" value="<?php echo $opt['line_fill'] ?>"></label>
                     <label><?php _e('Цвет линии (для голосовавшего):','dem') ?> <input type="text" class="iris_color" name="dem[line_fill_voted]" value="<?php echo $opt['line_fill_voted'] ?>"></label>
                     <label><?php _e('Цвет фона:','dem') ?>  <input type="text" class="iris_color" name="dem[line_bg]" value="<?php echo $opt['line_bg'] ?>"></label>
-                    <label><?php _e('Высота линии:','dem') ?>  <input type="number" style="width:50px" name="dem[line_height]" value="<?php echo $opt['line_height'] ?>"> px</label>
-                    
-                    <div style="margin-top:2em;"><?php _dem_design_submit_button() ?></div>
+                    <label><?php _e('Высота линии:','dem') ?>  <input type="number" style="width:50px" name="dem[line_height]" value="<?php echo $opt['line_height'] ?>"> px</label>                    
 				</li>
-                
-                
-                <li class="block buttons">
-                    <h3><?php _e('Кнопка:','dem'); ?></h3>
-                    
+			</ul>
+            
+            <div style="margin-bottom:1em;"><?php _dem_design_submit_button() ?></div>
+            
+            <ul class="group">
+               <li class="title"><?php _e('Кнопка:','dem'); ?></li>
+                <li class="block buttons">                    
                     <label>
                         <input type="radio" value="" name="dem[css_button]" <?php checked( $opt['css_button'], '') ?> />
                         <br><input type="button" value="<?php _e('Нет','dem'); ?>">
@@ -184,13 +263,16 @@ function dem_polls_design(){
 				</li>
                 
                 <div class="clear"></div>
-                <p><?php _dem_design_submit_button() ?></p>
                 
+            	<p><?php _dem_design_submit_button() ?></p>
+            </ul>
+            
+            
             <?php } // if( $opt['css_file_name'] ) ?>
-                
-                <li class="block loaders">
-                    <h3><?php _e('AJAX загрузчик:','dem'); ?></h3>
-                    
+            
+            <ul class="group"> 
+                <li class="title"><?php _e('AJAX загрузчик:','dem'); ?></li>
+                <li class="block loaders">                    
                     <label class="left">
                         <div style="width:30px;height:30px;"><?php _e('Нет','dem'); ?></div>
                         <input type="radio" value="" name="dem[loader_fname]" <?php checked( $opt['loader_fname'], '') ?> />
@@ -229,53 +311,53 @@ function dem_polls_design(){
                     
 					<em><br><?php _e('Картинка при AJAX загрузке. Если выбрать "Нет", то вместо картинки к ссылке будет добавлятся "...". SVG картинки не анимируются в IE 11 и ниже, остальные браузеры поддерживаются примерно на 90% (по статистике http://caniuse.com/).','dem') ?></em>
 				</li>
-                
-                <div class="clear"></div>
-                <li class="block" style="margin:2em 0;">
-                    <?php _dem_design_submit_button() ?>
-                </li>
-                
-                <input type="submit" name="dem_reset_design_options" class="button" value="<?php _e('Сбросить настройки на начальные','dem') ?>" />
-                
-
-                
-                <li class="block" style="width:98%;">
-                    <h3><?php _e('Произвольные/Дополнительные CSS стили:','dem') ?></h3>
                     
+				<div class="clear"></div>
+				<p><?php _dem_design_submit_button() ?></p>
+            </ul>
+            
+
+            
+            <ul class="group">               
+                <li class="title"><?php _e('Произвольные/Дополнительные CSS стили:','dem') ?></li>
+                
+                <li class="block" style="width:98%;">                    
                     <label><input type="radio" name="dem[css_file_name]" value="" <?php checked( $opt['css_file_name'], '') ?> ><?php _e('Не исползовать тему!','dem') ?></label>                    
                     <p><i><?php _e('В этом поле вы можете дополнить или заменить css стили. Впишите сюда произвольные css стили и они будут добавлены винзу стилей текущей темы. Чтобы полностью заменить тему отметте "Не использовать тему" и впишите сюда свои стили.<br>
                     Это поле очищается вручную, если сбросить стили или поставить другую тему, данные в этом поле сохраняться и просто будут добавлены внизу текущих css стилей.','dem') ?></i></p>
                     <textarea name="additional_css" style="width:100%;min-height:50px;height:<?php echo $additional ? '300px' : '50px' ?>;"><?php echo $additional ?></textarea>
                 </li>
                 
-                <div class="clear"></div>
-                
-                <p>
-                    <?php _dem_design_submit_button() ?>
-                </p>
-                
-                
-                <div class="block" style="margin-top:10em">
-                    <h3><?php _e('Все CSS стили, которые используются сейчас:','dem'); ?></h3>
-                     
-                    <script>function select_kdfgu( that ){ var sel = (!!document.getSelection) ? document.getSelection() : (!!window.getSelection)   ? window.getSelection() : document.selection.createRange().text; if( sel == '' ) that.select(); }</script>
-                    <em style="opacity: 0.8;"><?php _e('Здесь все собранные css стили: тема, кнопка и настройки. Вы можете скопировать эти стили в поле "Произвольные/Дополнительные CSS стили:", отключить шаблон (тему) и изменить стили как вам нужно.','dem') ?></em>
-                    <textarea onmouseup="select_kdfgu(this);" onfocus="this.style.height = '700px';" onblur="this.style.height = '100px';" readonly="true" style="width:100%;min-height:100px;"><?php echo $demcss['full'] ?></textarea>
-                    
-                    <p><?php _e('Сжатая версия (используется при подключении в HTML):','dem'); ?></p>
-                    <textarea onmouseup="select_kdfgu(this);" readonly="true" style="width:100%;min-height:400px;"><?php echo $demcss['minify'] ?></textarea>
-                </div>
-			</ul> 
+				<div class="clear"></div>
+
+			</ul>                 
+
+			<p style="margin:2em 0; margin-top:5em;">
+				<?php _dem_design_submit_button() ?>
+				<input type="submit" name="dem_reset_design_options" class="button" value="<?php _e('Сбросить настройки на начальные','dem') ?>" />
+			</p>
+
+			<ul class="group" style="margin-top:5em">
+				<li class="title"><?php _e('Все CSS стили, которые используются сейчас:','dem'); ?></li>
+				<li class="block">
+
+					<script>function select_kdfgu( that ){ var sel = (!!document.getSelection) ? document.getSelection() : (!!window.getSelection)   ? window.getSelection() : document.selection.createRange().text; if( sel == '' ) that.select(); }</script>
+					<em style="opacity: 0.8;"><?php _e('Здесь все собранные css стили: тема, кнопка и настройки. Вы можете скопировать эти стили в поле "Произвольные/Дополнительные CSS стили:", отключить шаблон (тему) и изменить стили как вам нужно.','dem') ?></em>
+					<textarea onmouseup="select_kdfgu(this);" onfocus="this.style.height = '700px';" onblur="this.style.height = '100px';" readonly="true" style="width:100%;min-height:100px;"><?php echo $demcss['full'] ?></textarea>
+
+					<p><?php _e('Сжатая версия (используется при подключении в HTML):','dem'); ?></p>
+					<textarea onmouseup="select_kdfgu(this);" readonly="true" style="width:100%;min-height:400px;"><?php echo $demcss['minify'] ?></textarea>
+				</li>
+			</ul>
 			
 		</form>
-		
 
-	</div>
+</div>
 	<?php
 }
 function _dem_design_submit_button(){
     ?>
-    <input type="submit" name="dem_save_design_options" class="button-primary" value="<?php _e('Сохранить изменения','dem') ?>" />
+    <input type="submit" name="dem_save_design_options" class="button-primary" value="<?php _e('Сохранить все изменения','dem') ?>" />
     <?php
 }
 
@@ -413,10 +495,10 @@ function dem_general_settings(){
                 
 	<h2><?php _e('Общие Настройки','dem') ?></h2>
 		
-	<div id="democr_options">
+	<div class="democr_options">
 		<form action="" method="post">
 			
-			<ul class="group">
+			<ul style="margin:1em;">
 				<li class="block">
 				   <label>
 					   <?php $logrows_count = $wpdb->get_var("SELECT count(*) FROM $wpdb->democracy_log"); ?>
@@ -529,7 +611,8 @@ function dem_general_settings(){
 			
 		      <br><br>
 			<h3><?php _e('Другое','dem') ?></h3>
-			<ul class="group">
+			
+            <ul style="margin:1em;">
                 
 				<li class="block">
 				   <label>
@@ -740,11 +823,12 @@ function demenu(){
 	$out = '';
 	$out .= '<p class="demenu">';
         $out .= '<a  class="button'. $current('general_settings') .'" href="'. add_query_arg( array('subpage'=>'general_settings'), $mainpage ) .'">'. __('Настройки Democracy','dem') .'</a>';
+        $out .= '<a  class="button'. $current('l10n') .'" href="'. add_query_arg( array('subpage'=>'l10n'), $mainpage ) .'">'. __('Изменение текстов','dem') .'</a>';
         $out .= '<a href="'. add_query_arg( array('subpage'=>'design'), $mainpage ) .'" class="button'. $current('design') .'">'. __('Дизайн опросов','dem') .'</a>';
         $out .= '<a href="'. add_query_arg( array('subpage'=>'add_new'), $mainpage ) .'" class="button'. $current('add_new') .'">'. __('Добавить новый опрос','dem') .'</a>';
     
 		if( isset($_GET['subpage']) || isset($_GET['edit_poll'])  )
-			$out .= '<a href="'. $mainpage .'" class="button">'. __('← вернуться к опросам','dem') .'</a>';
+			$out .= '<a href="'. $mainpage .'" class="button">'. __('Список опросов','dem') .'</a>';
 		if( $referer )
 			$out .= '<a href="'. $referer .'" class="button-primary">'. __('← Назад','dem') .'</a>';
 	$out .= '</p>';

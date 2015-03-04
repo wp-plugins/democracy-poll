@@ -126,7 +126,7 @@
     $.fn.demSetHeight = function( noanimation ){
 		return this.each(function(){
 			var $the = $(this);
-			var speed = 300;
+			var speed = 400;
 			var html = $the.html();
 
 			// получим нужную высоту

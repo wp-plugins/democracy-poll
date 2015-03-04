@@ -93,7 +93,28 @@ jQuery(document).ready(function($){
     // set textarea value on change
     var settxval = function(){ $textarea.val( editor.getSession().getValue() ); };
     $textarea.closest('form').submit( settxval );
-    editor.getSession().on('change', settxval);  
+    editor.getSession().on('change', settxval);
+	
+	
+	// toggle blocks set arrows
+	var $arrow = $('<div class="tog-arrow" style="cursor:pointer; font-size:80%; width:80%;text-align: right;">▼</div>').css({ position:'absolute', right:0, top:0, padding:'1em 1.2em', color:'#ccc' });
+	$('.group .title').each(function(){
+		var $_arrow = $arrow.clone();
+		$(this).append( $_arrow );
+		
+		$_arrow.click(function(){
+			if( $(this).text() == '▼' ){
+				$(this).text('▲');
+				var h = $(this).height() * 0.6;
+				$(this).closest('.group').css('overflow','hidden').height( h );
+			}
+			else{
+				$(this).text('▼');
+				$(this).closest('.group').css('overflow','visible').height('auto');
+			}
+		});
+		
+	})
     
 });
 

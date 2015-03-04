@@ -1,8 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/admin/class.DemAdminInit.php';
-
-
 /**
  * Класс инициализирующий плагин и включающий все необходимые функции для админ-панели и фронт энда
  * влкючает в себя основную работу плагина WordPress
@@ -73,7 +70,7 @@ class Dem {
 	function toolbar( $toolbar ) {
 		$toolbar->add_node( array(
 			'id'    => 'dem_settings',
-			'title' => __('Democracy','dem'), 
+			'title' => 'Democracy',
 			'href'  => $this->admin_page_url() . '&subpage=general_settings',
 		) );
 		$toolbar->add_node( array(
@@ -97,8 +94,14 @@ class Dem {
 		$toolbar->add_node( array(
 			'parent' => 'dem_settings', 
 			'id'     => 'dem_degign',
-			'title'  => __('Настройки Дизайна','dem'),
+			'title'  => __('Настройки дизайна','dem'),
 			'href'   => $this->admin_page_url() . '&subpage=design',
+		) );
+		$toolbar->add_node( array(
+			'parent' => 'dem_settings', 
+			'id'     => 'dem_txts',
+			'title'  => __('Изменение текстов','dem'),
+			'href'   => $this->admin_page_url() . '&subpage=l10n',
 		) );
 	}
 	

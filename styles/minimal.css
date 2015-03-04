@@ -20,8 +20,6 @@
 .dem-votes-txt-percent{ font-size: 90%; }
 .dem-votes-txt-percent:before{ content:'- '; display:inline; }
 
-.dem-novoted{ display:table-cell; }
-
 .dem-percent-txt,
 .dem-label-percent-txt,
 .dem-poll-info > *{ display:none; }

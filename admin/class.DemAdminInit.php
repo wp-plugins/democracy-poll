@@ -71,6 +71,10 @@ class DemAdminInit extends Dem{
 
 		## Обработка запросов
         $up = false;
+		// обновляем произвольную локализацию
+		if( isset( $_POST['dem_save_l10n'] ) )            $up = $this->update_l10n();
+		// сбрасываем произвольную локализацию
+		if( isset( $_POST['dem_reset_l10n'] ) )           $up = update_option('democracy_l10n', array() );
 		// обновляем основные опции
 		if( isset( $_POST['dem_save_main_options'] ) )    $up = $this->update_options('main');
         // сбрасываем основные опции
@@ -111,6 +115,18 @@ class DemAdminInit extends Dem{
     
     
     ### опции плагина
+	/**
+	 * Обновляет произвольный текст перевода.
+	 */
+	function update_l10n(){
+		$new_l10n = stripslashes_deep( $_POST['l10n'] );
+		
+		// удалим если нет отличия оторигинального перевода
+		foreach( $new_l10n as $k => $v ) if( __( $k ,'dem') == $v ) unset( $new_l10n[ $k ] );
+		
+		update_option('democracy_l10n', $new_l10n );
+	}
+	
 	/**
 	 * Обнолвяет опции. Если опция не передана, то на её место будет записано 0
 	 * @param bool $type Какие опции обновлять: default, main_default, design_default, main, design

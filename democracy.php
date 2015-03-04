@@ -7,9 +7,9 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: languages
-Version: 4.7.2
+Version: 4.7.3
 */
-define('DEM_VER', '4.7.2');
+define('DEM_VER', '4.7.3');
 
 // Abort loading if WordPress is upgrading
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
@@ -28,8 +28,10 @@ $wpdb->democracy_a   = $wpdb->prefix . 'democracy_a';
 $wpdb->democracy_log = $wpdb->prefix . 'democracy_log';
 
 
-require dirname(__FILE__) . '/class.DemInit.php';
-require dirname(__FILE__) . '/class.DemPoll.php';
+require_once dirname(__FILE__) . '/class.DemInit.php';
+require_once dirname(__FILE__) . '/admin/class.DemAdminInit.php';
+require_once dirname(__FILE__) . '/class.DemPoll.php';
+
 
 ### активируем плагин
 add_action('plugins_loaded', array('Dem','init') );
@@ -37,16 +39,24 @@ add_action('plugins_loaded', array('Dem','init') );
 
 ### активируем виджет, если включен
 add_action('plugins_loaded', function(){
-	if( Dem::$inst->opt['use_widget'] ) require dirname(__FILE__) . '/widget_democracy.php';
+	if( Dem::$inst->opt['use_widget'] ) require_once dirname(__FILE__) . '/widget_democracy.php';
 } );
 
 
+/**
+ * Функция локализации внешней части
+ */
+function __dem( $str ){	
+	static $custom;
+	if( $custom === null ) $custom = get_option('democracy_l10n');
+
+	return isset( $custom[ $str ] ) ? $custom[ $str ] : __( $str, 'dem');
+}
 
 
 
 
-
-###### функции обертки ######
+###### функции обертки {
 /**
  * Для вывода отдельного опроса
  * @param int $id ID опроса
@@ -94,7 +104,7 @@ function get_democracy_archives( $hide_active = false, $before_title = '', $afte
 function __query_poll_screen_choose( $poll ){
 	return ( @$_REQUEST['dem_act'] == 'view' && @$_REQUEST['dem_pid'] == $poll->id ) ? 'voted' : 'vote'; 
 }
-
+# }
 
 
 
