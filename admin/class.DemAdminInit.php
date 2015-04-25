@@ -26,7 +26,7 @@ class DemAdminInit extends Dem{
     
 	// admin page html
 	function admin_page_output(){	
-		if( @$_GET['message'] == 'created' ) $this->message[] = __('Новый опрос создан','dem');
+		if( @ $_GET['message'] == 'created' ) $this->message[] = __('Новый опрос создан','dem');
 		
 		// сообщения
 		if( $this->message ){

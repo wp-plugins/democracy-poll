@@ -7,9 +7,9 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: languages
-Version: 4.7.3
+Version: 4.7.4
 */
-define('DEM_VER', '4.7.3');
+define('DEM_VER', '4.7.4');
 
 // Abort loading if WordPress is upgrading
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
@@ -102,7 +102,7 @@ function get_democracy_archives( $hide_active = false, $before_title = '', $afte
 
 // Установка какой экран показать, на основе переданных запросов.
 function __query_poll_screen_choose( $poll ){
-	return ( @$_REQUEST['dem_act'] == 'view' && @$_REQUEST['dem_pid'] == $poll->id ) ? 'voted' : 'vote'; 
+	return ( @ $_REQUEST['dem_act'] == 'view' && @ $_REQUEST['dem_pid'] == $poll->id ) ? 'voted' : 'vote'; 
 }
 # }
 

@@ -1,9 +1,11 @@
-#the-question{ width:400px; display:block; margin:12px; }
+#the-question{ display:block; margin:12px; }
 .poll-options{ margin-top:25px; }
 .poll-options li { list-style: none; }
 
 .dem-new-poll{ margin:15px auto; padding:20px; }
-.dem-new-poll input[type="text"], .dem-new-poll textarea { width:50%; min-width:400px; }
+.dem-new-poll input[type="text"]
+,.dem-new-poll textarea { width:80%; min-width:400px; max-width:800px; }
+
 .dem-del-button{ display:inline-block; cursor: pointer; line-height: 1; padding:0 5px; font-size:23px; color:#acacac; }
 .dem-del-button:hover{ color:#e34f23; }
 

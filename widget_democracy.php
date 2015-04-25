@@ -17,8 +17,8 @@ class widget_democracy extends WP_Widget {
 	// front end
 	public function widget( $args, $instance ){
 		extract( $args );
-		$title = $instance['title'];
-		$id    = (int) $instance['poll_ID'];
+		$title = @ $instance['title'];
+		$id    = (int) @ $instance['poll_ID'];
 		
 		if( isset( $instance['questionIsTitle'] ) ){
 			echo $before_widget;

