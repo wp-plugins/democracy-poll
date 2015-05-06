@@ -1,6 +1,6 @@
 === Plugin Name ===
-Stable tag: 4.7.3
-Tested up to: 4.2
+Stable tag: 4.7.5
+Tested up to: 4.2.1
 Requires at least: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -146,6 +146,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.7.5 =
+* Change: Convert tables from utf8 to utf8mb4 charset. For emoji uses in polls
+
 = 4.7.4 =
 * Change: Some css styles in admin
 

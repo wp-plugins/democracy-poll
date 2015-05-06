@@ -7,9 +7,9 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: languages
-Version: 4.7.4
+Version: 4.7.5
 */
-define('DEM_VER', '4.7.4');
+define('DEM_VER', '4.7.5');
 
 // Abort loading if WordPress is upgrading
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
@@ -204,12 +204,11 @@ function democracy_activate(){
  * Проверяет необходимость обновления.
  * Нужно вызывать на странице настроек плагина, чтобы не грузить лишний раз сервер.
  */
-function dem_last_version_up(){
-	$ver_opt_name = 'democracy_version';
-	$db_ver = get_option( $ver_opt_name );
-
-//	if( $db_ver == DEM_VER ) return;
+function dem_last_version_up(){	
+	$dem_ver = get_option('democracy_version');
 	
+	if( $dem_ver == DEM_VER ) return;
+
 	global $wpdb, $table_prefix;
 	
 	### 
@@ -266,7 +265,29 @@ function dem_last_version_up(){
 	if( ! in_array('expire', $fields_log ) ){
 		$wpdb->query("ALTER TABLE $wpdb->democracy_log ADD `expire` bigint(20) UNSIGNED NOT NULL default 0 AFTER `userid`;");
 	}
+	
+	// 4.7.5
+	// конвертируем в кодировку utf8mb4
+	if( $wpdb->charset === 'utf8mb4' && version_compare( $dem_ver, '4.7.5', '<') ){
+		foreach( array( $wpdb->democracy_q, $wpdb->democracy_a, $wpdb->democracy_log ) as $table ){
+
+			if( ! $results = $wpdb->get_results( "SHOW FULL COLUMNS FROM `$table`" ) ) continue;
+
+			foreach ( $results as $column ) {
+				if ( ! $column->Collation ) continue;
+				
+				list( $charset ) = explode( '_', $column->Collation );
+				$charset = strtolower( $charset );
+
+				if ( $charset === 'utf8' ) {
+					// Don't upgrade tables that have non-utf8 columns.
+					$wpdb->query( "ALTER TABLE $table CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci" );
+				}
+			}
+		}
 		
-	update_option( $ver_opt_name, DEM_VER );
+	}
+	
+	if( $dem_ver != DEM_VER ) update_option('democracy_version', DEM_VER );
 	
 }
