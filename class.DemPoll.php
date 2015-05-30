@@ -80,7 +80,7 @@ class DemPoll {
 		$___ = '';
 		$___ .= Dem::$inst->add_css(); //Dem::$inst->opt['inline_js_css'] ? Dem::$inst->add_css() : ''; // подключаем стили
 			
-		$___ .= '<div class="democracy" data-ajax-url="'. Dem::$inst->ajax_url .'" data-pid="'. $this->id .'">';
+		$___ .= '<div id="democracy" class="democracy" data-ajax-url="'. Dem::$inst->ajax_url .'" data-pid="'. $this->id .'">';
 		    $___ .=  ( $before_title ?: Dem::$inst->opt['before_title'] ) . $this->poll->question . ( $after_title  ?: Dem::$inst->opt['after_title'] );
 		
 			// изменяемая часть
@@ -142,6 +142,7 @@ class DemPoll {
 		$___ = '<div class="dem-screen'. $class_suffix .' '. $screen  .'">';
 		$___ .= ( $screen == 'vote' ) ? $this->getVoteScreen() : $this->getResultScreen();
 		$___ .=  '</div>';
+		$___ .=  '<noscript>Poll Options are limited because JavaScript is disabled in your browser.</noscript>';
 		
 		return $___;
 	}
@@ -155,7 +156,7 @@ class DemPoll {
 
 		$___ = $dem_act = ''; // vars
 					
-        $___ .= '<form method="post" action="">';	
+        $___ .= '<form method="post" action="#democracy">';	
             $___ .= '<ul class="dem-vote">';
 
                 $type = $this->poll->multiple ? 'checkbox' : 'radio';
@@ -170,17 +171,8 @@ class DemPoll {
                 }
 
                 if( $this->poll->democratic ){
-                    // Событие добавления ответа пользователя без AJAX
-                    if( isset( $_GET['show_addanswerfield'] ) && @$_GET['dem_pid'] == $this->id ){
-                        $___ .= '
-                        <li>
-                            <input type="text" name="answer_ids[]" value="" class="dem-add-answer-txt" />
-                        </li>';
-                    } 
-                    else {
-                        $url = add_query_arg( array('show_addanswerfield'=>1, 'dem_pid' => $this->id, 'dem_act'=>null ) );
-                        $___ .= '<li class="dem-add-answer"><a href="'. $url .'" rel="nofollow" data-dem-act="newAnswer" class="dem-link">'. __dem('Добавить свой ответ') .'</a></li>';
-                    }
+					$___ .= '<li class="dem-add-answer"><a href="javascript:void(0);" rel="nofollow" data-dem-act="newAnswer" class="dem-link">'. __dem('Добавить свой ответ') .'</a></li>';
+                    
                 }		
             $___ .= "</ul>";
 
@@ -189,8 +181,7 @@ class DemPoll {
                 $___ .= '<input type="hidden" name="dem_pid" value="'. $this->id .'" />';
                 $___ .= '<div class="dem-vote-button"><input class="dem-button" type="submit" value="'. __dem('Голосовать') .'" data-dem-act="vote" /></div>';
 
-                $url   = add_query_arg( array('dem_act' => 'view', 'dem_pid' => $this->id) );
-                $___ .= '<a href="'. $url .'" class="dem-link dem-results-link" data-dem-act="view" rel="nofollow">'. __dem('Результаты') .'</a>';
+                $___ .= '<a href="javascript:void(0);" class="dem-link dem-results-link" data-dem-act="view" rel="nofollow">'. __dem('Результаты') .'</a>';
             $___ .= '</div>';
 
         $___ .= '</form>';	
@@ -277,14 +268,16 @@ class DemPoll {
             // заметка для незарегистрированных пользователей
             $url = esc_url( wp_login_url( $_SERVER['REQUEST_URI'] ) );
             $html_only_users = '<div class="dem-only-users">'. sprintf( __dem('Голосовать могут только зарегистрированные пользователи. <a href="%s" rel="nofollow">Войдите</a> для голосования.'), $url ) .'</div>';
-            // переголосовать
-            $url = add_query_arg( array('dem_act' => 'delVoted', 'dem_pid' => $this->id ) );
-            $html_revote = '<a class="dem-revote-link dem-link" href="'. $url .'" data-dem-act="delVoted" data-confirm-text="'. __dem('Точно отменить голоса?') .'" rel="nofollow">
-                '. __dem('Переголосовать') .'
-            </a>';
-            // вернуться к голосованию
-            $url = add_query_arg( array('dem_act' => 'vote_screen', 'dem_pid' => $this->id ) );
-            $html_backvote = '<a href="'. $url .'" class="dem-button dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __dem('Голосовать') .'</a>';
+            
+			// переголосовать
+            //$html_revote = '<a href="javascript:void(0);" class="dem-revote-link dem-link" data-dem-act="delVoted" data-confirm-text="'. __dem('Точно отменить голоса?') .'" rel="nofollow">'. __dem('Переголосовать') .'</a>';
+            $html_revote = '<form action="#democracy" method="post">
+			<input type="hidden" name="dem_act" value="delVoted">
+			<input type="hidden" name="dem_pid" value="'. $this->id .'" />
+			<input type="submit" value="'. __dem('Переголосовать') .'" class="dem-revote-link dem-button" data-dem-act="delVoted" data-confirm-text="'. __dem('Точно отменить голоса?') .'"></form>';
+            
+			// вернуться к голосованию
+            $html_backvote = '<a href="javascript:void(0);" class="dem-button dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __dem('Голосовать') .'</a>';
         
 			if( ! $this->for_cache && $this->blockForVisitor ){
                 $___ .= $html_only_users;

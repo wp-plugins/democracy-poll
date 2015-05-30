@@ -4,7 +4,6 @@
 .dem-link{ font-style:italic; font-size:90%; }
 
 /* vote screen */
-.dem-revote-link:before,
 .dem-vote-link:before{ content:'← '; }
 
 .dem-vote label{  }

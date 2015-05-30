@@ -160,33 +160,16 @@ class Dem {
 		add_shortcode('democracy',          array($this, 'poll_shortcode'));
 		add_shortcode('democracy_archives', array($this, 'archives_shortcode'));
 		
-		# метатег noindex для AJAX ссылок
-		if( isset( $_GET['dem_pid'] ) || isset( $_GET['show_addanswerfield'] ) || isset( $_GET['dem_act'] ) )
-			add_filter('wp_head', function(){ echo '<meta name="robots" content="noindex,nofollow" />'; } );
-		
 		//if( ! $this->opt['inline_js_css'] ) $this->add_css(); // подключаем стили как файл, если не инлайн
 
 		# для работы функции без AJAX
-		if( @$_POST['action'] != 'dem_ajax' ) $this->not_ajax_request_handler();
-		
+		if( @ $_POST['action'] != 'dem_ajax' ) $this->not_ajax_request_handler();
+
 		# ajax request во frontend_init нельзя, потому что срабатывает только как is_admin()
 		add_action('wp_ajax_dem_ajax',        array( $this, 'ajax_request_handler') );
 		add_action('wp_ajax_nopriv_dem_ajax', array( $this, 'ajax_request_handler') );
 	}
     	
-	## Делает предваритеьную проверку передавемых переменных запроса
-	function __sanitize_request_vars(){		
-		// $_POST сильнее
-		$act  = @$_POST['dem_act'] ?: @$_GET['dem_act'];
-		$pid  = @$_POST['dem_pid'] ?: @$_GET['dem_pid'];
-		
-		return array(
-			'act'  => $act ? $act : false,
-			'pid'  => $pid ? absint( $pid ) : false,
-			'aids' => isset($_POST['answer_ids']) ? wp_unslash($_POST['answer_ids']) : false,
-		);
-	}
-	
 	## обрабатывает запрос AJAX
 	function ajax_request_handler(){
 		extract( $this->__sanitize_request_vars() );
@@ -242,7 +225,7 @@ class Dem {
 		if( ! $act || ! $pid || ! isset($_SERVER['HTTP_REFERER']) ) return;
 
 		$poll = new DemPoll( $pid );
-		
+
 		if( $act == 'vote' && $aids ){
 			$poll->addVote( $aids );
             wp_redirect( remove_query_arg( array('dem_act','dem_pid'), $_SERVER['HTTP_REFERER'] ) );
@@ -253,6 +236,19 @@ class Dem {
 			wp_redirect( remove_query_arg( array('dem_act','dem_pid'), $_SERVER['HTTP_REFERER'] ) );
 			exit;
 		}
+	}
+	
+	## Делает предваритеьную проверку передавемых переменных запроса
+	function __sanitize_request_vars(){		
+		$act  = @ $_POST['dem_act'];
+		$pid  = @ $_POST['dem_pid'];
+		$aids = @ $_POST['answer_ids'];
+		
+		return array(
+			'act'  => $act  ? $act : false,
+			'pid'  => $pid  ? absint( $pid ) : false,
+			'aids' => $aids ? wp_unslash( $_POST['answer_ids'] ) : false,
+		);
 	}
 	
 	# шоткод архива опросов

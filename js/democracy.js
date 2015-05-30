@@ -194,7 +194,7 @@
 	$.fn.demSetClick = function(){ return this.each(function(){
 		var attr = 'data-dem-act';
 		$(this).find('['+ attr +']').each(function(){
-			$(this).attr('href','#'); // удалим УРЛ чтобы не было видно УРЛ запроса
+			$(this).attr('href',''); // удалим УРЛ чтобы не было видно УРЛ запроса
             
             $(this).click(function(e){
                 e.preventDefault();

@@ -8,7 +8,6 @@
 
 
 /* vote screen */
-.dem-revote-link:before,
 .dem-vote-link:before{ content:'← '; }
 
 .dem-vote label{ opacity:0.9; }

@@ -1,4 +1,8 @@
 <?php
+// Перевод заголовка
+__('Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.', 'dem');
+
+
 /*
 Plugin Name: Democracy Poll
 Description: Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.
@@ -7,19 +11,15 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: languages
-Version: 4.7.5
+Version: 4.7.6
 */
-define('DEM_VER', '4.7.5');
+define('DEM_VER', '4.7.6');
 
 // Abort loading if WordPress is upgrading
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
 
 // проверка версии PHP выше 5.3
 if( ! require dirname(__FILE__) . '/admin/is_php53.php' ) return;
-
-// Перевод заголовка
-__('Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.', 'dem');
-
 
 // регистрируем таблицы
 global $wpdb;
@@ -56,7 +56,7 @@ function __dem( $str ){
 
 
 
-###### функции обертки {
+#### ФУНКЦИИ ОБЕРТКИ ------------------------------------------------------------
 /**
  * Для вывода отдельного опроса
  * @param int $id ID опроса
@@ -104,14 +104,13 @@ function get_democracy_archives( $hide_active = false, $before_title = '', $afte
 function __query_poll_screen_choose( $poll ){
 	return ( @ $_REQUEST['dem_act'] == 'view' && @ $_REQUEST['dem_pid'] == $poll->id ) ? 'voted' : 'vote'; 
 }
-# }
-
+#### / ФУНКЦИИ ОБЕРТКИ  ------------------------------------------------------------
 
 
 
 
 		
-#### Активаниция плагина
+#### АКТИВАНИЦИЯ ПЛАГИНА ------------------------------------------------------------
 register_activation_hook( __FILE__, 'democracy_activate' );
 
 // Добалвяет таблицы в БД и инициализирует себя

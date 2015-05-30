@@ -16,6 +16,7 @@ input[type="submit"].dem-button, a.dem-button, .dem-button{
 input[type="submit"].dem-button:focus, a.dem-button:focus, .dem-button:focus{
     outline: none;
 }
+a.dem-button:hover{ text-decoration: none; }
 
 
 /* common presets ---------------------------------------------------------------------- */
