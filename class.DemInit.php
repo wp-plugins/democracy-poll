@@ -63,7 +63,7 @@ class Dem {
 				
 	## подключаем файл перевода
 	function load_textdomain(){
-		load_textdomain('dem', $this->dir_path . 'languages/' . get_locale() . '.mo' );
+		load_textdomain('dem', $this->dir_path . DEM_LANG_DIRNAME .'/' . get_locale() . '.mo' );
 	}
 	
 	## Добавляет пункты меню в панель инструментов

@@ -89,7 +89,7 @@ function dem_l10n_options(){
 			// выводим таблицу
 	
 			// отпарсим английский перевод из файла
-			$mofile = Dem::$inst->dir_path . 'languages/en_US.mo';
+			$mofile = Dem::$inst->dir_path . DEM_LANG_DIRNAME . '/en_US.mo';
 			$en_US = new MO();
 			$en_US->import_from_file( $mofile );
 			$en_US = $en_US->entries;

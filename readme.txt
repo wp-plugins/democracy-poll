@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.7.6
+Stable tag: 4.7.7
 Tested up to: 4.2.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -59,7 +59,7 @@ What can it perform?
 * primary interface is Russian, but Enlglish interface is also available.
 
 
-Localisation: Russian, English
+Localisation: Russian, English, German (Matthias Siebler)
 
 Needs PHP 5.3 and above.
 
@@ -146,6 +146,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.7.7 =
+* Added: de_DE localisation. Thanks to Matthias Siebler
+
 = 4.7.6 =
 * Deleted: possibility to work without javascript. Now poll works only with enabled javascript in your browser. It's better because you don't have any additional URL with GET parametrs. It's no-need-URL in 99% cases..
 

@@ -1,5 +1,5 @@
 <?php
-// Перевод заголовка
+
 __('Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.', 'dem');
 
 
@@ -11,17 +11,21 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: languages
-Version: 4.7.6
+Version: 4.7.7
 */
-define('DEM_VER', '4.7.6');
 
-// Abort loading if WordPress is upgrading
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
 
-// проверка версии PHP выше 5.3
 if( ! require dirname(__FILE__) . '/admin/is_php53.php' ) return;
 
-// регистрируем таблицы
+
+$data = get_file_data( __FILE__, array('ver'=>'Version', 'lang_dir'=>'Domain Path') );
+define('DEM_VER', $data['ver'] );
+define('DEM_LANG_DIRNAME', $data['lang_dir'] );
+
+
+
+// таблицы
 global $wpdb;
 $wpdb->democracy_q   = $wpdb->prefix . 'democracy_q';
 $wpdb->democracy_a   = $wpdb->prefix . 'democracy_a';
