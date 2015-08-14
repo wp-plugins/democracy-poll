@@ -16,9 +16,8 @@ function demphp53_notice( $software_name = '', $software_text_domain = '', $noti
     }
     $notice_handler = create_function('', 'if(current_user_can(\''.str_replace("'", "\\'", $notice_cap).'\'))'.
                                           '  echo \'<div class="error"><p>'.str_replace("'", "\\'", $notice).'</p></div>\';');
-    add_action($notice_hook, $notice_handler);
+    add_action( $notice_hook, $notice_handler );
 }
-
 
 if( version_compare(PHP_VERSION, '5.3', '>=') ) return true;
 

@@ -86,6 +86,7 @@ function dem_l10n_options(){
 				if( $match[1] ) $strs = array_merge( $strs, $match[1] );
 			}
 			$strs = array_unique( $strs );
+			
 			// выводим таблицу
 	
 			// отпарсим английский перевод из файла
@@ -167,7 +168,9 @@ function dem_polls_design(){
                     ?>
 				</li>
 			</ul>
-				
+			
+			<div style="margin-bottom:1em;"><?php _dem_design_submit_button() ?></div>
+			
 			<ul class="group">
 				<li class="title"><?php _e('Вид ответов:','dem'); ?></li>		
 				<li class="block">					
@@ -199,121 +202,129 @@ function dem_polls_design(){
 				</li>
 			</ul>
             
-            <div style="margin-bottom:1em;"><?php _dem_design_submit_button() ?></div>
-            
             <ul class="group">
                <li class="title"><?php _e('Кнопка:','dem'); ?></li>
-                <li class="block buttons">                    
-                    <label>
-                        <input type="radio" value="" name="dem[css_button]" <?php checked( $opt['css_button'], '') ?> />
-                        <br><input type="button" value="<?php _e('Нет','dem'); ?>">
-                    </label>
-                    <br>
-					<?php 
-                        $data = array();
-                        $i=0;
-                        foreach( glob( Dem::$inst->dir_path . 'styles/buttons/*') as $file ){
-                            $fname = basename( $file );
-                            $button_class = 'dem-button' . ++$i;
-                            $css ="/*reset*/\n.$button_class{position: relative; display:inline-block; text-decoration: none; user-select: none; outline: none; line-height: 1; border:0;}\n";
-                            $css .= str_replace('dem-button', $button_class, file_get_contents( $file ) ); // стили кнопки
-                            
-                            if( $button = Dem::$inst->opt['css_button'] ){
-                                $bbg     = @Dem::$inst->opt['btn_bg_color'];
-                                $bcolor  = @Dem::$inst->opt['btn_color'];
-                                $bbcolor = @Dem::$inst->opt['btn_border_color'];
-                                // hover
-                                $bh_bg     = @Dem::$inst->opt['btn_hov_bg'];
-                                $bh_color  = @Dem::$inst->opt['btn_hov_color'];
-                                $bh_bcolor = @Dem::$inst->opt['btn_hov_border_color'];
-                                
-                                if( $bbg ) $css .= "\n.$button_class{ background-color:$bbg !important; }\n";
-                                if( $bcolor ) $css .= ".$button_class{ color:$bcolor !important; }\n";
-                                if( $bbcolor ) $css .= ".$button_class{ border-color:$bbcolor !important; }\n";
-                                if( $bh_bg ) $css .= "\n.$button_class:hover{ background-color:$bh_bg !important; }\n";
-                                if( $bh_color ) $css .= ".$button_class:hover{ color:$bh_color !important; }\n";
-                                if( $bh_bcolor ) $css .= ".$button_class:hover{ border-color:$bh_bcolor !important; }\n";
-                            }
-                            ?>
-                            <style><?php echo $css ?></style>
-                            
-                            <label>
-                                <input type="radio" value="<?php echo $fname ?>" name="dem[css_button]" <?php checked( $opt['css_button'], $fname) ?> />
-                                <br><input type="button" value="<?php echo $fname ?>" class="<?php echo $button_class ?>">
-                            </label>
-                            <?php
-                        }
-					?>
+                <li class="block buttons">
+					<div style="float:right; width:30%;">
+                    	<em style="margin-left:40px; margin-top:50px;"><?php _e('Цвета корректно влияют не на все кнопки. Можете попробовать изменить стили кнопки ниже в поле дополнительных стилей.','dem') ?></em>
+					</div>
+					<div style="float:left; width:70%;">
+						<label>
+							<input type="radio" value="" name="dem[css_button]" <?php checked( $opt['css_button'], '') ?> />
+							<br><input type="button" value="<?php _e('Нет','dem'); ?>">
+						</label>
+						<br>
+						<?php 
+							$data = array();
+							$i=0;
+							foreach( glob( Dem::$inst->dir_path . 'styles/buttons/*') as $file ){
+								$fname = basename( $file );
+								$button_class = 'dem-button' . ++$i;
+								$css ="/*reset*/\n.$button_class{position: relative; display:inline-block; text-decoration: none; user-select: none; outline: none; line-height: 1; border:0;}\n";
+								$css .= str_replace('dem-button', $button_class, file_get_contents( $file ) ); // стили кнопки
+
+								if( $button = Dem::$inst->opt['css_button'] ){
+									$bbg     = @Dem::$inst->opt['btn_bg_color'];
+									$bcolor  = @Dem::$inst->opt['btn_color'];
+									$bbcolor = @Dem::$inst->opt['btn_border_color'];
+									// hover
+									$bh_bg     = @Dem::$inst->opt['btn_hov_bg'];
+									$bh_color  = @Dem::$inst->opt['btn_hov_color'];
+									$bh_bcolor = @Dem::$inst->opt['btn_hov_border_color'];
+
+									if( $bbg ) $css .= "\n.$button_class{ background-color:$bbg !important; }\n";
+									if( $bcolor ) $css .= ".$button_class{ color:$bcolor !important; }\n";
+									if( $bbcolor ) $css .= ".$button_class{ border-color:$bbcolor !important; }\n";
+									if( $bh_bg ) $css .= "\n.$button_class:hover{ background-color:$bh_bg !important; }\n";
+									if( $bh_color ) $css .= ".$button_class:hover{ color:$bh_color !important; }\n";
+									if( $bh_bcolor ) $css .= ".$button_class:hover{ border-color:$bh_bcolor !important; }\n";
+								}
+								?>
+								<style><?php echo $css ?></style>
+
+								<label>
+									<input type="radio" value="<?php echo $fname ?>" name="dem[css_button]" <?php checked( $opt['css_button'], $fname) ?> />
+									<br><input type="button" value="<?php echo $fname ?>" class="<?php echo $button_class ?>">
+								</label>
+								<?php
+							}
+						?>
                     
-                    <div class="clear"></div>
-                    <p style="float:left; margin-right:3em;">
-                        <?php _e('По умолчанию: ','dem') ?><br>
-                        <?php _e('Цвет Фона: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_bg_color]" value="<?php echo $opt['btn_bg_color'] ?>"><br>
-                        <?php _e('Цвет текста: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_color]" value="<?php echo $opt['btn_color'] ?>"><br>
-                        <?php _e('Цвет границы: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_border_color]" value="<?php echo $opt['btn_border_color'] ?>">
-                    </p>
-                    <p style="float:left; margin-right:3em;">
-                        <?php _e('При наведени (:hover): ','dem') ?><br>
-                        <?php _e('Цвет Фона: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_hov_bg]" value="<?php echo $opt['btn_hov_bg'] ?>"><br>
-                        <?php _e('Цвет текста: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_hov_color]" value="<?php echo $opt['btn_hov_color'] ?>"><br>
-                        <?php _e('Цвет границы: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_hov_border_color]" value="<?php echo $opt['btn_hov_border_color'] ?>">
-                    </p>
-                    <div class="clear"></div>
-                    <em><?php _e('Цвета корректно влияют не на все кнопки. Можете попробовать изменить стили кнопки ниже в поле дополнительных стилей.','dem') ?></em>
+						<div class="clear"></div>
+						<p style="float:left; margin-right:3em;">
+							<?php _e('По умолчанию: ','dem') ?><br>
+							<?php _e('Цвет Фона: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_bg_color]" value="<?php echo $opt['btn_bg_color'] ?>"><br>
+							<?php _e('Цвет текста: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_color]" value="<?php echo $opt['btn_color'] ?>"><br>
+							<?php _e('Цвет границы: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_border_color]" value="<?php echo $opt['btn_border_color'] ?>">
+						</p>
+						<p style="float:left; margin-right:3em;">
+							<?php _e('При наведени (:hover): ','dem') ?><br>
+							<?php _e('Цвет Фона: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_hov_bg]" value="<?php echo $opt['btn_hov_bg'] ?>"><br>
+							<?php _e('Цвет текста: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_hov_color]" value="<?php echo $opt['btn_hov_color'] ?>"><br>
+							<?php _e('Цвет границы: ','dem') ?> <input type="text" class="iris_color" name="dem[btn_hov_border_color]" value="<?php echo $opt['btn_hov_border_color'] ?>">
+						</p>
+						<div class="clear"></div>
+					</div>
+					<div class="clear"></div>
 				</li>
                 
                 <div class="clear"></div>
-                
-            	<p><?php _dem_design_submit_button() ?></p>
             </ul>
-            
+			
+			<div style="margin-bottom:1em;"><?php _dem_design_submit_button() ?></div>            
             
             <?php } // if( $opt['css_file_name'] ) ?>
             
             <ul class="group"> 
                 <li class="title"><?php _e('AJAX загрузчик:','dem'); ?></li>
-                <li class="block loaders">                    
-                    <label class="left">
-                        <div style="width:30px;height:30px;"><?php _e('Нет','dem'); ?></div>
-                        <input type="radio" value="" name="dem[loader_fname]" <?php checked( $opt['loader_fname'], '') ?> />
-                    </label>
-					<?php 
-                        $data = array();
-                        foreach( glob( Dem::$inst->dir_path . 'styles/loaders/*') as $file ){
-                            $fname = basename( $file );
-                            $ex    = preg_replace('~.*\.~', '', $fname );
-                            $data[ $ex ][ $fname ] = $file;
-                        }
-                        foreach( $data as $ex => $val ){
-                            echo '<div class="clear"></div>';
-                            
-                            // поправим стили
-                            if( $loader = $opt['loader_fill'] ){
-                                preg_match_all('~\.dem-loader\s+\.(?:fill|stroke|css-fill)[^\{]*\{.*?\}~s', $demcss['full'], $match );
-                                echo "<style>" . str_replace('.dem-loader', '.loader', implode("\n", $match[0]) ) . "</style>";
-                            }
-                            
-                            foreach( $val as $fname => $file ){
-                                ?>
-                                <label class="left">
-                                    <div class="loader"><?php echo file_get_contents( $file ) ?></div>
-                                    <input type="radio" value="<?php echo $fname ?>" name="dem[loader_fname]" <?php checked( $opt['loader_fname'], $fname) ?> /><br>
-                                    <?php echo $ex ?>
-                                </label>
-                                <?php                                
-                            }
-                        }
-					?>
-                    
-                    <div class="clear"></div>
-                    
-                    <input class="iris_color fill" name="dem[loader_fill]" type="text" value="<?php echo @$opt['loader_fill'] ?>" />
-                    
-					<em><br><?php _e('Картинка при AJAX загрузке. Если выбрать "Нет", то вместо картинки к ссылке будет добавлятся "...". SVG картинки не анимируются в IE 11 и ниже, остальные браузеры поддерживаются примерно на 90% (по статистике http://caniuse.com/).','dem') ?></em>
+                <li class="block loaders">
+					<div style="float:right; width:30%;">
+						<em style="margin-left:40px; margin-top:50px;"><?php _e('Картинка при AJAX загрузке. Если выбрать "Нет", то вместо картинки к ссылке будет добавлятся "...". SVG картинки не анимируются в IE 11 и ниже, остальные браузеры поддерживаются примерно на 90% (по статистике http://caniuse.com/).','dem') ?></em>
+					</div>
+					
+					<div style="float:left; width:70%;">
+						<label class="left">
+							<div style="width:30px;height:30px;"><?php _e('Нет','dem'); ?></div>
+							<input type="radio" value="" name="dem[loader_fname]" <?php checked( $opt['loader_fname'], '') ?> />
+						</label>
+						<?php 
+							$data = array();
+							foreach( glob( Dem::$inst->dir_path . 'styles/loaders/*') as $file ){
+								if( is_dir($file) ) continue;
+								$fname = basename( $file );
+								$ex    = preg_replace('~.*\.~', '', $fname );
+								$data[ $ex ][ $fname ] = $file;
+							}
+							foreach( $data as $ex => $val ){
+								echo '<div class="clear"></div>';
+
+								// поправим стили
+								if( $loader = $opt['loader_fill'] ){
+									preg_match_all('~\.dem-loader\s+\.(?:fill|stroke|css-fill)[^\{]*\{.*?\}~s', $demcss['full'], $match );
+									echo "<style>" . str_replace('.dem-loader', '.loader', implode("\n", $match[0]) ) . "</style>";
+								}
+
+								foreach( $val as $fname => $file ){
+									?>
+									<label class="left">
+										<div class="loader"><?php echo file_get_contents( $file ) ?></div>
+										<input type="radio" value="<?php echo $fname ?>" name="dem[loader_fname]" <?php checked( $opt['loader_fname'], $fname) ?> /><br>
+										<?php echo $ex ?>
+									</label>
+									<?php                                
+								}
+							}
+						?>
+
+						<div class="clear"></div>
+
+						<input class="iris_color fill" name="dem[loader_fill]" type="text" value="<?php echo @$opt['loader_fill'] ?>">
+					</div>
+					
+					<div class="clear"></div>
 				</li>
                     
 				<div class="clear"></div>
-				<p><?php _dem_design_submit_button() ?></p>
             </ul>
             
 
@@ -621,15 +632,7 @@ function dem_general_settings(){
 				   </label>
 				   <em><?php _e('Если включить, то .js файлы плагина НЕ будут подключены. Опция нужнда для Дебага работы плагина без JavaScript.','dem') ?></em>
 				</li>
-                
-				<li class="block">
-				   <label>
-					   <input <?php checked( $opt['load_textdomain'], 1 )?> type="checkbox" value="1" name="dem[load_textdomain]" /> 
-					   <?php _e('Подгружать файлы перевода?','dem') ?>
-				   </label>
-				   <em><?php _e('Отключите эту опцию, если ваш сайт на русском, но вы используете английскую версию WordPress','dem') ?></em>
-				</li>
-                
+                                
 				<li class="block">
 				   <label>
 					   <input <?php checked( $opt['show_copyright'], 1 )?> type="checkbox" value="1" name="dem[show_copyright]" /> 

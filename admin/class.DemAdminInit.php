@@ -85,8 +85,6 @@ class DemAdminInit extends Dem{
 		if( isset( $_POST['dem_reset_design_options'] ) ) $up = $this->update_options('design_default');
         
         if( $up ){
-            // костыль, чтобы сразу применялся результат при отключении/включении перевода
-            if( ! $this->opt['load_textdomain'] ) unload_textdomain('dem'); else Dem::$inst->load_textdomain();
             // костыль, чтобы сразу применялся результат при отключении/включении тулбара
             $this->opt['toolbar_menu'] ? add_action('admin_bar_menu', array( $this, 'toolbar'), 99) : remove_action('admin_bar_menu', array( $this, 'toolbar'), 99);
         }
@@ -185,7 +183,6 @@ class DemAdminInit extends Dem{
 			'use_widget'       => 1,
 			'toolbar_menu'     => 1,
 			'tinymce_button'   => 1,
-			'load_textdomain'  => 1,
 			'show_copyright'   => 1,
 			'only_for_users'   => 0,			
 			'democracy_off'    => 0,  // глобальная опция democracy
@@ -217,8 +214,6 @@ class DemAdminInit extends Dem{
         
         return $arr;
 	}	
-
-    
     
     
     /**
@@ -229,7 +224,6 @@ class DemAdminInit extends Dem{
         $arr = array();
         
         foreach( glob( Dem::$inst->dir_path . 'styles/*.css' ) as $file ){
-//            if( preg_match('~\.min|^_~', basename( $file ) ) ) continue;
             if( preg_match('~\.min~', basename( $file ) ) ) continue;
             
             $arr[] = $file;
@@ -237,9 +231,6 @@ class DemAdminInit extends Dem{
         
         return $arr;
     }
-    
-    
-    
     
 	### обработка запросов с вязанных с управлением опросами
 	/**

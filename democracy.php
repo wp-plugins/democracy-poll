@@ -10,20 +10,21 @@ Author: Kama
 Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
-Domain Path: languages
-Version: 4.7.7
+Domain Path: lang
+Version: 4.7.8
 */
+
 
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
 
-if( ! require dirname(__FILE__) . '/admin/is_php53.php' ) return;
-
 
 $data = get_file_data( __FILE__, array('ver'=>'Version', 'lang_dir'=>'Domain Path') );
+
+define('DEM_DIR', dirname(__FILE__) );
 define('DEM_VER', $data['ver'] );
 define('DEM_LANG_DIRNAME', $data['lang_dir'] );
 
-
+if( is_admin() && ! require DEM_DIR . '/admin/is_php53.php' ) return;
 
 // таблицы
 global $wpdb;
@@ -32,24 +33,24 @@ $wpdb->democracy_a   = $wpdb->prefix . 'democracy_a';
 $wpdb->democracy_log = $wpdb->prefix . 'democracy_log';
 
 
-require_once dirname(__FILE__) . '/class.DemInit.php';
-require_once dirname(__FILE__) . '/admin/class.DemAdminInit.php';
-require_once dirname(__FILE__) . '/class.DemPoll.php';
+require_once DEM_DIR . '/class.DemInit.php';
+require_once DEM_DIR . '/admin/class.DemAdminInit.php';
+require_once DEM_DIR . '/class.DemPoll.php';
+
+register_activation_hook( __FILE__, 'democracy_activate' );
 
 
-### активируем плагин
-add_action('plugins_loaded', array('Dem','init') );
-
-
-### активируем виджет, если включен
+## Активируем плагин. активируем виджет, если включен
 add_action('plugins_loaded', function(){
-	if( Dem::$inst->opt['use_widget'] ) require_once dirname(__FILE__) . '/widget_democracy.php';
+	Dem::init();
+	if( Dem::$inst->opt['use_widget'] )
+		require_once DEM_DIR . '/widget_democracy.php';
 } );
 
 
-/**
- * Функция локализации внешней части
- */
+## ФУНКЦИИ -------------------------------------------------------------------------------------------- 
+
+## Функция локализации внешней части
 function __dem( $str ){	
 	static $custom;
 	if( $custom === null ) $custom = get_option('democracy_l10n');
@@ -113,11 +114,8 @@ function __query_poll_screen_choose( $poll ){
 
 
 
-		
-#### АКТИВАНИЦИЯ ПЛАГИНА ------------------------------------------------------------
-register_activation_hook( __FILE__, 'democracy_activate' );
 
-// Добалвяет таблицы в БД и инициализирует себя
+## Добалвяет таблицы в БД и инициализирует себя
 function democracy_activate(){
 	global $wpdb;
     
@@ -132,7 +130,7 @@ function democracy_activate(){
     $create_tables = "
     CREATE TABLE $wpdb->democracy_q (
         id         int(10)    UNSIGNED NOT NULL auto_increment,
-        question   text                NOT NULL,
+        question   text                NOT NULL default '',
         added      int(10)    UNSIGNED NOT NULL default 0,
         end        int(10)    UNSIGNED NOT NULL default 0,
         democratic tinyint(1) UNSIGNED NOT NULL default 0,
@@ -141,7 +139,7 @@ function democracy_activate(){
         multiple   tinyint(1) UNSIGNED NOT NULL default 0,
         forusers   tinyint(1) UNSIGNED NOT NULL default 0,
         revote     tinyint(1) UNSIGNED NOT NULL default 0,
-        note       text                NOT NULL,
+        note       text                NOT NULL default '',
         PRIMARY KEY (id),
         KEY active (active)
     ) $charset_collate;
@@ -149,7 +147,7 @@ function democracy_activate(){
     CREATE TABLE $wpdb->democracy_a (
         aid      int(10)    UNSIGNED NOT NULL auto_increment,
         qid      int(10)    UNSIGNED NOT NULL default 0,
-        answer   text                  NOT NULL,
+        answer   text                NOT NULL default '',
         votes    int(10)    UNSIGNED NOT NULL default 0,
         added_by tinyint(1) UNSIGNED NOT NULL default 0,
         PRIMARY KEY (aid),
@@ -159,7 +157,7 @@ function democracy_activate(){
     CREATE TABLE $wpdb->democracy_log (
         ip     int(11)    UNSIGNED NOT NULL default 0,
         qid    int(10)    UNSIGNED NOT NULL default 0,
-        aids   text                NOT NULL,
+        aids   text                NOT NULL default '',
         userid bigint(20) UNSIGNED NOT NULL default 0,
         expire bigint(20) UNSIGNED NOT NULL default 0,
         KEY ip  (ip,qid),
@@ -197,9 +195,6 @@ function democracy_activate(){
     Dem::init()->update_options('default');
 
 }
-
-
-
 
 
 

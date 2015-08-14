@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.7.7
+Stable tag: 4.7.8
 Tested up to: 4.2.1
 Requires at least: 3.0
 License: GPLv2 or later
@@ -146,6 +146,9 @@ Comming soon...
 
 
 == Changelog ==
+= 4.7.8 =
+* Added: en_US l10n if no l10n file.
+
 = 4.7.7 =
 * Added: de_DE localisation. Thanks to Matthias Siebler
 

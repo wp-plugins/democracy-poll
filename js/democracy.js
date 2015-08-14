@@ -11,34 +11,35 @@
 /* 
  * main democracy vars & functions 
  */
-(function($){
++function($){
 	'use strict';
 	
-	var democracy  = '.democracy';
-	var demScreen  = '.dem-screen'; // селектор контейнера с результатами
-	var userAnswer = '.dem-add-answer-txt'; // класс поля ответа
-    var demAjaxUrl = $(democracy).attr('data-ajax-url'); // URL ajax
+	var democracy  = '.democracy',
+		demScreen  = '.dem-screen', // селектор контейнера с результатами
+		userAnswer = '.dem-add-answer-txt', // класс поля ответа
+    	demAjaxUrl = $(democracy).attr('data-ajax-url'), // URL ajax
     
-    var loader;
-    var $demLoader = $(document).find('.dem-loader').first(); // loader
+    	loader,
+    	$demLoader = $(document).find('.dem-loader').first(); // loader
 	
 	// загрузка для AJAX. Точки ...
 	$.fn.demLoadingDots = function(){
-		var $the = this;
-		var isInput = $the.is('input');
+		var $the = this,
+			isInput = $the.is('input'),
+			str = (isInput) ? $the.val() : $the.text();
 
-		var str = (isInput) ? $the.val() : $the.text();
-
-		if( str.substring(str.length-3) == '...' )
+		if( str.substring(str.length-3) == '...' ){
 			if( isInput ) 
 				$the.val( str.substring(0, str.length-3) );
 			else
 				$the.text( str.substring(0, str.length-3) );
-		else
+		}
+		else{
 			if( isInput )
 				$the[0].value     += '.';
 			else
 				$the[0].innerHTML += '.';
+		}
 
 		loader = setTimeout( function(){ $the.demLoadingDots(); }, 200 );
 	};
@@ -57,10 +58,10 @@
     
 	// Добавить ответ пользователя (ссылка)
 	$.fn.demAddAnswer = function(){
-		var $the = this.first();
-		var $demScreen = $the.closest( demScreen );
-		var isMultiple  = $demScreen.find('[type=checkbox]').length > 0;
-		var $input      = $('<input type="text" class="'+ userAnswer.replace(/\./,'') +'" value="">'); // поле добавления ответа
+		var $the = this.first(),
+			$demScreen  = $the.closest( demScreen ),
+			isMultiple  = $demScreen.find('[type=checkbox]').length > 0,
+			$input      = $('<input type="text" class="'+ userAnswer.replace(/\./,'') +'" value="">'); // поле добавления ответа
 		
 		// обрабатывает input radio деселектим и вешаем событие клика
 		$demScreen.find('[type=radio]').each(function(){
@@ -94,12 +95,12 @@
 	
 	// Собирает ответы и возращает их в виде строки
 	$.fn.demCollectAnsw = function(){
-		var $form     = this.closest('form');
-		var $answers  = $form.find('[type=checkbox],[type=radio],[type=text]');
-		var userText  = $form.find( userAnswer ).val();
-		var answ      = [];
-
-		var $checkbox = $answers.filter('[type=checkbox]:checked');
+		var $form     = this.closest('form'),
+			$answers  = $form.find('[type=checkbox],[type=radio],[type=text]'),
+			userText  = $form.find( userAnswer ).val(),
+			answ      = [],
+			$checkbox = $answers.filter('[type=checkbox]:checked');
+		
 		// multiple
 		if( $checkbox.length > 0 ){
 			$checkbox.each(function(){
@@ -125,9 +126,9 @@
     // Устанавливает высоту жестко.
     $.fn.demSetHeight = function( noanimation ){
 		return this.each(function(){
-			var $the = $(this);
-			var speed = 400;
-			var html = $the.html();
+			var $the = $(this),
+				speed = 400,
+				html = $the.html();
 
 			// получим нужную высоту
 			var $_the  = $the.clone().html( html ).css({height:'auto'}).appendTo( $the ); // получим высоту
@@ -247,16 +248,15 @@
             if( ! $dem.length ) $dem   = $the.closest( democracy );
             if( ! $dem.length ){ console.log('Main dem div not found'); return; }
 
-            var $res   = $dem.find( demScreen ).first(); // получим основной блок результатов
-                                    
-            var dem_id    = $dem.attr('data-pid');
-            var pCookie   = $.cookie('demPoll_' + dem_id);
-            var notVoteFlag = ( pCookie == 'notVote' ) ? true : false; // Если уже проверялось, что пользователь не голосовал, не отправляем запрос еще раз
-            var isAnswrs = !(typeof pCookie == 'undefined') && ! notVoteFlag;
+            var $res      = $dem.find( demScreen ).first(), // основной блок результатов                    
+            	dem_id    = $dem.attr('data-pid'),
+            	pCookie   = $.cookie('demPoll_' + dem_id),
+            	notVoteFlag = ( pCookie == 'notVote' ) ? true : false, // Если уже проверялось, что пользователь не голосовал, не отправляем запрос еще раз
+            	isAnswrs = !(typeof pCookie == 'undefined') && ! notVoteFlag;
                                     
             // обрабатываем экраны, какой показать и что делать при этом
-            var voteHTML  = $the.find( demScreen + '-cache.vote' ).html();
-            var votedHTML = $the.find( demScreen + '-cache.voted' ).html();
+            var voteHTML  = $the.find( demScreen + '-cache.vote' ).html(),
+            	votedHTML = $the.find( demScreen + '-cache.voted' ).html();
                                     
             if( ! voteHTML ) return; // если опрос закрыт должны кэшироваться только результаты голосования. Просто выходим.
             
@@ -273,35 +273,35 @@
             // Если голосов нет в куках и опция плагина keep_logs включена,
             // отправляем запрос в БД на проверку, по событию (наведение мышки на блок),
             if( ! isAnswrs && $the.attr('data-opt_logs') == 1 ){
-                var tmout;
-                var notcheck = function(){ clearTimeout( tmout ); };
-                var check = function(){
-                    tmout = setTimeout( function(){
-                        // Выполняем один раз!
-                        if( $dem.hasClass('checkAnswDone') ) return;
-                        $dem.addClass('checkAnswDone');
-                        
-                        var $forDotsLoader = $dem.find('.dem-link').first();
-                        $forDotsLoader.demSetLoader();
-                        $.post( demAjaxUrl, 
-                            {
-                                dem_pid: $dem.attr('data-pid'),
-                                dem_act: 'getVotedIds',
-                                action:  'dem_ajax'
-                            },
-                            function( reply ){
-                                $forDotsLoader.demUnsetLoader();
-                                if( ! reply ) return; // выходим если нет ответов
+                var tmout,
+                	notcheck = function(){ clearTimeout( tmout ); },
+                	check    = function(){
+						tmout = setTimeout( function(){
+							// Выполняем один раз!
+							if( $dem.hasClass('checkAnswDone') ) return;
+							$dem.addClass('checkAnswDone');
 
-                                $res.html( votedHTML ).demSetHeight().demSetClick();
-                                setAnswrs( $res, reply );
-                                
-                                // выводим сообщение о том что голосовал или только для пользователей
-                                $res.demCacheShowNotice( reply );
-                            } 
-                        );
-                    }, 700 ); // 700 для оптимизации, чтобы моментально не отправлялся запрос, если мышкой просто провели по опросу...
-                };
+							var $forDotsLoader = $dem.find('.dem-link').first();
+							$forDotsLoader.demSetLoader();
+							$.post( demAjaxUrl, 
+								{
+									dem_pid: $dem.attr('data-pid'),
+									dem_act: 'getVotedIds',
+									action:  'dem_ajax'
+								},
+								function( reply ){
+									$forDotsLoader.demUnsetLoader();
+									if( ! reply ) return; // выходим если нет ответов
+
+									$res.html( votedHTML ).demSetHeight().demSetClick();
+									setAnswrs( $res, reply );
+
+									// выводим сообщение о том что голосовал или только для пользователей
+									$res.demCacheShowNotice( reply );
+								} 
+							);
+						}, 700 ); // 700 для оптимизации, чтобы моментально не отправлялся запрос, если мышкой просто провели по опросу...
+					};
                 $dem.hover( check, notcheck );
                 $dem.click( check );
             }
@@ -326,4 +326,4 @@
 	});
 
 
-})(jQuery)
+}(jQuery)

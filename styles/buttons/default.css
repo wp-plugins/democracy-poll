@@ -8,8 +8,8 @@ a.dem-button,
     text-transform: uppercase;
     padding:0.7em 1.2em;
     border-radius: .4em;
-    border: 1px solid #aaa;
-    background-color: #ccc;
+    border: 1px solid #c9c9c9;
+    background-color: #dedede;
     background-image: linear-gradient(to bottom, #fff 0%, transparent );
     background-image: -webkit-linear-gradient(top, #fff 0%, transparent );
     text-shadow: #fff 0 1px;

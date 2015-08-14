@@ -5,7 +5,7 @@
  * влкючает в себя основную работу плагина WordPress
  */
 
-class Dem {
+class Dem{
 	public $dir_path;
 	public $dir_url;
 	public $ajax_url;
@@ -44,26 +44,32 @@ class Dem {
 		
         $this->opt      = $this->get_options(); // !!! должна идти после установки путей
         
-//        add_action('plugins_loaded', array($this, 'dem_init') );
         $this->dem_init();
 	}
     
-    /**
-     * Инициализирует основные хуки Democracy вешается на хук plugins_loaded.
-     */
+    ## Инициализирует основные хуки Democracy вешается на хук plugins_loaded.
     function dem_init(){
 		$this->user_access = current_user_can('manage_options');
 		
-		// файл перевода
-		if( $this->opt['load_textdomain'] ) $this->load_textdomain();
+		$this->load_textdomain();
         
 		// меню в панели инструментов
-		if( $this->opt['toolbar_menu'] && $this->user_access ) add_action('admin_bar_menu', array( $this, 'toolbar'), 99);
+		if( @ $this->opt['toolbar_menu'] && $this->user_access )
+			add_action('admin_bar_menu', array( $this, 'toolbar'), 99);
     }
 				
 	## подключаем файл перевода
 	function load_textdomain(){
-		load_textdomain('dem', $this->dir_path . DEM_LANG_DIRNAME .'/' . get_locale() . '.mo' );
+		$locale = get_locale();
+		
+		if( $locale == 'ru_RU' ) return;
+		
+		$patt   = $this->dir_path . DEM_LANG_DIRNAME .'/%s.mo';
+		$mofile = sprintf( $patt, $locale );
+		if( ! file_exists( $mofile ) )
+			$mofile = sprintf( $patt, 'en_US' );
+
+		load_textdomain('dem', $mofile );
 	}
 	
 	## Добавляет пункты меню в панель инструментов
@@ -105,10 +111,7 @@ class Dem {
 		) );
 	}
 	
-	/**
-	 * Получает все настройки и устанавливает глобальную переменную настроек $dem_options
-	 * @return Массив
-	 */
+	## Получает настройки. Устанавливает если их нет
 	function get_options(){
 		if( empty( $this->opt ) ) $this->opt = get_option( self::OPT_NAME );
 		if( empty( $this->opt ) ) $this->update_options('default');
@@ -148,13 +151,12 @@ class Dem {
         
         return false;
 	}
-		
 
+	
+	
+	
     
-    
-    
-    
-    ### FRONT END
+    ### FRONT END ------------------------------------------------------
 	function DemFrontInit(){
 		# шоткод [democracy]
 		add_shortcode('democracy',          array($this, 'poll_shortcode'));
@@ -251,10 +253,11 @@ class Dem {
 		);
 	}
 	
-	# шоткод архива опросов
+	## шоткод архива опросов
 	function archives_shortcode(){
 		return '<div class="dem-archives-shortcode">'. get_democracy_archives() .'</div>';
 	}
+	
 	## шоткод опроса
 	function poll_shortcode( $atts ){		
 		return '<div class="dem-poll-shortcode">'. get_democracy_poll( @$atts['id'] ) .'</div>';
