@@ -57,7 +57,7 @@ class widget_democracy extends WP_Widget {
 		</p>
 
 		<p class="demTitleWrap" <?php echo $title_style ?>>
-			<label>Заголовок опроса: 
+			<label><?php _e('Заголовок опроса:','dem'); ?> 
 				<input style="width:100%;" type="text" id="demTitle" name="<?php echo $this->get_field_name('title')?>" value="<?php echo $title?>">
 			</label>
 		</p>
