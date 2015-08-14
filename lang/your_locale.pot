@@ -1,5 +1,3 @@
-<<<<<<< .mine
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Democracy\n"
@@ -1629,8 +1627,3 @@ msgstr ""
 #: widget_democracy.php:79
 msgid "Какой опрос показывать?"
 msgstr ""
-
-# ← back to polls
-#~ msgid "← вернуться к опросам"
-#~ msgstr "← back to polls"
->>>>>>> .r1220864
