@@ -1,6 +1,6 @@
 === Plugin Name ===
-Stable tag: 4.7.8
-Tested up to: 4.2.1
+Stable tag: 4.9.4
+Tested up to: 4.3.0
 Requires at least: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -139,6 +139,8 @@ Comming soon...
 
 
 == TODO ==
+* Poll option to don't show results screen until voting are closed
+* Collect cookies demPoll_N in one option array 
 * sorting on archive page
 * limit multiple answers select
 * cron: shadule polls opening & activation
@@ -146,6 +148,28 @@ Comming soon...
 
 
 == Changelog ==
+= 4.9.4 =
+* FIX: change default DB tables charset from utf8mb4 to utf8. Thanks to Nanotraktor
+
+= 4.9.3 =
+* add: single poll option that allow set limit for max answers if there is multiple answers option.
+* add: global option that allow hide vote button on polls with no multiple answers and revote possibility. Users will vote by clicking on answer itself.
+* fix: disable cache on archive page.
+
+= 4.9.2 =
+* FIX: bootstrap .label class conflict. Rename .label to .dem-label. If you discribe .label class in 'additional css' rename it to .dem-label please.
+* ADD: Now on new version css regenerated automaticaly when you enter any democracy admin page.
+
+= 4.9.1 =
+* Fix: Polls admin table column order
+
+= 4.9.0 =
+* Added Logs table in admin and capability to remove only logs of specific poll.
+* Added 'date' field to the democracy_log table.
+
+= 4.8 =
+* Complatelly change polls list table output. Now it work under WP_List_Table and have sortable colums, pagination, search (in future) etc.
+
 = 4.7.8 =
 * Added: en_US l10n if no l10n file.
 

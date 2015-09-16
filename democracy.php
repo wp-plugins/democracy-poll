@@ -2,7 +2,6 @@
 
 __('Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.', 'dem');
 
-
 /*
 Plugin Name: Democracy Poll
 Description: Позволяет удобно создавать демократические опросы. Пользователи могут голосовать за несколько вариантов ответа или добавлять свои собственные ответы.
@@ -11,20 +10,19 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: lang
-Version: 4.7.8
+Version: 4.9.4
 */
-
 
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
 
-
 $data = get_file_data( __FILE__, array('ver'=>'Version', 'lang_dir'=>'Domain Path') );
 
-define('DEM_DIR', dirname(__FILE__) );
 define('DEM_VER', $data['ver'] );
 define('DEM_LANG_DIRNAME', $data['lang_dir'] );
+define('DEMOC_URL',  plugin_dir_url(__FILE__) );
+define('DEMOC_PATH', plugin_dir_path(__FILE__) );
 
-if( is_admin() && ! require DEM_DIR . '/admin/is_php53.php' ) return;
+if( is_admin() && ! require DEMOC_PATH . 'admin/is_php53.php' ) return;
 
 // таблицы
 global $wpdb;
@@ -33,9 +31,9 @@ $wpdb->democracy_a   = $wpdb->prefix . 'democracy_a';
 $wpdb->democracy_log = $wpdb->prefix . 'democracy_log';
 
 
-require_once DEM_DIR . '/class.DemInit.php';
-require_once DEM_DIR . '/admin/class.DemAdminInit.php';
-require_once DEM_DIR . '/class.DemPoll.php';
+require_once DEMOC_PATH . 'class.DemInit.php';
+require_once DEMOC_PATH . 'admin/class.DemAdminInit.php';
+require_once DEMOC_PATH . 'class.DemPoll.php';
 
 register_activation_hook( __FILE__, 'democracy_activate' );
 
@@ -43,8 +41,8 @@ register_activation_hook( __FILE__, 'democracy_activate' );
 ## Активируем плагин. активируем виджет, если включен
 add_action('plugins_loaded', function(){
 	Dem::init();
-	if( Dem::$inst->opt['use_widget'] )
-		require_once DEM_DIR . '/widget_democracy.php';
+	if( Dem::$opt['use_widget'] )
+		require_once DEMOC_PATH . 'widget_democracy.php';
 } );
 
 
@@ -52,13 +50,12 @@ add_action('plugins_loaded', function(){
 
 ## Функция локализации внешней части
 function __dem( $str ){	
-	static $custom;
-	if( $custom === null ) $custom = get_option('democracy_l10n');
+	static $cache;
+	if( $cache === null )
+		$cache = get_option('democracy_l10n');
 
-	return isset( $custom[ $str ] ) ? $custom[ $str ] : __( $str, 'dem');
+	return isset( $cache[ $str ] ) ? $cache[ $str ] : __( $str, 'dem');
 }
-
-
 
 
 #### ФУНКЦИИ ОБЕРТКИ ------------------------------------------------------------
@@ -112,96 +109,113 @@ function __query_poll_screen_choose( $poll ){
 #### / ФУНКЦИИ ОБЕРТКИ  ------------------------------------------------------------
 
 
-
-
-
 ## Добалвяет таблицы в БД и инициализирует себя
 function democracy_activate(){
 	global $wpdb;
-    
-	# выходим, если это не первая активация
-	if( $wpdb->get_var("SHOW TABLES LIKE '$wpdb->democracy_q'") ) return;    
-    
-			
+	
 	Dem::init()->load_textdomain();
-
-    $charset_collate = (!empty($wpdb->charset) && !empty($wpdb->collate)) ? "DEFAULT CHARSET=$wpdb->charset COLLATE $wpdb->collate" : "DEFAULT CHARSET=utf8 COLLATE utf8_general_ci";
-
-    $create_tables = "
-    CREATE TABLE $wpdb->democracy_q (
-        id         int(10)    UNSIGNED NOT NULL auto_increment,
-        question   text                NOT NULL default '',
-        added      int(10)    UNSIGNED NOT NULL default 0,
-        end        int(10)    UNSIGNED NOT NULL default 0,
-        democratic tinyint(1) UNSIGNED NOT NULL default 0,
-        active     tinyint(1) UNSIGNED NOT NULL default 0,
-        open       tinyint(1) UNSIGNED NOT NULL default 0,
-        multiple   tinyint(1) UNSIGNED NOT NULL default 0,
-        forusers   tinyint(1) UNSIGNED NOT NULL default 0,
-        revote     tinyint(1) UNSIGNED NOT NULL default 0,
-        note       text                NOT NULL default '',
-        PRIMARY KEY (id),
-        KEY active (active)
-    ) $charset_collate;
-
-    CREATE TABLE $wpdb->democracy_a (
-        aid      int(10)    UNSIGNED NOT NULL auto_increment,
-        qid      int(10)    UNSIGNED NOT NULL default 0,
-        answer   text                NOT NULL default '',
-        votes    int(10)    UNSIGNED NOT NULL default 0,
-        added_by tinyint(1) UNSIGNED NOT NULL default 0,
-        PRIMARY KEY (aid),
-        KEY qid (qid)
-    ) $charset_collate;
-
-    CREATE TABLE $wpdb->democracy_log (
-        ip     int(11)    UNSIGNED NOT NULL default 0,
-        qid    int(10)    UNSIGNED NOT NULL default 0,
-        aids   text                NOT NULL default '',
-        userid bigint(20) UNSIGNED NOT NULL default 0,
-        expire bigint(20) UNSIGNED NOT NULL default 0,
-        KEY ip  (ip,qid),
-        KEY qid (qid),
-        KEY userid (userid)
-    ) $charset_collate;
-    ";
-
-    # создаем таблицы
+	
+	// create tables
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    dbDelta( $create_tables );
+	
+	$collate = (!empty($wpdb->charset) && !empty($wpdb->collate)) ? 
+		"DEFAULT CHARSET=$wpdb->charset COLLATE $wpdb->collate" : 
+		"DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci";
 
-    # Создадим пример опроса
-    $wpdb->insert( $wpdb->democracy_q, array( 
-        'question'   => __('Что для вас деньги?','dem'), 
-        'added'      => current_time('timestamp'),
-        'democratic' => 1, 'active' => 1, 'open' => 1, 'revote' => 1, 
-    ) );
+	if( ! $wpdb->get_var("SHOW TABLES LIKE '$wpdb->democracy_q'") ){
+		dbDelta("
+		CREATE TABLE $wpdb->democracy_q (
+			id         int(10)    UNSIGNED NOT NULL auto_increment,
+			question   text                NOT NULL default '',
+			added      int(10)    UNSIGNED NOT NULL default 0,
+			added_user bigint(20) UNSIGNED NOT NULL default 0,
+			end        int(10)    UNSIGNED NOT NULL default 0,
+			democratic tinyint(1) UNSIGNED NOT NULL default 0,
+			active     tinyint(1) UNSIGNED NOT NULL default 0,
+			open       tinyint(1) UNSIGNED NOT NULL default 0,
+			multiple   tinyint(5) UNSIGNED NOT NULL default 0,
+			forusers   tinyint(1) UNSIGNED NOT NULL default 0,
+			revote     tinyint(1) UNSIGNED NOT NULL default 0,
+			show_results tinyint(1) UNSIGNED NOT NULL default 0,
+			note       text                NOT NULL default '',
 
-    $qid = $wpdb->insert_id;
+			PRIMARY KEY (id),
+			KEY active (active)
+		) $collate; 
+		");
+	}
+	
+	if( ! $wpdb->get_var("SHOW TABLES LIKE '$wpdb->democracy_a'") ){
+		dbDelta("
+		CREATE TABLE $wpdb->democracy_a (
+			aid      int(10)    UNSIGNED NOT NULL auto_increment,
+			qid      int(10)    UNSIGNED NOT NULL default 0,
+			answer   text                NOT NULL default '',
+			votes    int(10)    UNSIGNED NOT NULL default 0,
+			added_by varchar(100)        NOT NULL default '',
 
-    $answers = array( 
-        __('Деньги - это универсальный продукт для обмена.','dem'),
-        __('Деньги - это бумага... Не в деньгах счастье...','dem'),
-        __('Средство достижения цели.','dem'),
-        __('Кусочки дьявола :)','dem'),
-        __('Это власть, - это "Сила", - это счастье...','dem'),
-    );
+			PRIMARY KEY (aid),
+			KEY qid (qid)
+		) $collate;
+		");
+	}
+	
+	if( ! $wpdb->get_var("SHOW TABLES LIKE '$wpdb->democracy_log'") ){
+		dbDelta("
+		CREATE TABLE $wpdb->democracy_log (
+			ip       int(11)    UNSIGNED NOT NULL default 0,
+			qid      int(10)    UNSIGNED NOT NULL default 0,
+			aids     text                NOT NULL default '',
+			userid   bigint(20) UNSIGNED NOT NULL default 0,
+			date     DATETIME            NOT NULL default '0000-00-00 00:00:00',
+			expire   bigint(20) UNSIGNED NOT NULL default 0,
 
-    # установим голоса для примера
-    foreach( $answers as $answr ){
-        $wpdb->insert( $wpdb->democracy_a, array( 'votes'=> rand(0,100), 'qid' => $qid, 'answer' => $answr ) );
-    }
+			KEY ip  (ip,qid),
+			KEY qid (qid),
+			KEY userid (userid)
+		) $collate;
+		");
+	}
 
-    Dem::init()->update_options('default');
+    // Poll example
+	if( ! $wpdb->get_row("SELECT * FROM $wpdb->democracy_q LIMIT 1") ){
+		$wpdb->insert( $wpdb->democracy_q, array( 
+			'question'   => __('Что для вас деньги?','dem'), 
+			'added'      => current_time('timestamp'),
+			'added_user' => get_current_user_id(),
+			'democratic' => 1,
+			'active'     => 1,
+			'open'       => 1,
+			'revote'     => 1,
+		) );
 
+		$qid = $wpdb->insert_id;
+
+		$answers = array( 
+			__('Деньги - это универсальный продукт для обмена.','dem'),
+			__('Деньги - это бумага... Не в деньгах счастье...','dem'),
+			__('Средство достижения цели.','dem'),
+			__('Кусочки дьявола :)','dem'),
+			__('Это власть, - это "Сила", - это счастье...','dem'),
+		);
+
+		// create votes
+		foreach( $answers as $answr )
+			$wpdb->insert( $wpdb->democracy_a, array( 'votes'=> rand(0,100), 'qid' => $qid, 'answer' => $answr ) );
+	}
+	
+	// add options, if needed
+	if( ! get_option( Dem::OPT_NAME ) )
+    	Dem::init()->update_options('default');
+	
+	// upgrade
+	dem_last_version_up();
 }
 
 
 
-/**
- * Проверяет необходимость обновления.
- * Нужно вызывать на странице настроек плагина, чтобы не грузить лишний раз сервер.
- */
+## Plugin Update
+## Нужно вызывать на странице настроек плагина, чтобы не грузить лишний раз сервер.
 function dem_last_version_up(){	
 	$dem_ver = get_option('democracy_version');
 	
@@ -224,10 +238,14 @@ function dem_last_version_up(){
 	
 	### 
 	### изменение данных таблиц
-	$fields_q = $wpdb->get_results("SHOW COLUMNS FROM $wpdb->democracy_q");
-	$fields_q = wp_list_pluck( $fields_q, 'Field' );
-	$fields_log = $wpdb->get_results("SHOW COLUMNS FROM $wpdb->democracy_log");
-	$fields_log = wp_list_pluck( $fields_log, 'Field' );
+	$fields   = $wpdb->get_results("SHOW COLUMNS FROM $wpdb->democracy_q");
+	$fields_q = wp_list_pluck( $fields, 'Field' );
+	
+	$fields   = $wpdb->get_results("SHOW COLUMNS FROM $wpdb->democracy_a");
+	$fields_a = wp_list_pluck( $fields, 'Field' );
+	
+	$fields     = $wpdb->get_results("SHOW COLUMNS FROM $wpdb->democracy_log");
+	$fields_log = wp_list_pluck( $fields, 'Field' );
 	
 	// 3.1.3
 	if( ! in_array('end', $fields_q ) )
@@ -260,32 +278,56 @@ function dem_last_version_up(){
 	}
     
     // 4.5.6
-	if( ! in_array('expire', $fields_log ) ){
+	if( ! in_array('expire', $fields_log ) )
 		$wpdb->query("ALTER TABLE $wpdb->democracy_log ADD `expire` bigint(20) UNSIGNED NOT NULL default 0 AFTER `userid`;");
-	}
 	
 	// 4.7.5
 	// конвертируем в кодировку utf8mb4
-	if( $wpdb->charset === 'utf8mb4' && version_compare( $dem_ver, '4.7.5', '<') ){
+	if( $wpdb->charset === 'utf8mb4' ){
 		foreach( array( $wpdb->democracy_q, $wpdb->democracy_a, $wpdb->democracy_log ) as $table ){
+			$alter = false;
+			if( ! $results = $wpdb->get_results( "SHOW FULL COLUMNS FROM `$table`" ) )
+				continue;
 
-			if( ! $results = $wpdb->get_results( "SHOW FULL COLUMNS FROM `$table`" ) ) continue;
-
-			foreach ( $results as $column ) {
+			foreach( $results as $column ){
 				if ( ! $column->Collation ) continue;
 				
 				list( $charset ) = explode( '_', $column->Collation );
-				$charset = strtolower( $charset );
 
-				if ( $charset === 'utf8' ) {
-					// Don't upgrade tables that have non-utf8 columns.
-					$wpdb->query( "ALTER TABLE $table CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci" );
+				if( strtolower( $charset ) != 'utf8mb4' ){
+					$alter = true;
+					break;
 				}
 			}
+			
+			if( $alter )
+				$wpdb->query("ALTER TABLE $table CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
 		}
 		
 	}
 	
-	if( $dem_ver != DEM_VER ) update_option('democracy_version', DEM_VER );
+	// 4.9
+	if( ! in_array('date', $fields_log ) )
+		$wpdb->query("ALTER TABLE `$wpdb->democracy_log` ADD `date` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `userid`;");
+	
+	// 4.9.3
+	if( version_compare( $dem_ver, '4.9.3', '<') ){
+		$wpdb->query("ALTER TABLE `$wpdb->democracy_log` CHANGE `date` `date` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00';");
+		
+		$wpdb->query("ALTER TABLE `$wpdb->democracy_q` CHANGE `multiple` `multiple` tinyint(5) UNSIGNED NOT NULL DEFAULT 0;");
+		
+		$wpdb->query("ALTER TABLE `$wpdb->democracy_a` CHANGE `added_by` `added_by` varchar(100) NOT NULL default '';");
+		$wpdb->query("UPDATE `$wpdb->democracy_a` SET added_by = '' WHERE added_by = '0'");
+	}
+	if( ! in_array('added_user', $fields_q ) )
+		$wpdb->query("ALTER TABLE `$wpdb->democracy_q` ADD `added_user` bigint(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `added`;");
+	if( ! in_array('show_results', $fields_q ) )
+		$wpdb->query("ALTER TABLE `$wpdb->democracy_q` ADD `show_results` tinyint(1) UNSIGNED NOT NULL default 1 AFTER `revote`;");
+	
+	
+	// обновим css
+	Dem::init()->regenerate_democracy_css();
+	
+	update_option('democracy_version', DEM_VER );
 	
 }

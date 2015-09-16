@@ -1,48 +1,47 @@
 <?php
 
-/**
- * Класс инициализирующий плагин и включающий все необходимые функции для админ-панели и фронт энда
- * влкючает в себя основную работу плагина WordPress
- */
+## Initiate plugin, add main plugin admin & front functions
 
 class Dem{
-	public $dir_path;
-	public $dir_url;
 	public $ajax_url;
 	
 	public $user_access; // доступ пользователя к админ-функциям Democracy
-	
 	public $message = array();
 	
-	public $opt;
+	public $allowed_html; // теги допустимые в вопросах и ответах
 	
 	const OPT_NAME = 'democracy_options';
 	
-	static $inst;
+	static $opt;
+	static $i;
     
     static function init(){
-        if( ! is_null( self::$inst ) ) return self::$inst;
-        
+        if( ! is_null( self::$i ) )
+			return self::$i;
+			
         # admin part
 		if( is_admin() && ! defined('DOING_AJAX') )
-            self::$inst = new DemAdminInit();
+            self::$i = new DemAdminInit();
 		# front-end
 		else {
-            self::$inst = new self;
-            self::$inst->DemFrontInit();
+            self::$i = new self;
+            self::$i->DemFrontInit();
         }
         
-        return self::$inst;
+        return self::$i;
     }
 	
 	function __construct(){
-		if( ! is_null( self::$inst ) ) return self::$inst;
-                
-		$this->dir_path = plugin_dir_path(__FILE__);
-		$this->dir_url  = plugin_dir_url(__FILE__);
-		$this->ajax_url = admin_url('admin-ajax.php'); //$this->dir_url . 'ajax_request.php';
+		if( ! is_null( self::$i ) )
+			return self::$i;
 		
-        $this->opt      = $this->get_options(); // !!! должна идти после установки путей
+		$this->allowed_html = $GLOBALS['allowedtags'];
+		$this->allowed_html['a']['rel'] = true;
+		$this->allowed_html['a']['class'] = true;
+		
+		$this->ajax_url = admin_url('admin-ajax.php');
+		
+        self::$opt = $this->get_options();
         
         $this->dem_init();
 	}
@@ -54,7 +53,7 @@ class Dem{
 		$this->load_textdomain();
         
 		// меню в панели инструментов
-		if( @ $this->opt['toolbar_menu'] && $this->user_access )
+		if( @ self::$opt['toolbar_menu'] && $this->user_access )
 			add_action('admin_bar_menu', array( $this, 'toolbar'), 99);
     }
 				
@@ -63,8 +62,8 @@ class Dem{
 		$locale = get_locale();
 		
 		if( $locale == 'ru_RU' ) return;
-		
-		$patt   = $this->dir_path . DEM_LANG_DIRNAME .'/%s.mo';
+
+		$patt   = DEMOC_PATH . DEM_LANG_DIRNAME .'/%s.mo';
 		$mofile = sprintf( $patt, $locale );
 		if( ! file_exists( $mofile ) )
 			$mofile = sprintf( $patt, 'en_US' );
@@ -73,68 +72,57 @@ class Dem{
 	}
 	
 	## Добавляет пункты меню в панель инструментов
-	function toolbar( $toolbar ) {
+	function toolbar( $toolbar ){
+		$parent    = 'dem_settings';
+		$admin_url = $this->admin_page_url();
+		
 		$toolbar->add_node( array(
-			'id'    => 'dem_settings',
+			'id'    => $parent,
 			'title' => 'Democracy',
-			'href'  => $this->admin_page_url() . '&subpage=general_settings',
+			'href'  => $admin_url . '&subpage=general_settings',
 		) );
-		$toolbar->add_node( array(
-			'parent' => 'dem_settings', 
-			'id'     => 'dem_add_poll',
-			'title'  => __('Добавить опрос','dem'),
-			'href'   => $this->admin_page_url() . '&subpage=add_new', 
-		) );
-		$toolbar->add_node( array(
-			'parent' => 'dem_settings', 
-			'id'     => 'dem_main_page',
-			'title'  => __('Список опросов','dem'),
-			'href'   => $this->admin_page_url(), 
-		) );
-		$toolbar->add_node( array(
-			'parent' => 'dem_settings', 
-			'id'     => 'dem_settings2',
-			'title'  => __('Настройки Democracy','dem'),
-			'href'   => $this->admin_page_url() . '&subpage=general_settings',
-		) );
-		$toolbar->add_node( array(
-			'parent' => 'dem_settings', 
-			'id'     => 'dem_degign',
-			'title'  => __('Настройки дизайна','dem'),
-			'href'   => $this->admin_page_url() . '&subpage=design',
-		) );
-		$toolbar->add_node( array(
-			'parent' => 'dem_settings', 
-			'id'     => 'dem_txts',
-			'title'  => __('Изменение текстов','dem'),
-			'href'   => $this->admin_page_url() . '&subpage=l10n',
-		) );
+		
+		$list = array(
+			''                 => __('Список опросов','dem'), 
+			'add_new'          => __('Добавить опрос','dem'),
+			'logs'             => __('Логи','dem'),
+			'general_settings' => __('Настройки','dem'),
+			'design'           => __('Дизайн','dem'),
+			'l10n'             => __('Изменение текстов','dem'),
+		);
+		
+		foreach( $list as $id => $title ){
+			$toolbar->add_node( array(
+				'parent' => $parent, 
+				'id'     => $id ?: 'dem_main',
+				'title'  => $title,
+				'href'   => add_query_arg( array('subpage'=>$id), $admin_url ), 
+			) );
+		}
 	}
 	
 	## Получает настройки. Устанавливает если их нет
 	function get_options(){
-		if( empty( $this->opt ) ) $this->opt = get_option( self::OPT_NAME );
-		if( empty( $this->opt ) ) $this->update_options('default');
+		if( empty( self::$opt ) ) self::$opt = get_option( self::OPT_NAME );
+		if( empty( self::$opt ) ) $this->update_options('default');
 
-		return $this->opt;
+		return self::$opt;
 	}
 	
-	
-	/**
-	 * Возвращает УРЛ на главную страницу настроек плагина
-	 * @return Строку
-	 */
+	## Возвращает УРЛ на главную страницу настроек плагина
+	## @return Строку
 	function admin_page_url(){
-		static $url; if( ! $url ) $url = admin_url('options-general.php?page='. basename( $this->dir_path ) );
+		static $url;
+		if( ! $url )
+			$url = admin_url('options-general.php?page='. basename( DEMOC_PATH ) );
+		
 		return $url;
 	}	
 	
-    /**
-     * проверяет используется ли страничный плагин кэширования на сайте
-     * @return bool
-     */
+    ## проверяет используется ли страничный плагин кэширования на сайте
+    ## @return bool
 	function is_cachegear_on(){
-        if( $this->opt['force_cachegear'] ) return true;
+        if( self::$opt['force_cachegear'] ) return true;
         
         // wp total cache
         if( defined('W3TC') && @w3_instance('W3_ModuleStatus')->is_enabled('pgcache') ) return true;
@@ -151,10 +139,35 @@ class Dem{
         
         return false;
 	}
-
 	
-	
-	
+	## очищает данные ответа
+	function sanitize_answer_data( $data ){
+		$allowed_tags = $this->user_access ? $this->allowed_html : 'strip';
+			
+		if( is_string( $data ) )
+			return wp_kses( trim($data), $allowed_tags );
+		
+		foreach( $data as $key => & $val ){
+			if( is_string($val) ) $val = trim($val);
+			
+			if(0){}
+			// допустимые теги
+			elseif( $key == 'answer' )
+				$val = wp_kses( $val, $allowed_tags );	
+			
+			// числа
+			elseif( in_array( $key, array('qid','aid','votes') ) )
+				$val = (int) $val;
+			
+			// остальное
+			else
+				$val = wp_kses( $val, 'strip' );
+		}
+		
+		//die( print_r( $data ) );
+		
+		return $data;
+	}
     
     ### FRONT END ------------------------------------------------------
 	function DemFrontInit(){
@@ -162,7 +175,7 @@ class Dem{
 		add_shortcode('democracy',          array($this, 'poll_shortcode'));
 		add_shortcode('democracy_archives', array($this, 'archives_shortcode'));
 		
-		//if( ! $this->opt['inline_js_css'] ) $this->add_css(); // подключаем стили как файл, если не инлайн
+		//if( ! self::$opt['inline_js_css'] ) $this->add_css(); // подключаем стили как файл, если не инлайн
 
 		# для работы функции без AJAX
 		if( @ $_POST['action'] != 'dem_ajax' ) $this->not_ajax_request_handler();
@@ -249,7 +262,7 @@ class Dem{
 		return array(
 			'act'  => $act  ? $act : false,
 			'pid'  => $pid  ? absint( $pid ) : false,
-			'aids' => $aids ? wp_unslash( $_POST['answer_ids'] ) : false,
+			'aids' => $aids ? wp_unslash( $aids ) : false,
 		);
 	}
 	
@@ -275,16 +288,16 @@ class Dem{
 		// пробуем подключить сжатые версии файлов		
 //		$css_name = rtrim( $css_name, '.css');
 //		$css      = 'styles/' . $css_name;
-//		$cssurl   = $this->dir_url  . "$css.min.css";
-//		$csspath  = $this->dir_path . "$css.min.css";
+//		$cssurl   = DEMOC_URL  . "$css.min.css";
+//		$csspath  = DEMOC_PATH . "$css.min.css";
 //		
 //		if( ! file_exists( $csspath ) ){
-//			$cssurl   = $this->dir_url  . "$css.css";
-//			$csspath  = $this->dir_path . "$css.css";
+//			$cssurl   = DEMOC_URL  . "$css.css";
+//			$csspath  = DEMOC_PATH . "$css.css";
 //		}
 
 		// inline HTML
-//		if( $this->opt['inline_js_css'] )
+//		if( self::$opt['inline_js_css'] )
 			return "\n<!--democracy-->\n" .'<style type="text/css">'. $minify .'</style>'."\n";
 		
 //		else{
@@ -298,15 +311,15 @@ class Dem{
 				
 		// пробуем подключить сжатые версии файлов
 		$js       = 'js/democracy';
-		$jsurl    = $this->dir_url  . "$js.min.js";
-		$jspath   = $this->dir_path . "$js.min.js";
+		$jsurl    = DEMOC_URL  . "$js.min.js";
+		$jspath   = DEMOC_PATH . "$js.min.js";
 		if( ! file_exists( $jspath ) ){
-			$jsurl   = $this->dir_url  . "$js.js";
-			$jspath  = $this->dir_path . "$js.js";
+			$jsurl   = DEMOC_URL  . "$js.js";
+			$jspath  = DEMOC_PATH . "$js.js";
 		}
 
 		// inline HTML
-		if( $this->opt['inline_js_css'] ){
+		if( self::$opt['inline_js_css'] ){
 			wp_enqueue_script('jquery');			
 			add_action('wp_footer', function() use($jspath){ echo '<!--democracy-->'. "\n" .'<script type="text/javascript">'. file_get_contents( $jspath ) .'</script>'."\n"; }, 999);
 		}

@@ -9,10 +9,10 @@
 .democracy input[type='radio']:focus, .democracy input[type='checkbox']:focus{
     outline:none;
 }
-#democracy ul{ list-style:none; border:none; }
+.democracy ul{ list-style:none !important; border:none !important; }
 
 input[type="submit"].dem-button, a.dem-button, .dem-button{
-    position: relative; display:inline-block; text-decoration: none; user-select: none; line-height: 1; border:0; margin:0; padding:0;
+    position: relative; display:inline-block; text-decoration: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; line-height: 1; border:0; margin:0; padding:0;
 }
 input[type="submit"].dem-button:focus, a.dem-button:focus, .dem-button:focus{
     outline: none;
@@ -28,11 +28,11 @@ a.dem-button:hover{ text-decoration: none; }
 
 .dem-screen{ position:relative; line-height: 1.3; }
 
-ul.dem-vote{ margin-bottom:.6em; }
+ul.dem-vote{ margin-bottom:1em; }
 ul.dem-vote li{ padding-bottom:0; margin-bottom:0; }
 ul.dem-vote li > *{ margin-bottom:.6em; } /* to comfort hover */
 ul.dem-answers li{ padding-bottom:1em; }
-.dem-answers .label{ margin-bottom:.2em; line-height: 1.2; }
+.dem-answers .dem-label{ margin-bottom:.2em; line-height: 1.2; }
 
 /* result screen */
 .dem-graph{ position:relative; color:#555; color:rgba(0,0,0,.6); box-sizing:content-box; width:100%; display:table; height:1.2em; line-height:1.2em; /* because display:table; */ }
@@ -50,10 +50,12 @@ ul.dem-answers li{ padding-bottom:1em; }
 /* vote screen */
 .dem-vote label{ float:none; display:block; }
 .dem-results-link{ display: inline-block; line-height: 1; margin:.8em 1em; }
+.dem-vote .dem-disabled{ opacity:.5; }
 
 /* dem-bottom */
 .democracy .dem-bottom{ padding-bottom:1em; } /* stronger property */
 .dem-bottom{ text-align: center; }
+.dem-bottom:after{ content:''; display:table; clear:both; }
 
 /* typically do not change */
 .dem-poll-title{ display:block; margin-bottom:1.5em; margin-top:1.2em; font-size:120%; }
@@ -90,5 +92,4 @@ input.dem-add-answer-txt{ width:100%; box-sizing: border-box; }
 .dem-archives .democracy { margin-bottom:2em; padding-bottom:20px; border-bottom:1px dashed #ccc; }
 .dem-archives .dem-archive-link { display: none; }
 
-/*  / common presets 
----------------------------------------------------------------------- */
+/*  / common presets ---------------------------------------------------------------------- */

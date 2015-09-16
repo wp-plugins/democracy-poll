@@ -32,26 +32,35 @@ jQuery(document).ready(function($){
 		return this;
 	};
 	
-	
+	// поле с новым ответом
 	$('.new-poll-answers .answ-text').focus( focusFunction );
-	$('.new-poll-answers li.answ').last().addAnswField(); // добавим поле с новым ответом
+	$('.new-poll-answers li.answ').last().addAnswField();
 	
 	
-	// добавим кнопки удаления
+	// кнопки удаления
 	$('.new-poll-answers li.answ').each( function(){
-		var delButton = $('<span class="dem-del-button" onclick="return demRemoveAnswer(this);">×</span>');
-		$(this).append( delButton );
+		$(this).append('<span class="dem-del-button">×</span>');
 	} );
-	
-	window.demRemoveAnswer = function( that ){		
-		$(that).parent('li').remove();
-	}
+	// событие удаления
+	$('.new-poll-answers').on('click', '.dem-del-button', function(){
+		$(this).parent('li').remove();
+	} );
 	
 	// дата
 	$('[name="dmc_end"]').datepicker({ dateFormat : 'dd-mm-yy' });
+	
+	// множественный ответ
+	var $multiCheck = $('input[type="checkbox"][name="dmc_multiple"]'),
+		$multiNum   = $multiCheck.parent().find('[type="number"]');
+	$multiCheck.change(function(){		
+		$(this).is(':checked') ? $multiNum.show().focus() : $multiNum.hide();
+	});
+	$multiNum.change(function(){		
+		$multiCheck.val( $multiNum.val() );
+	});
     
     
-    // DESIGN
+    // DESIGN ---------------------------------------
     $('.dem-screen').height(function(){ return $(this).outerHeight(); } );
     
     $('[data-dem-act], .democracy a').click(function(e){ e.preventDefault(); }); // отменяем клики
@@ -115,7 +124,8 @@ jQuery(document).ready(function($){
 		});
 		
 	})
-    
+    // / DESIGN ---------------------------------------
+	
 });
 
 
