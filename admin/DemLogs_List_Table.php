@@ -54,7 +54,7 @@ class DemLogs_List_Table extends WP_List_Table{
 			//'cb'     => '<input type="checkbox" />',
             'ip'     => __('IP','dem'),
             'qid'    => __('Опрос','dem'),
-            'aids'   => __('Ответы','dem'),
+            'aids'   => __('Ответ','dem'),
             'userid' => __('Юзер','dem'),
             'date'   => __('Дата','dem'),
         );
@@ -115,13 +115,20 @@ class DemLogs_List_Table extends WP_List_Table{
 		// вывод
 		if(0){}
 		elseif( $col == 'ip' ){
-			return '<a href="'. esc_url( add_query_arg( array('ip'=>$log->ip, 'poll'=>null) ) ) .'">'. long2ip( $log->ip ) .'</a>';
+			return '<a title="'. __('Поиск по IP', 'dem') .'" href="'. esc_url( add_query_arg( array('ip'=>$log->ip, 'poll'=>null) ) ) .'">'. long2ip( $log->ip ) .'</a>';
 		}
 		elseif( $col == 'qid' ){
 			if( ! $poll = $this->cache('polls', $log->qid ) )
 				$poll = $this->cache('polls', $log->qid, DemPoll::get_poll( $log->qid ) );
 			
-			return '<a href="'. esc_url( add_query_arg( array('ip'=>null, 'poll'=>$log->qid) ) ) .'">'. esc_html( $poll->question ) .'</a>';
+			$url = Dem::$i->admin_page_url();
+			
+			return esc_html( $poll->question ) .'
+			<div class="row-actions">
+				<span class="edit"><a href="'. add_query_arg( array('edit_poll'=> $poll->id), $url ) .'">'. __('Редактировать','dem') .'</a> | </span>
+				<span class="edit"><a href="'. esc_url( add_query_arg( array('ip'=>null, 'poll'=>$log->qid) ) ) .'">'. __('Логи опроса','dem') .'</a></span>
+			</div>
+			';
 		}
 		elseif( $col == 'userid' ){
 			if( ! $user = $this->cache('users', $log->userid ) )

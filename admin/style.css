@@ -21,6 +21,7 @@ background: #fff; }
 .democr_options h3{ margin:2em 0 1em 0; }
 .democr_options .loaders,
 .democr_options .buttons{ float:left; }
+
 /* clears */
 .democr_options .loaders:after, .democr_options .buttons:after, .polls-preview:after{ content:''; display:table; clear:both; }
 
@@ -32,6 +33,7 @@ background: #fff; }
 .democr_options .buttons label > *{ display:inline-block; }
 
 .wp-list-table{  }
+.wp-list-table tr:hover{ background:rgba(0,0,0,.05) }
 .tablenav{ height: auto; }
 .wp-list-table .column-id,
 .wp-list-table .column-active,
@@ -43,6 +45,10 @@ background: #fff; }
 .wp-list-table .statuses{ font-size:80%; margin-left:10px; float:right; cursor:help; }
 .wp-list-table .statuses > *{ opacity:.2; margin-right:3px; }
 .wp-list-table .statuses > *:hover{ opacity:.7; }
+
+.wp-list-table .compact-answ{ height:50px; overflow:hidden; }
+.wp-list-table .compact-answ:focus{ height:auto; }
+.wp-list-table .compact-answ small{ opacity:.7; }
 
 .button .dashicons, .button-primary .dashicons{ line-height: 1.3; opacity: 0.7; }
 

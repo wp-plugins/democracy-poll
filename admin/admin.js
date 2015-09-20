@@ -83,7 +83,7 @@ jQuery(document).ready(function($){
 	$('.preview-bg').wpColorPicker( myOptions );
     
     
-    // ACE
+    // ACE ------
     var $textarea = $('[name="additional_css"]').hide();
     var aceEl = $('<pre style="font-size:100%;"></pre>');
     $textarea.before( aceEl );

@@ -17,7 +17,12 @@ input[type="submit"].dem-button, a.dem-button, .dem-button{
 input[type="submit"].dem-button:focus, a.dem-button:focus, .dem-button:focus{
     outline: none;
 }
-a.dem-button:hover{ text-decoration: none; }
+input[type="submit"].dem-button:disabled, a.dem-button:disabled, .dem-button:disabled{
+    opacity: .6;
+	cursor:not-allowed;
+}
+.dem-button:hover{ cursor:pointer }
+a.dem-button:hover{ text-decoration: none !important; }
 
 
 /* common presets ---------------------------------------------------------------------- */
@@ -60,8 +65,9 @@ ul.dem-answers li{ padding-bottom:1em; }
 /* typically do not change */
 .dem-poll-title{ display:block; margin-bottom:1.5em; margin-top:1.2em; font-size:120%; }
 
-.dem-cache-notice{ box-sizing: border-box; width:100%; padding:.3em 1em; margin-bottom: 1em; background:#fff07f; color:#908748; color:rgba(0,0,0,.7); }
-.dem-cache-notice a{ color:#69622f; }
+.dem-cache-notice{ position: absolute; top:0%; border-radius: 2px; width: 100%; padding: 1.5em 2em; text-align: center; background: rgba(247, 241, 212, 0.8); color: #6D6214; }
+.dem-notice-close{ position: absolute; top: 0; right: 0; padding: 5px; cursor: pointer; line-height: .6; font-size: 150%; }
+.dem-notice-close:hover{ color: #D26616 }
 
 .dem-star{ font-size:90%; vertical-align: baseline; padding-left:0.3em; color: #ff4e00; }
 

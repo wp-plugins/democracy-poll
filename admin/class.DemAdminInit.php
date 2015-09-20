@@ -197,8 +197,9 @@ class DemAdminInit extends Dem{
 			'tinymce_button'   => 1,
 			'show_copyright'   => 1,
 			'only_for_users'   => 0,			
-			'democracy_off'    => 0,  // глобальная опция democracy
-			'revote_off'       => 0,  // глобальная опция переголосование
+			'dont_show_results' => 0,  // глобальная опция - не показывать результаты опроса. До закрития голосования
+			'democracy_off'    => 0,   // глобальная опция democracy
+			'revote_off'       => 0,   // глобальная опция переголосование
 			'disable_js'       => 0,   // Дебаг: отключает JS
 			'cookie_days'      => 365, // Дебаг
 		);
@@ -570,30 +571,30 @@ class DemAdminInit extends Dem{
     
     
     ## others
-	## tinymce кнопка
-	function tinymce_button(){	
-		add_filter('mce_external_plugins', array($this, 'tinymce_plugin') ) ;
-		add_filter('mce_buttons',          array($this, 'tinymce_register_button') );
-		add_filter('wp_mce_translation',   array($this, 'tinymce_l10n') );
-	}
-	function tinymce_register_button( $buttons ) {
-		array_push( $buttons, 'separator', 'demTiny');
-		return $buttons;
-	}
-	function tinymce_plugin( $plugin_array ) {
-		$plugin_array['demTiny'] = DEMOC_URL .'admin/tinymce.js';
-		return $plugin_array;
-	}
-	function tinymce_l10n( $mce_l10n ) {
-		$l10n = array(
-			'Вставка Опроса Democracy' => __('Вставка Опроса Democracy', 'dem'),
-			'Введите ID опроса' => __('Введите ID опроса', 'dem'),
-			'Ошибка: ID - это число. Введите ID еще раз' => __('Ошибка: ID - это число. Введите ID еще раз', 'dem'),
-		);
-		$l10n = array_map('esc_js', $l10n );
+## tinymce кнопка
+function tinymce_button(){	
+	add_filter('mce_external_plugins', array($this, 'tinymce_plugin') ) ;
+	add_filter('mce_buttons',          array($this, 'tinymce_register_button') );
+	add_filter('wp_mce_translation',   array($this, 'tinymce_l10n') );
+}
+function tinymce_register_button( $buttons ) {
+	array_push( $buttons, 'separator', 'demTiny');
+	return $buttons;
+}
+function tinymce_plugin( $plugin_array ) {
+	$plugin_array['demTiny'] = DEMOC_URL .'admin/tinymce.js';
+	return $plugin_array;
+}
+function tinymce_l10n( $mce_l10n ) {
+	$l10n = array(
+		'Вставка Опроса Democracy' => __('Вставка Опроса Democracy', 'dem'),
+		'Введите ID опроса' => __('Введите ID опроса', 'dem'),
+		'Ошибка: ID - это число. Введите ID еще раз' => __('Ошибка: ID - это число. Введите ID еще раз', 'dem'),
+	);
+	$l10n = array_map('esc_js', $l10n );
 
-		return $mce_l10n + $l10n;
-	}
+	return $mce_l10n + $l10n;
+}
 	
     
     ## Создает страницу архива. Сохраняет УРЛ созданой страницы в опции плагина. Перед созданием проверят нет ли уже такой страницы.

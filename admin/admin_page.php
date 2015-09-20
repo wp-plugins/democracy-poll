@@ -28,7 +28,7 @@
 	
 	// список опросов
 	else
-		dem_pols_list();
+		dem_polls_list();
 
 	?>
 
@@ -40,7 +40,7 @@
 
 <?php 
 
-### функции
+### функции 
 function __dem_polls_preview(){
 	?>
 	<ul class="group">
@@ -49,7 +49,7 @@ function __dem_polls_preview(){
 			$poll = new DemPoll();
 			$poll->cachegear_on = false;
 
-			$poll->hasVoted = 1;
+			$poll->has_voted = 1;
 			$answers = (array) wp_list_pluck( $poll->poll->answers, 'aid');
 			$poll->votedFor = $answers ? $answers[ array_rand($answers) ] : false;
 
@@ -365,14 +365,18 @@ function _dem_design_submit_button(){
     <?php
 }
 
-function dem_pols_list(){	
+function dem_polls_list(){	
 	echo demenu();
 	
 	require dirname(__FILE__) . '/DemPolls_List_Table.php';
 	
+	
+	$list = new DemPolls_List_Table();
+	
+	$list->search_box( __('Найти', 'dem'), 'style="margin:1em 0 -1em;"' );
+	
 	//echo '<form class="sdot-table sdot-logs-table" action="" method="post">';
-	$ListTable = new DemPolls_List_Table();
-	$ListTable->display();
+	$list->display();
 	//echo '</form>';
 
 }
@@ -469,6 +473,14 @@ function dem_general_settings(){
 					   <?php _e('Удалить возможность переголосовать (глобальная опция).','dem') ?>
 					</label>
 				   <em><?php _e('Эта опция доступна для каждого опроса отдельно, но если вы хотите отключить эту опцию для всех опросов сразу, поставьте галочку.','dem') ?></em>
+				</li>
+				
+				<li class="block">
+				   <label>
+					   <input type="checkbox" value="1" name="dem[dont_show_results]" <?php checked( $opt['dont_show_results'], 1) ?>>
+					   <?php _e('Не показывать результаты опросов (глобальная опция).','dem') ?>
+					</label>
+				   <em><?php _e('Если поставить галку, то посмотреть результаты до закрытия опроса будет невозможно.','dem') ?></em>
 				</li>
 				
 				<li class="block">
@@ -578,10 +590,10 @@ function poll_edit_form( $poll_id = false ){
 	$edit = !! $poll_id;
 	$answers = false;
 	
-	$title = $poll = '';
+	$title = $poll = $shortcode = '';
 	if( $edit ){
-		$title = __('Редактировать опрос','dem') . " (ID $poll_id)";
-		$action = preg_replace('@\?.*@', '', esc_url($_SERVER['REQUEST_URI']) ) . "?page=". $_GET['page'] ."";
+		$title = __('Редактировать опрос','dem');
+		$shortcode = DemPoll::shortcode_html( $poll_id ). ' - '. __('шоткод для использования в записи', 'dem');
 		
 		$poll    = $wpdb->get_row("SELECT * FROM $wpdb->democracy_q WHERE id = {$poll_id} LIMIT 1");
 		$answers = $wpdb->get_results("SELECT * FROM $wpdb->democracy_a WHERE qid = {$poll_id}");
@@ -598,7 +610,7 @@ function poll_edit_form( $poll_id = false ){
 	
 	echo
 		demenu() .
-		($title ? "<h2>$title</h2>" : '') .
+		($title ? "<h2>$title</h2>$shortcode" : '') .
 		'<form action="" method="POST" class="dem-new-poll">
 			<input type="hidden" name="dmc_qid" value="'. $poll_id .'">
 			'. wp_nonce_field('dem_insert_poll', '_demnonce', $referer=0, $echo=0 ) .'
@@ -615,7 +627,9 @@ function poll_edit_form( $poll_id = false ){
 		<ol class="new-poll-answers">
 			<?php
 			if( $answers ){
-				foreach( $answers as $answer ){
+				$_answers = Dem::objects_array_sort( $answers, array('votes' => 'desc') );
+				
+				foreach( $_answers as $answer ){
 					$by_user = $answer->added_by ? '<i>*</i>' : '';
 					echo '
 					<li class="answ">
@@ -681,14 +695,24 @@ function poll_edit_form( $poll_id = false ){
 			<li>
 				<label>
 					<input type="hidden" name='dmc_forusers' value=''>
-					<input type="checkbox" name="dmc_forusers" value="1" <?php checked( @$poll->forusers, 1) ?> > 
+					<input type="checkbox" name="dmc_forusers" value="1" <?php checked( @ $poll->forusers, 1) ?> > 
 					<?php _e('Голосовать могут только зарегистрированные пользователи.','dem') ?>
 				</label>
 			</li>
 			<?php } ?>
 			
+			<?php if( ! Dem::$opt['dont_show_results'] ){ ?>
+			<li>
+				<label>
+					<input type="hidden" name='dmc_show_results' value=''>
+					<input type="checkbox" name="dmc_show_results" value="1" <?php checked( (!isset($poll->show_results) || @ $poll->show_results), 1) ?> > 
+					<?php _e('Показывать результаты опроса.','dem') ?>
+				</label>
+			</li>
+			<?php } ?>
+			
 			<li><label> <?php _e('Заметка: текст будет добавлен под опросом.','dem'); ?><br>
-					<textarea name="dmc_note" style="height:3.5em;" ><?php echo esc_textarea( @$poll->note ) ?></textarea>
+					<textarea name="dmc_note" style="height:3.5em;" ><?php echo esc_textarea( @ $poll->note ) ?></textarea>
 				</label>
 			</li>
 		</ol>

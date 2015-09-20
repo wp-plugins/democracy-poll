@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.9.4
+Stable tag: 4.5.0
 Tested up to: 4.3.0
 Requires at least: 3.0
 License: GPLv2 or later
@@ -139,21 +139,30 @@ Comming soon...
 
 
 == TODO ==
-* Poll option to don't show results screen until voting are closed
-* Collect cookies demPoll_N in one option array 
-* sorting on archive page
-* limit multiple answers select
+* ADD: Poll option to don't show results screen untill voting are closed
+* ADD: add link to the post in admin-polls-list if polls shortcode is used in post content
 * cron: shadule polls opening & activation
-* add link to the post in admin-polls-list if polls shortcode is used in post content
+* sorting on archive page
+* Collect cookies demPoll_N in one option array 
 
 
 == Changelog ==
+
+= 4.5.0 =
+* BUGFIX: replace VOTE button with REVOTE. On cache mode, after user voting he see backVOTE button (on result screen), but not "revote" or "nothing" (depence on poll options).
+* HUGE ADD: Don't show results until vote is closed. You can choose this option for single poll or for all polls (on settings page).
+* ADD: edit & view links on admin logs page.
+* ADD: Search poll field on admin polls list page.
+* ADD: All answers (not just win) in "Winner" column on polls list page. For usability answers are folds.
+* ADD: Poll shordcode on edit poll page. Auto select on its click.
+* CHANGE: sort answers by votes on edit poll page.
+
 = 4.9.4 =
 * FIX: change default DB tables charset from utf8mb4 to utf8. Thanks to Nanotraktor
 
 = 4.9.3 =
-* add: single poll option that allow set limit for max answers if there is multiple answers option.
-* add: global option that allow hide vote button on polls with no multiple answers and revote possibility. Users will vote by clicking on answer itself.
+* ADD: single poll option that allow set limit for max answers if there is multiple answers option.
+* ADD: global option that allow hide vote button on polls with no multiple answers and revote possibility. Users will vote by clicking on answer itself.
 * fix: disable cache on archive page.
 
 = 4.9.2 =
@@ -161,162 +170,162 @@ Comming soon...
 * ADD: Now on new version css regenerated automaticaly when you enter any democracy admin page.
 
 = 4.9.1 =
-* Fix: Polls admin table column order
+* FIX: Polls admin table column order
 
 = 4.9.0 =
-* Added Logs table in admin and capability to remove only logs of specific poll.
-* Added 'date' field to the democracy_log table.
+* ADD: Logs table in admin and capability to remove only logs of specific poll.
+* ADD: 'date' field to the democracy_log table.
 
 = 4.8 =
 * Complatelly change polls list table output. Now it work under WP_List_Table and have sortable colums, pagination, search (in future) etc.
 
 = 4.7.8 =
-* Added: en_US l10n if no l10n file.
+* ADD: en_US l10n if no l10n file.
 
 = 4.7.7 =
-* Added: de_DE localisation. Thanks to Matthias Siebler
+* ADD: de_DE localisation. Thanks to Matthias Siebler
 
 = 4.7.6 =
-* Deleted: possibility to work without javascript. Now poll works only with enabled javascript in your browser. It's better because you don't have any additional URL with GET parametrs. It's no-need-URL in 99% cases..
+* DELETED: possibility to work without javascript. Now poll works only with enabled javascript in your browser. It's better because you don't have any additional URL with GET parametrs. It's no-need-URL in 99% cases..
 
 = 4.7.5 =
-* Change: Convert tables from utf8 to utf8mb4 charset. For emoji uses in polls
+* CHANGE: Convert tables from utf8 to utf8mb4 charset. For emoji uses in polls
 
 = 4.7.4 =
-* Change: Some css styles in admin
+* CHANGE: Some css styles in admin
 
 = 4.7.3 =
-* Added: Custom front-end localisation - as single settings page. Now you can translate all phrases of Poll theme as you like.
+* ADD: Custom front-end localisation - as single settings page. Now you can translate all phrases of Poll theme as you like.
 
 = 4.7.2 =
-* Change: in main js cache result/vote view was setted with animation. Now it sets without animation & so the view change invisible for users. Also, fix with democracy wrap block height set, now it's sets on "load" action, but not "document.ready".
-* Change: "block.css" theme improvements for better design.
+* CHANGE: in main js cache result/vote view was setted with animation. Now it sets without animation & so the view change invisible for users. Also, fix with democracy wrap block height set, now it's sets on "load" action, but not "document.ready".
+* CHANGE: "block.css" theme improvements for better design.
 
 = 4.7.1 =
-* Added: "on general options page": global "revote" and "democratic" functionality disabling ability
-* Added: localisation POT file & english transtation
+* ADD: "on general options page": global "revote" and "democratic" functionality disabling ability
+* ADD: localisation POT file & english transtation
 
 = 4.7.0 =
-* Change: "progress fill type" & "answers order" options now on "Design option page"
-* Fix: english localisation 
+* CHANGE: "progress fill type" & "answers order" options now on "Design option page"
+* FIX: english localisation 
 
 = 4.6.9 =
-* Change: delete "add new answer" button on Add new poll and now field for new answerr adds when you focus on last field.
+* CHANGE: delete "add new answer" button on Add new poll and now field for new answerr adds when you focus on last field.
 
 = 4.6.8 =
-* Fix: options bug appers in 4.6.7
+* FIX: options bug appers in 4.6.7
 
 = 4.6.7 =
-* Added: check for current user has an capability to edit polls. Now toolbar doesn't shown if user logged in but not have capability
+* ADD: check for current user has an capability to edit polls. Now toolbar doesn't shown if user logged in but not have capability
 
 = 4.6.6 =
-* Fix: Huge bug about checking is user already vote or not. This is must have release!
-* Change: a little changes in js code
+* FIX: Huge bug about checking is user already vote or not. This is must have release!
+* CHANGE: a little changes in js code
 * 'notVote' cookie check set to 1 hour
 
 = 4.6.5 =
-* Added: New theme "block.css"
-* Added: Preset theme (_preset.css) now visible and you can set it and wtite additional css styles to customize theme
+* ADD: New theme "block.css"
+* ADD: Preset theme (_preset.css) now visible and you can set it and wtite additional css styles to customize theme
 
 = 4.6.4 =
-* Fix: when user send democratic answer, new answer couldn't have comma
+* FIX: when user send democratic answer, new answer couldn't have comma
 
 = 4.6.3 =
-* Fix: Widget showed screens uncorrectly because of some previous changes in code.
+* FIX: Widget showed screens uncorrectly because of some previous changes in code.
 * Improve: English localisation
 
 = 4.6.2 =
-* Fix: great changes about polls themes and css structure.
-* Added: "Ace" css editor. Now you can easely write your own themes by editing css in admin.
+* FIX: great changes about polls themes and css structure.
+* ADD: "Ace" css editor. Now you can easely write your own themes by editing css in admin.
 
 = 4.6.1 =
-* Fix: some little changes about themes settings, translate, css.
-* Added screenshots to WP directory.
+* FIX: some little changes about themes settings, translate, css.
+* ADD: screenshots to WP directory.
 
 = 4.6.0 =
-* Added: Poll themes management
-* Fix: some JS and CSS bugs
-* Fix: Unactivate pool when closing poll 
+* ADD: Poll themes management
+* FIX: some JS and CSS bugs
+* FIX: Unactivate pool when closing poll 
 
 = 4.5.9 =
-* Fix: CSS fixes, prepare to 4.6.0 version update
-* Added: Cache working. Wright/check cookie "notVote" for cache gear optimisation
+* FIX: CSS fixes, prepare to 4.6.0 version update
+* ADD: Cache working. Wright/check cookie "notVote" for cache gear optimisation
 
 = 4.5.8 =
-* Added: AJAX loader images SVG & css3 collection
-* Added: Sets close date when closing poll
+* ADD: AJAX loader images SVG & css3 collection
+* ADD: Sets close date when closing poll
 
 = 4.5.7 =
-* BugFix: revote button didn't minus votes if "keep-logs" option was disabled
+* BugFIX: revote button didn't minus votes if "keep-logs" option was disabled
         
 = 4.5.6 =
-* Added: right working with cache plugins. Auto unable/dasable with wp total cache, wp super cache, WordFence, WP Rocket, Quick Cache. If you use the other plugin you can foorce enable this option.
-* Added: add link to selected css file in settings page, to conviniently copy or view the css code
-* Added: php 5.3+ needed check & notice if php unsuitable
+* ADD: right working with cache plugins. Auto unable/dasable with wp total cache, wp super cache, WordFence, WP Rocket, Quick Cache. If you use the other plugin you can foorce enable this option.
+* ADD: add link to selected css file in settings page, to conviniently copy or view the css code
+* ADD: php 5.3+ needed check & notice if php unsuitable
 * Changed: archive page ID in option, but not link to the archive page
-* Fix: in_archive check... to not show archive link on archive page
-* Fix: many code improvements & some bug fix (hide archive page link if 0 set as ID, errors on activation, etc.)
+* FIX: in_archive check... to not show archive link on archive page
+* FIX: many code improvements & some bug fix (hide archive page link if 0 set as ID, errors on activation, etc.)
 
 = 4.5.5 =
 * Changed: Archive link detection by ID not by url
 
 = 4.5.4 =
-* Fix: js code. Now All with jQuery
-* Fix: Separate js and css connections: css connect on all pages into the head, but js connected into the bottom just for page where it need
+* FIX: js code. Now All with jQuery
+* FIX: Separate js and css connections: css connect on all pages into the head, but js connected into the bottom just for page where it need
 
 = 4.5.3 =
-* Fix: code fix, about $_POST[*] vars
+* FIX: code fix, about $_POST[*] vars
 
 = 4.5.2 =
-* Fix: Remove colling wp-load.php files directly on AJAX request. Now it works with wordpress environment - it's much more stable.
-* Fix: fixes about safe SQL calls. Correct escaping of passing variables. Now work with $wpdb->* functions where it posible
-* Fix: admin messages
+* FIX: Remove colling wp-load.php files directly on AJAX request. Now it works with wordpress environment - it's much more stable.
+* FIX: fixes about safe SQL calls. Correct escaping of passing variables. Now work with $wpdb->* functions where it posible
+* FIX: admin messages
 
 = 4.5.1 =
-* Fix: Localisation bug on activation.
+* FIX: Localisation bug on activation.
 
 = 4.5 =
-* Added: css style themes support.
-* Added: new flat (flat.css) theme.
-* Fix: Some bugs in code.
+* ADD: css style themes support.
+* ADD: new flat (flat.css) theme.
+* FIX: Some bugs in code.
 
 = 4.4 =
-* Added: All plugin functionality when javascript is disabled in browser.
-* Fix: Some bug.
+* ADD: All plugin functionality when javascript is disabled in browser.
+* FIX: Some bug.
 
 = 4.3.1 =
-* Added: "add user answer text" field close button when on multiple vote. Now it's much more convenient.
-* Fix: Some bug.
+* ADD: "add user answer text" field close button when on multiple vote. Now it's much more convenient.
+* FIX: Some bug.
 
 = 4.3 =
-* Added: TinyMCE button.
-* Fix: Some bug.
+* ADD: TinyMCE button.
+* FIX: Some bug.
 
 = 4.2 =
-* Added: Revote functionality.
+* ADD: Revote functionality.
 
 = 4.1 =
-* Added: "only registered users can vote" functionality.
-* Added: Minified versions of CSS (*.min.css) and .js (*.min.js) is loaded if they exists.
-* Added: js/css inline including: Adding code of .css and .js files right into HTML. This must improve performance a little.
-* Added: .js and .css files (or theirs code) loads only on the pages where polls is shown.
-* Added: Toolbar menu for fast access. It help easily manage polls. The menu can be disabled.
+* ADD: "only registered users can vote" functionality.
+* ADD: Minified versions of CSS (*.min.css) and .js (*.min.js) is loaded if they exists.
+* ADD: js/css inline including: Adding code of .css and .js files right into HTML. This must improve performance a little.
+* ADD: .js and .css files (or theirs code) loads only on the pages where polls is shown.
+* ADD: Toolbar menu for fast access. It help easily manage polls. The menu can be disabled.
 
 = 4.0 =
-* Added: Multiple voting functionality.
-* Added: Opportunity to change answers votes in DataBase.
-* Added: "Random show one of many active polls" functionality.
-* Added: Poll expiration date functionality.
-* Added: Poll expiration datepicker on jQuery.
-* Added: Open/close polls functionality.
-* Added: Localisation functionality. Translation to English.
-* Added: Change {democracy}/{democracy:*} shortcode to standart WP [democracy]/[democracy id=*].
-* Added: jQuery support and many features because of this.
-* Added: Edit button for each poll (look at right top corner) to convenient edit poll when logged in.
-* Added: Clear logs button.
-* Added: Smart "create archive page" button on plugin's settings page.
-* Fix: Improve about 80% of plugin code and logic in order to easily expand the plugin functionality in the future.
-* Fix: Improve css output. Now it's more adaptive for different designs.
+* ADD: Multiple voting functionality.
+* ADD: Opportunity to change answers votes in DataBase.
+* ADD: "Random show one of many active polls" functionality.
+* ADD: Poll expiration date functionality.
+* ADD: Poll expiration datepicker on jQuery.
+* ADD: Open/close polls functionality.
+* ADD: Localisation functionality. Translation to English.
+* ADD: Change {democracy}/{democracy:*} shortcode to standart WP [democracy]/[democracy id=*].
+* ADD: jQuery support and many features because of this.
+* ADD: Edit button for each poll (look at right top corner) to convenient edit poll when logged in.
+* ADD: Clear logs button.
+* ADD: Smart "create archive page" button on plugin's settings page.
+* FIX: Improve about 80% of plugin code and logic in order to easily expand the plugin functionality in the future.
+* FIX: Improve css output. Now it's more adaptive for different designs.
 
 
 == Upgrade Notice ==

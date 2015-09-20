@@ -10,7 +10,7 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: lang
-Version: 4.9.4
+Version: 4.5.0
 */
 
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;
@@ -70,9 +70,9 @@ function democracy_poll( $id = 0, $before_title = '', $after_title = ''){
 function get_democracy_poll( $id = 0, $before_title = '', $after_title = '' ){
 	$poll = new DemPoll( $id );
 	
-	$show_results = __query_poll_screen_choose( $poll );
+	$show_screen = __query_poll_screen_choose( $poll );
 		
-	return $poll->get_screen( $show_results, $before_title, $after_title );
+	return $poll->get_screen( $show_screen, $before_title, $after_title );
 }
 
 /**
@@ -93,17 +93,20 @@ function get_democracy_archives( $hide_active = false, $before_title = '', $afte
 	foreach( $ids as $poll_id ){
 		$poll = new DemPoll( $poll_id );
 		
-		$show_results = isset( $_REQUEST['dem_act'] ) ? __query_poll_screen_choose( $poll ) : 'voted';
+		$show_screen = isset( $_REQUEST['dem_act'] ) ? __query_poll_screen_choose( $poll ) : 'voted';
 		
-		$output .= $poll->get_screen( $show_results, $before_title, $after_title );
+		$output .= $poll->get_screen( $show_screen, $before_title, $after_title );
 	}
 	$output .= "</div>";
 	
 	return $output;
 }
 
-// Установка какой экран показать, на основе переданных запросов.
+## Какой экран показать, на основе переданных запросов: 'voted' || 'vote'
 function __query_poll_screen_choose( $poll ){
+	if( ! $poll->show_results && $poll->open )
+		return 'vote';
+		
 	return ( @ $_REQUEST['dem_act'] == 'view' && @ $_REQUEST['dem_pid'] == $poll->id ) ? 'voted' : 'vote'; 
 }
 #### / ФУНКЦИИ ОБЕРТКИ  ------------------------------------------------------------
@@ -216,7 +219,7 @@ function democracy_activate(){
 
 ## Plugin Update
 ## Нужно вызывать на странице настроек плагина, чтобы не грузить лишний раз сервер.
-function dem_last_version_up(){	
+function dem_last_version_up(){
 	$dem_ver = get_option('democracy_version');
 	
 	if( $dem_ver == DEM_VER ) return;

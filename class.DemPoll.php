@@ -8,10 +8,11 @@ class DemPoll {
 	var $id;
 	var $poll;
 		
-	var $hasVoted     = false;
+	var $has_voted     = false;
 	var $votedFor     = '';
 	var $blockVoting  = false; // блокировать голосование
 	var $blockForVisitor = false; // только для зарегистрированных
+	var $not_show_results = false; // не показывать результаты
 	
     var $inArchive    = false; // в архивной странице
     
@@ -41,9 +42,11 @@ class DemPoll {
 		$this->poll   = $poll;
 		
 		// отключим демокраси опцию
-		if( Dem::$opt['democracy_off'] ) $this->poll->democratic = false;
+		if( Dem::$opt['democracy_off'] )
+			$this->poll->democratic = false;
 		// отключим опцию переголосования
-		if( Dem::$opt['revote_off'] ) $this->poll->revote = false;
+		if( Dem::$opt['revote_off'] )
+			$this->poll->revote = false;
         
 		$this->cachegear_on = Dem::$i->is_cachegear_on();		
 		
@@ -59,7 +62,11 @@ class DemPoll {
 			$this->blockForVisitor = true;
 
 		// блокировка возможности голосовать
-		if( $this->blockForVisitor || ! $this->poll->open || $this->hasVoted )   $this->blockVoting = true;
+		if( $this->blockForVisitor || ! $this->poll->open || $this->has_voted )
+			$this->blockVoting = true;
+		
+		if( ! $poll->show_results && $poll->open && ( ! is_admin() || defined('DOING_AJAX') ) )
+			$this->not_show_results = true;
         
 	}
 	
@@ -77,8 +84,9 @@ class DemPoll {
      * @return HTML
      */
 	function get_screen( $show_screen = 'vote', $before_title = '', $after_title = '' ){
-	    if ( ! $this->id ) return false;
-        		
+	    if( ! $this->id )
+			return false;
+		
 		$this->inArchive = ( @ $GLOBALS['post']->ID == Dem::$opt['archive_page_id'] ) && is_singular();
 
 		if( $this->blockVoting && $show_screen != 'force_vote' )
@@ -118,7 +126,7 @@ class DemPoll {
 		$___ .=  "</div><!--democracy-->";
 		
 		
-		// html для КЭША
+		// для КЭША
 		if( $this->cachegear_on && ! $this->inArchive ){
 			$___ .= '
 			<!--noindex-->
@@ -129,8 +137,13 @@ class DemPoll {
 			$this->votedFor = false;
             $this->for_cache = 1;
             
-			$compress = function( $str ){ return preg_replace("~[\n\r\t]~u", '', preg_replace('~\s+~u',' ',$str) ); };
-			$___ .= $compress( $this->get_screen_basis('voted') );  // voted_screen
+			$compress = function( $str ){		
+				return preg_replace("~[\n\r\t]~u", '', preg_replace('~\s+~u',' ',$str) );	
+			};
+			
+			if( ! $this->not_show_results )
+				$___ .= $compress( $this->get_screen_basis('voted') );  // voted_screen
+			
             if( $this->poll->open )
                 $___ .= $compress( $this->get_screen_basis('force_vote') ); // vote_screen
             
@@ -153,11 +166,18 @@ class DemPoll {
      */
 	function get_screen_basis( $show_screen = 'vote' ){
         $class_suffix = $this->for_cache ? '-cache' : '';
+		
+		if( $this->not_show_results )
+			$show_screen = 'force_vote';		
+		
         $screen = ( $show_screen == 'vote' || $show_screen == 'force_vote' ) ? 'vote' : 'voted';
+		
 		$___ = '<div class="dem-screen'. $class_suffix .' '. $screen  .'">';
-		$___ .= ( $screen == 'vote' ) ? $this->getVoteScreen() : $this->getResultScreen();
+		$___ .= ( $screen == 'vote' ) ? $this->get_vote_screen() : $this->get_result_screen();
 		$___ .=  '</div>';
-		$___ .=  '<noscript>Poll Options are limited because JavaScript is disabled in your browser.</noscript>';
+		
+		if( ! $this->for_cache )
+			$___ .=  '<noscript>Poll Options are limited because JavaScript is disabled in your browser.</noscript>';
 		
 		return $___;
 	}
@@ -166,7 +186,7 @@ class DemPoll {
      * Получает код для голосования
      * @return HTML
      */
-	function getVoteScreen(){
+	function get_vote_screen(){
 	    if( ! $this->id ) return false;
 		
 		$auto_vote_on_select = ( ! $this->poll->multiple && $this->poll->revote && @ Dem::$opt['hide_vote_button'] );
@@ -177,29 +197,63 @@ class DemPoll {
             $___ .= '<ul class="dem-vote">';
 
                 $type = $this->poll->multiple ? 'checkbox' : 'radio';
-
+				
                 foreach( $this->poll->answers as $answer ){
 					$auto_vote = $auto_vote_on_select ? 'data-dem-act="vote"' : '';
+					
+					$checked = $disabled = '';
+					if( $this->votedFor ){
+						if( in_array( $answer->aid, explode(',', $this->votedFor ) ) )
+							$checked = ' checked="checked"';
 						
+						$disabled = ' disabled="disabled"';
+					}
+					
                     $___ .= '
-                    <li>
+                    <li data-aid="'. $answer->aid .'">
                         <label>
-                            <input '. $auto_vote .' type="'. $type .'" value="'. $answer->aid .'" name="answer_ids[]"> '. stripslashes( $answer->answer ) .'
+                            <input '. $auto_vote .' type="'. $type .'" value="'. $answer->aid .'" name="answer_ids[]"'. $checked . $disabled .'> '. stripslashes( $answer->answer ) .'
                         </label>
                     </li>';
                 }
 
-                if( $this->poll->democratic ){
-					$___ .= '<li class="dem-add-answer"><a href="javascript:void(0);" rel="nofollow" data-dem-act="newAnswer" class="dem-link">'. __dem('Добавить свой ответ') .'</a></li>';
-                    
+                if( $this->poll->democratic && ! $this->has_voted ){
+					$___ .= '<li class="dem-add-answer"><a href="javascript:void(0);" rel="nofollow" data-dem-act="newAnswer" class="dem-link">'. __dem('Добавить свой ответ') .'</a></li>';          
                 }		
             $___ .= "</ul>";
 
             $___ .= '<div class="dem-bottom">';
                 $___ .= '<input type="hidden" name="dem_act" value="vote">';
-                $___ .= '<input type="hidden" name="dem_pid" value="'. $this->id .'">';		
-                $___ .= '<div class="dem-vote-button"><input class="dem-button" type="submit" value="'. __dem('Голосовать') .'" data-dem-act="vote"></div>';
-                $___ .= '<a href="javascript:void(0);" class="dem-link dem-results-link" data-dem-act="view" rel="nofollow">'. __dem('Результаты') .'</a>';
+                $___ .= '<input type="hidden" name="dem_pid" value="'. $this->id .'">';
+				
+				$btnVoted  = '<div class="dem-voted-button"><input class="dem-button" type="submit" value="'. __dem('Уже голосовали...') .'" disabled="disabled"></div>';
+				$btnVote   = '<div class="dem-vote-button"><input class="dem-button" type="submit" value="'. __dem('Голосовать') .'" data-dem-act="vote"></div>';
+		
+				if( $auto_vote_on_select )
+					$btnVote = '';
+		
+				// для экша
+				if( $this->for_cache ){
+					$___ .= $this->__voted_notice();
+					
+					if( $this->poll->revote )
+						$___ .= preg_replace('~(<[^>]+)~s', '$1 style="display:none;"', $this->__revote_btn(), 1 );
+					else
+						$___ .= substr_replace( $btnVoted, '<div style="display:none;"', 0, 4 );
+					$___ .= $btnVote;
+				}
+				// не для кэша
+				else {
+					if( $this->has_voted )
+						$___ .= $this->poll->revote ? $this->__revote_btn() : $btnVoted;
+					else
+						$___ .= $btnVote;
+				}		
+				
+				if( ! $this->not_show_results )
+                	$___ .= '<a href="javascript:void(0);" class="dem-link dem-results-link" data-dem-act="view" rel="nofollow">'. __dem('Результаты') .'</a>';
+		
+		
             $___ .= '</div>';
 
         $___ .= '</form>';	
@@ -212,7 +266,7 @@ class DemPoll {
      * Получает код результатов голосования
      * @return HTML
      */
-	function getResultScreen(){
+	function get_result_screen(){
 	    if( ! $this->id ) return false;
 
 		$___ = '';
@@ -230,7 +284,7 @@ class DemPoll {
 			foreach ( $this->poll->answers as $answer ){
 				$word          = stripslashes( $answer->answer );
 				$votes         = (int) $answer->votes;
-				$is_voted_this = ( $this->hasVoted && in_array( $answer->aid, explode(',', $this->votedFor) ) );
+				$is_voted_this = ( $this->has_voted && in_array( $answer->aid, explode(',', $this->votedFor) ) );
 				$is_winner     = ( $max == $votes );
 				
                 $novoted_class = ( $votes == 0 ) ? ' dem-novoted' : '';
@@ -281,41 +335,71 @@ class DemPoll {
 				if( ! $this->inArchive && Dem::$opt['archive_page_id'] )
 					$___ .= '<a class="dem-archive-link dem-link" href="'. get_permalink( Dem::$opt['archive_page_id'] ) .'" rel="nofollow">'. __dem('Архив опросов') .'</a>';
 			$___ .= '</div>';
-
+		
+		
         if( $this->poll->open ){
             // заметка для незарегистрированных пользователей
             $url = esc_url( wp_login_url( $_SERVER['REQUEST_URI'] ) );
-            $html_only_users = '<div class="dem-only-users">'. sprintf( __dem('Голосовать могут только зарегистрированные пользователи. <a href="%s" rel="nofollow">Войдите</a> для голосования.'), $url ) .'</div>';
-            
-			// переголосовать
-            //$html_revote = '<a href="javascript:void(0);" class="dem-revote-link dem-link" data-dem-act="delVoted" data-confirm-text="'. __dem('Точно отменить голоса?') .'" rel="nofollow">'. __dem('Переголосовать') .'</a>';
-            $html_revote = '<form action="#democracy" method="post">
-			<input type="hidden" name="dem_act" value="delVoted">
-			<input type="hidden" name="dem_pid" value="'. $this->id .'">
-			<input type="submit" value="'. __dem('Переголосовать') .'" class="dem-revote-link dem-button" data-dem-act="delVoted" data-confirm-text="'. __dem('Точно отменить голоса?') .'"></form>';
+            $for_users_alert = '<div class="dem-only-users">'. sprintf( __dem('Голосовать могут только зарегистрированные пользователи. <a href="%s" rel="nofollow">Войдите</a> для голосования.'), $url ) .'</div>';
+
             
 			// вернуться к голосованию
-            $html_backvote = '<a href="javascript:void(0);" class="dem-button dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __dem('Голосовать') .'</a>';
-        
-			if( ! $this->for_cache && $this->blockForVisitor ){
-                $___ .= $html_only_users;
-            }else{
-                if( $this->for_cache || ($this->hasVoted && $this->poll->revote) )
-                    $___ .= $html_revote;
-                else
-                    $___ .= $html_backvote;
-            }
-        
+            $vote_btn = '<a href="javascript:void(0);" class="dem-button dem-vote-link" data-dem-act="vote_screen" rel="nofollow">'. __dem('Голосовать') .'</a>';
+        	
+			// для экша
             if( $this->for_cache ){
-                $___ .= '<div class="dem-cache-notice dem-youarevote" style="display:none;">'. __dem('Вы или с вашего IP уже голосовали.') .'</div>';
-                $___ .= str_replace( array('<div', 'class="'), array('<div style="display:none;"', 'class="dem-cache-notice '), $html_only_users );
+                $___ .= $this->__voted_notice();
+				
+				if( $this->blockForVisitor )
+                	$___ .= str_replace( array('<div', 'class="'), array('<div style="display:none;"', 'class="dem-cache-notice '), $for_users_alert );
+				
+					if( $this->poll->revote )
+						$___ .= $this->__revote_btn();
+					else
+						$___ .= $vote_btn;
             }
+			// не для кэша
+			else {
+				if( $this->blockForVisitor ){
+					$___ .= $for_users_alert;
+				}
+				else{
+					if( $this->has_voted ){
+						if( $this->poll->revote )
+							$___ .= $this->__revote_btn();
+					}
+					else
+						$___ .= $vote_btn;
+				}
+				
+			}
+		// is open
         }
         
 		$___ .= '</div>';
         
 		
 		return $___;
+	}
+	
+	function __revote_btn(){
+		return '
+		<span class="dem-revote-button-wrap">
+		<form action="#democracy-'. $this->id .'" method="post">
+			<input type="hidden" name="dem_act" value="delVoted">
+			<input type="hidden" name="dem_pid" value="'. $this->id .'">
+			<input type="submit" value="'. __dem('Переголосовать') .'" class="dem-revote-link dem-revote-button dem-button" data-dem-act="delVoted" data-confirm-text="'. __dem('Точно отменить голоса?') .'">
+		</form>
+		</span>';
+	}
+	
+	## заметка: вы уже голосовали
+	function __voted_notice(){
+		return '
+		<div class="dem-cache-notice dem-youarevote" style="display:none;">
+			<div class="dem-notice-close" onclick="jQuery(this).parent().fadeOut();">&times;</div>
+			'. __dem('Вы или с вашего IP уже голосовали.') .'
+		</div>';
 	}
     
 	/**
@@ -324,7 +408,8 @@ class DemPoll {
 	 * @return false or none
 	 */
 	function addVote( $aids ){
-	    if( ! $this->id || $this->hasVoted || $this->blockVoting ) return false;
+	    if( ! $this->id || $this->has_voted || $this->blockVoting )
+			return false;
 		
 		global $wpdb;
 		
@@ -382,7 +467,7 @@ class DemPoll {
 		$wpdb->query( $wpdb->prepare("UPDATE $wpdb->democracy_a SET votes = (votes+1) WHERE qid = %d $AND", $this->id ) );
 
 		$this->blockVoting = true;
-		$this->hasVoted    = true;
+		$this->has_voted   = true;
 		$this->votedFor    = $aids;
         
         $this->set_answers(); // переустановим ответы
@@ -419,7 +504,7 @@ class DemPoll {
 	
 	/**
 	 * Удаляет данные пользователя о голосовании
-	 * Отменяет установленные $this->hasVoted и $this->votedFor
+	 * Отменяет установленные $this->has_voted и $this->votedFor
      * Должна вызываться как зоголовки, до вывода данных
 	 */
 	function unsetVotedData(){
@@ -440,7 +525,7 @@ class DemPoll {
         
         $this->unset_cookie();
         
-        $this->hasVoted    = false;
+        $this->has_voted    = false;
         $this->votedFor    = false;
         $this->blockVoting = $this->poll->open ? false : true; // тут еще нужно учесть открыт опрос или нет...
 
@@ -474,7 +559,7 @@ class DemPoll {
 	}
 	
 	/**
-	 * Устанавливает глобальные переменные $this->hasVoted и $this->votedFor
+	 * Устанавливает глобальные переменные $this->has_voted и $this->votedFor
 	 */
 	protected function setVotedData(){
 		if( ! $this->id ) return false;
@@ -484,7 +569,7 @@ class DemPoll {
         // Не работает потому что куки нужно устанавливать перед выводом данных и вообще так делать нельзя, 
         // потмоу что проверка по кукам становится не нужной в целом...
         if( Dem::$opt['keep_logs'] && $res = $this->get_logs_voted_data() ){			
-            $this->hasVoted = true;
+            $this->has_voted = true;
             $this->votedFor = $res->aids;
 
             return;
@@ -492,7 +577,7 @@ class DemPoll {
         
         // если дошли до сюда, проверяем куки
         if( isset($_COOKIE[ $this->cookey ]) && $_COOKIE[ $this->cookey ] != 'notVote' ){
-			$this->hasVoted = true;
+			$this->has_voted = true;
 			$this->votedFor = $_COOKIE[ $this->cookey ];
 		}
 		
@@ -597,5 +682,10 @@ class DemPoll {
 		$foo = $wpdb->insert( $wpdb->democracy_log, $data );
 	}
 	
+	static function shortcode_html( $poll_id ){
+		if( ! $poll_id )
+			return '';
+		return '<span style="cursor:pointer;padding:0 2px;background:#fff;" onclick="var sel = window.getSelection(), range = document.createRange(); range.selectNodeContents(this); sel.removeAllRanges(); sel.addRange(range);">[democracy id="'. $poll_id .'"]</span>';
+	}
 	
 }

@@ -25,7 +25,7 @@ class Dem{
 		# front-end
 		else {
             self::$i = new self;
-            self::$i->DemFrontInit();
+            self::$i->dem_front_init();
         }
         
         return self::$i;
@@ -170,7 +170,7 @@ class Dem{
 	}
     
     ### FRONT END ------------------------------------------------------
-	function DemFrontInit(){
+	function dem_front_init(){
 		# шоткод [democracy]
 		add_shortcode('democracy',          array($this, 'poll_shortcode'));
 		add_shortcode('democracy_archives', array($this, 'archives_shortcode'));
@@ -202,19 +202,27 @@ class Dem{
             //if( $poll->cachegear_on && $poll->votedFor ) $poll->set_cookie();
 			
             $poll->addVote( $aids );
-
-            echo $poll->getResultScreen();
+			
+			if( $poll->not_show_results )
+				echo $poll->get_vote_screen();
+			else
+            	echo $poll->get_result_screen();
 		}
 		// удаляем результаты
 		elseif( $act == 'delVoted' ){
 			$poll->unsetVotedData();
-			echo $poll->getVoteScreen();
+			echo $poll->get_vote_screen();
 		}
-		elseif( $act == 'view' ){ // смотрим результаты
-			echo $poll->getResultScreen();
+		// смотрим результаты
+		elseif( $act == 'view' ){
+			if( $poll->not_show_results )
+				echo $poll->get_vote_screen();
+			else
+				echo $poll->get_result_screen();
 		}
-		elseif( $act == 'vote_screen' ){ // вернуться к голосованию
-			echo $poll->getVoteScreen();
+		// вернуться к голосованию
+		elseif( $act == 'vote_screen' ){
+			echo $poll->get_vote_screen();
 		}
         elseif( $act == 'getVotedIds' ){
             if( $poll->votedFor ){
@@ -326,7 +334,29 @@ class Dem{
 		else
 			wp_enqueue_script('democracy', $jsurl, array('jquery'), DEM_VER, true );
 	}
+	
+	## Сортировка массива объектов. Передаете в $array массив объектов, указываете в $args параметры сортировки и получаете отсортированный массив объектов.
+	static function objects_array_sort( $array, $args = array('votes' => 'desc') ){
+		usort( $array, function( $a, $b ) use ( $args ){
+			$res = 0;
+			
+			if( is_array($a) ){
+				$a = (object) $a;
+				$b = (object) $b;
+			}
+
+			foreach( $args as $k => $v ){
+				if( $a->$k == $b->$k ) continue;
+
+				$res = ( $a->$k < $b->$k ) ? -1 : 1;
+				if( $v=='desc' ) $res= -$res;
+				break;
+			}
+
+			return $res;
+		} );
+
+		return $array;
+	}
 }
-
-
 

@@ -20,8 +20,11 @@ class DemPolls_List_Table extends WP_List_Table{
 		// Строим запрос
 		// where ----		
 		$where   = 'WHERE 1';
-		//if( @ $_GET['userid'] ) $where .= ' AND userid = ' . intval($_GET['userid']);		
-		
+		if( $s = @ $_GET['s'] ){
+			$like = '%'. $wpdb->esc_like($s) .'%';
+			$where .= $wpdb->prepare(" AND ( question LIKE %s OR id IN (SELECT qid from $wpdb->democracy_a WHERE answer LIKE %s) ) ", $like, $like );
+			//die( $where );	
+		}
 		// пагинация
         $this->set_pagination_args( array(
             'total_items' => $wpdb->get_var("SELECT count(*) FROM $wpdb->democracy_q $where"),
@@ -71,14 +74,17 @@ class DemPolls_List_Table extends WP_List_Table{
     }
   
 	## Extra controls to be displayed between bulk actions and pagination
-	/*
+	
+/*
 	function extra_tablenav( $which ){
-		if( $which == 'bottom' ){
-			wp_nonce_field('delete_logs_nonce', '_sdosmsnonce');
-			echo '<input type="submit" class="button" value="Удалить выбранные">';
+		if( $which == 'top' ){
+			echo '';
+				echo $this->search_box( __('Найти'), 'dem');
+			echo '';
 		}
 	}
-	*/
+*/
+	
 	
 	## Заполнения для колонок
     public function column_default( $poll, $col ){
@@ -112,7 +118,7 @@ class DemPolls_List_Table extends WP_List_Table{
 				<span class="edit"><a href="'. add_query_arg( array('edit_poll'=> $poll->id), $url ) .'">'. __('Редактировать','dem') .'</a> | </span>'.
 				( Dem::$opt['keep_logs'] ? '<span class="edit"><a href="'. add_query_arg( array('subpage'=>'logs', 'poll'=> $poll->id), $url ) .'">'. __('Логи','dem') .'</a> | </span>' : '') .
 				'<span class="delete"><a href="'. add_query_arg( array('delete_poll'=> $poll->id), $url ) .'" onclick="return confirm(\''. __('Точно удалить?','dem') .'\');">'. __('Удалить','dem') .'</a> | </span>
-				<span style="color:#999">[democracy id="'. $poll->id .'"]</span>
+				<span style="color:#999">'. DemPoll::shortcode_html( $poll->id ) .'</span>
 			</div>
 			';
 		}
@@ -120,13 +126,24 @@ class DemPolls_List_Table extends WP_List_Table{
 			return array_sum( wp_list_pluck( (array) $answ, 'votes' ) );
 		}
 		elseif( $col == 'winner' ){
-			if( ! $answ )  return 'Нет';
+			if( ! $answ )
+				return 'Нет';
 			
-			$winner = $answ[ key($answ) ];
-			foreach( (array) $answ as $ans )
-				if( $ans->votes > $winner->votes )
-					$winner = $ans;
-			return $winner->answer;
+//			$winner = $answ[ key($answ) ];
+//			foreach( (array) $answ as $ans )
+//				if( $ans->votes > $winner->votes )
+//					$winner = $ans;
+//				
+//			return $winner->answer;
+			usort( $answ, function( $a, $b ){
+				return $a->votes == $b->votes ? 0 : ( $a->votes < $b->votes ? 1 : -1 );
+			} );
+			
+			$_answ = array();
+			foreach( $answ as $ans ){
+				$_answ[] = '<small>'. $ans->votes .'</small> '. $ans->answer; 
+			}
+			return '<div class="compact-answ">'. implode('<br>', $_answ ) .'</div>';
 		}
 		elseif( $col == 'active' ){
 			return dem_activatation_buttons( $poll );
@@ -147,5 +164,26 @@ class DemPolls_List_Table extends WP_List_Table{
 	public function column_cb( $item ){
 		echo '<label><input id="cb-select-'. @ $item->id .'" type="checkbox" name="delete[]" value="'. @ $item->id .'" /></label>';
 	}
- 
+	
+	public function search_box( $text, $wrap_attr = '' ) {
+		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() )
+			return;
+		
+		$query = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY );
+		parse_str( $query, $arr );
+		$inputs = '';
+		foreach( $arr as $k => $v )
+			$inputs .= '<input type="hidden" name="'. esc_attr( $k ) .'" value="'. esc_attr( $v ) .'">';
+		
+		?>
+		<form action="" method="get" class="search-form">
+			<?php echo $inputs; ?>
+			<p class="polls-search-box" <?php echo $wrap_attr; ?>>
+				<label class="screen-reader-text"><?php echo $text; ?>:</label>
+				<input type="search" name="s" value="<?php _admin_search_query(); ?>" />
+				<?php submit_button( $text, 'button', '', false, array('id' => 'search-submit') ); ?>
+			</p>
+		</form>
+		<?php
+	}
 }
