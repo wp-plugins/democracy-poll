@@ -148,7 +148,7 @@ Comming soon...
 
 == Changelog ==
 
-= 4.5.0 =
+= 5.0 =
 * BUGFIX: replace VOTE button with REVOTE. On cache mode, after user voting he see backVOTE button (on result screen), but not "revote" or "nothing" (depence on poll options).
 * HUGE ADD: Don't show results until vote is closed. You can choose this option for single poll or for all polls (on settings page).
 * ADD: edit & view links on admin logs page.
