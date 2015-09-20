@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 4.5.0
+Stable tag: 5.0
 Tested up to: 4.3.0
 Requires at least: 3.0
 License: GPLv2 or later
