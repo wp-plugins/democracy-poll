@@ -130,12 +130,16 @@ jQuery(document).ready(function($){
 	
 	// POLLS LIST
 	// height toggle
-	$('.compact-answ').css({ cursor:'pointer'}).click(function(){
+	var $answs = $('.compact-answ');
+	$answs.css({ cursor:'pointer'}).click(function(){
 		var dataHeight = $(this).data('height') || 'auto';
 		$(this).data('height', $(this).height() ).height( dataHeight );
 	});
 	
-//	$('.tablenav-pages')
+	$('.tablenav-pages').prepend( $('<span class="dashicons dashicons-exerpt-view"></span>').click(function(){
+		$(this).toggleClass('active');
+		$answs.trigger('click');
+	}) );
 	
 });
 
