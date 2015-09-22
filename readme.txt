@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 5.0
+Stable tag: 5.0.1
 Tested up to: 4.3.0
 Requires at least: 3.0
 License: GPLv2 or later
@@ -147,6 +147,8 @@ Comming soon...
 
 
 == Changelog ==
+= 5.0.1 =
+* ADD: expand answers list on Polls list page by click on the block.
 
 = 5.0 =
 * BUGFIX: replace VOTE button with REVOTE. On cache mode, after user voting he see backVOTE button (on result screen), but not "revote" or "nothing" (depence on poll options).

@@ -1,6 +1,7 @@
 jQuery(document).ready(function($){
 	'use strict';
 	
+	// EDIT POLL -----------------------
 	var focusFunction = function(){
 		// проверка нужно ли добавлять поле новое
 		var $li = $(this).closest('li');
@@ -125,6 +126,16 @@ jQuery(document).ready(function($){
 		
 	})
     // / DESIGN ---------------------------------------
+	
+	
+	// POLLS LIST
+	// height toggle
+	$('.compact-answ').css({ cursor:'pointer'}).click(function(){
+		var dataHeight = $(this).data('height') || 'auto';
+		$(this).data('height', $(this).height() ).height( dataHeight );
+	});
+	
+//	$('.tablenav-pages')
 	
 });
 
