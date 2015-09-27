@@ -8,7 +8,7 @@ Contributors: Tkama
 Tags: democracy, poll, polls, polling, vote, survey, opinion, research, usability, cache
 Donate link: wp-kama.ru
 
-Adds an AJAX democratic polls to your site. Visitors can vote more than one answer & add their own answers. Works with page-cache plugins like WP Total Cache.
+AJAX democratic polls for your site. Visitors can vote more than one answer & adds their own answers. Works with cache plugins (WP Total Cache).
 
 
 == Description ==
