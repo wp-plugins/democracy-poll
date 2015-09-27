@@ -1,2 +1,3 @@
-1. copy en_EN.po as your-domain.pot
-2. remove comment lines at the bottom
+1. Copy en_US.po as your-domain.pot
+2. Remove comment lines at the bottom.
+3. Done!
