@@ -8,7 +8,7 @@ Contributors: Tkama
 Tags: democracy, poll, polls, polling, vote, survey, opinion, research, usability, cache
 Donate link: wp-kama.ru
 
-Adds an AJAX democratic polls to you site. Visitors can vote more than one answer & add ther own answers.
+Adds an AJAX democratic polls to your site. Visitors can vote more than one answer & add their own answers.
 
 
 == Description ==

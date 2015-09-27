@@ -1,0 +1,2 @@
+1. copy en_EN.po as your-domain.pot
+2. remove comment lines at the bottom
