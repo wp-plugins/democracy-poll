@@ -10,7 +10,7 @@ Author URI: http://wp-kama.ru/
 Plugin URI: http://wp-kama.ru/id_67/plagin-oprosa-dlya-wordpress-democracy-poll.html
 Text Domain: dem
 Domain Path: lang
-Version: 5.0.1
+Version: 5.0.2
 */
 
 if( defined('WP_INSTALLING') && WP_INSTALLING ) return;

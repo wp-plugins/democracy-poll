@@ -824,10 +824,10 @@ msgstr "Revote"
 msgid "Точно отменить голоса?"
 msgstr "Are you sure you want cancel the votes?"
 
-# You or your IP has already voted.
+# You or your IP had already vote.
 #: class.DemPoll.php:401
 msgid "Вы или с вашего IP уже голосовали."
-msgstr "You or your IP has already voted."
+msgstr "You or your IP had already vote."
 
 # Allows to create democratic polls. Visitors can vote for more than one answer & add their own answers.
 #: democracy.php:3

@@ -315,7 +315,7 @@
 			
 			// обрабатываем экраны, какой показать и что делать при этом
 			var voteHTML  = $the.find( demScreen + '-cache.vote' ).html(),
-				votedHTML = $the.find( demScreen + '-cache.voted' ).html();				
+				votedHTML = $the.find( demScreen + '-cache.voted' ).html();		
 			
 			// если опрос закрыт должны кэшироваться только результаты голосования. Просто выходим.
 			if( ! voteHTML )
@@ -323,8 +323,13 @@
 			
 			// устанавливаем нужный кэш
 			// если закрыт просмотрт ответов
-			$screen.html( ((isAnswrs && votedHTML) ? votedHTML : voteHTML) + '<!--cache-->' );
-
+			var setVoted = isAnswrs && votedHTML;
+			$screen
+				.html( ( setVoted ? votedHTML : voteHTML ) + '<!--cache-->' )
+				.removeClass('vote voted')
+				.addClass( setVoted ? 'voted' : 'vote' );
+			
+			//console.log( $screen[0] );
 			if( isAnswrs )
 				Dem.cacheSetAnswrs( $screen, answrs );
 			

@@ -1,5 +1,5 @@
 === Plugin Name ===
-Stable tag: 5.0.1
+Stable tag: 5.0.2
 Tested up to: 4.3.0
 Requires at least: 3.0
 License: GPLv2 or later
@@ -139,6 +139,7 @@ Comming soon...
 
 
 == TODO ==
+* Поправил надо проверить! при кэше, если я уже голосовал подгружаются результаты и там есть кнопка голосовать, а я уже голосовал нужно либо переголосовать либо ничего и не устанавливаются голосовавший ответ - http://povolosam.ru/ тут смотрим
 * ADD: Poll option to don't show results screen untill voting are closed
 * ADD: add link to the post in admin-polls-list if polls shortcode is used in post content
 * cron: shadule polls opening & activation
@@ -147,6 +148,9 @@ Comming soon...
 
 
 == Changelog ==
+= 5.0.2 =
+* BUGFIX: not correctly set answers on cache mode, because couldn't detect current screen correctly.
+
 = 5.0.1 =
 * ADD: expand answers list on Polls list page by click on the block.
 
