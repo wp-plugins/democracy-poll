@@ -6,7 +6,7 @@ class Dem{
 	public $ajax_url;
 	
 	public $user_access; // доступ пользователя к админ-функциям Democracy
-	public $message = array();
+	public $msg = array();
 	
 	public $allowed_html; // теги допустимые в вопросах и ответах
 	

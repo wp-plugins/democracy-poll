@@ -1,9 +1,7 @@
 <?php
-/* 
- Класс отвечает за вывод и голосование отдельного опроса.
- Нуждается в классе плагина Dem 
- */
 
+## Вывод и голосование отдельного опроса.
+## Нуждается в классе плагина Dem
 class DemPoll {
 	var $id;
 	var $poll;
@@ -491,7 +489,7 @@ class DemPoll {
 		$exists = $wpdb->query( $wpdb->prepare("SELECT aid FROM $wpdb->democracy_a WHERE answer = '%s' AND qid = $this->id", $new_answer ) );
 		
 		if( ! $exists ){
-			$added_by = $_SERVER['REMOTE_ADDR'];
+			$added_by = self::get_ip();
 			if( $user_id = get_current_user_id() )
 				$added_by = $user_id;
 			
@@ -623,13 +621,13 @@ class DemPoll {
 	}
     
     /**
-     * Ищет пользвоателя или IP в базе в логах
+     * Ищет текущего пользвоателя или IP в базе в логах
      * @return $wpdb->get_results object или false
      */
     function get_logs_voted_data(){
         global $wpdb;
         
-        $user_ip = ip2long( $_SERVER['REMOTE_ADDR'] );
+        $user_ip = ip2long( self::get_ip() );
         $AND = $wpdb->prepare('AND ip = %d', $user_ip );
         
         // нужно проверять пользователя и IP отдельно! А то есил пользователь не залогинен у него id 0 и он будет совпадать со всеми другими незалогиненными пользователями
@@ -655,11 +653,10 @@ class DemPoll {
     protected function delete_logs_voted_data(){
         global $wpdb;
 
-        $user_ip = ip2long( $_SERVER['REMOTE_ADDR'] );
-        $user_id = get_current_user_id();
+        $user_ip = ip2long( self::get_ip() );
 
-        // Ищем пользвоателя или IP в базе 
-        $sql = $wpdb->prepare("DELETE FROM $wpdb->democracy_log WHERE qid = %d AND (ip = %d OR userid = %d)", $this->id, $user_ip, $user_id );
+        // Ищем пользвоателя или IP в логах 
+        $sql = $wpdb->prepare("DELETE FROM $wpdb->democracy_log WHERE qid = %d AND (ip = %d OR userid = %d)", $this->id, $user_ip, get_current_user_id() );
         return $wpdb->query( $sql );
     }
     			    
@@ -668,7 +665,7 @@ class DemPoll {
 
 		global $wpdb;
 		
-		$user_ip = ip2long( $_SERVER['REMOTE_ADDR'] );
+		$user_ip = ip2long( self::get_ip() );
         
         $data = array(
 			'ip'     => $user_ip,
@@ -688,4 +685,13 @@ class DemPoll {
 		return '<span style="cursor:pointer;padding:0 2px;background:#fff;" onclick="var sel = window.getSelection(), range = document.createRange(); range.selectNodeContents(this); sel.removeAllRanges(); sel.addRange(range);">[democracy id="'. $poll_id .'"]</span>';
 	}
 	
+	## Получает IP пользвателя
+	static function get_ip(){
+		            $ip = @ $_SERVER['HTTP_CLIENT_IP'];
+		if( ! $ip ) $ip = @ $_SERVER['HTTP_X_FORWARDED_FOR'];
+		if( ! $ip )	$ip = $_SERVER['REMOTE_ADDR'];
+		
+		return $ip;
+	}
+		
 }

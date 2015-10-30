@@ -26,12 +26,12 @@ class DemAdminInit extends Dem{
     
 	## admin page html
 	function admin_page_output(){	
-		if( @ $_GET['message'] == 'created' ) $this->message[] = __('Новый опрос создан','dem');
+		if( @ $_GET['msg'] == 'created' ) $this->msg[] = __('Новый опрос создан','dem');
 		
 		// сообщения
-		if( $this->message ){
-			foreach( $this->message as $message ){
-				echo "<div class='updated'><p>$message</p></div>";
+		if( $this->msg ){
+			foreach( $this->msg as $msg ){
+				echo "<div class='updated'><p>$msg</p></div>";
 			}
 		}
 		
@@ -172,7 +172,7 @@ class DemAdminInit extends Dem{
         $up = update_option( self::OPT_NAME, self::$opt ); 
         
 		if( $up )
-			$this->message[] = __('Обновленно','dem');
+			$this->msg[] = __('Обновленно','dem');
         
         return $up;
 	}
@@ -254,7 +254,7 @@ class DemAdminInit extends Dem{
 		$wpdb->delete( $wpdb->democracy_a,   array('qid' => $id ) );
 		$wpdb->delete( $wpdb->democracy_log, array('qid' => $id ) );
 		
-		$this->message[] = __('Опрос удален','dem');
+		$this->msg[] = __('Опрос удален','dem');
 	}
 	
 	/**
@@ -280,7 +280,7 @@ class DemAdminInit extends Dem{
         }
 		
 		if( $wpdb->update( $wpdb->democracy_q, $new_data, array( 'id'=>$id ) ) )
-			$this->message[] = $open ? __('Опрос открыт','dem') : __('Опрос закрыт','dem');
+			$this->msg[] = $open ? __('Опрос открыт','dem') : __('Опрос закрыт','dem');
 	}
 	
 	/**
@@ -298,7 +298,7 @@ class DemAdminInit extends Dem{
 		$done = $wpdb->update( $wpdb->democracy_q, array( 'active'=>$active ), array( 'id'=>$id ) );
 		
 		if( $done )
-			$this->message[] = $active ? __('Опрос активирован','dem') : __('Опрос деактивирован','dem');
+			$this->msg[] = $active ? __('Опрос активирован','dem') : __('Опрос деактивирован','dem');
 	}
 	
 	function insert_poll_handler(){
@@ -365,7 +365,7 @@ class DemAdminInit extends Dem{
 		$data = (object) $this->sanitize_poll_data( $data );
 		
 		if( ! $data->question ){
-			$this->message[] = 'error: question not set';
+			$this->msg[] = 'error: question not set';
 			return;
 		}
 		
@@ -376,7 +376,7 @@ class DemAdminInit extends Dem{
 		// данные когда добавляем
 		if( ! $update ){
 			if( ! $new_answers ){
-				$this->message[] = 'Error: Poll must have at least one answer';
+				$this->msg[] = 'Error: Poll must have at least one answer';
 				return;
 			}
 			
@@ -425,14 +425,14 @@ class DemAdminInit extends Dem{
 				}				
 			}
 
-			$this->message[] = __('Опрос обновлён','dem');
+			$this->msg[] = __('Опрос обновлён','dem');
 		}
 		// ADD
 		else{
 			$wpdb->insert( $wpdb->democracy_q, $q_data	);
 
 			if( ! $poll_id = $wpdb->insert_id ){
-				$this->message[] = 'error: sql error when adding poll data';
+				$this->msg[] = 'error: sql error when adding poll data';
 				return false;
 			}
 
@@ -443,7 +443,7 @@ class DemAdminInit extends Dem{
 					$wpdb->insert( $wpdb->democracy_a, array( 'answer' => $answer, 'qid' => $poll_id ) );
 			}
 
-			wp_redirect( add_query_arg( array('edit_poll'=>$poll_id, 'subpage'=>false, 'message'=>'created') ) );
+			wp_redirect( add_query_arg( array('edit_poll'=>$poll_id, 'subpage'=>false, 'msg'=>'created') ) );
 		}
 	}
 
