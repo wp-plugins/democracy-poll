@@ -148,8 +148,8 @@ Comming soon...
 
 
 == Changelog ==
-= 5.0.4 =
-* Fix: DB ip field from int(11) to bigint(20)
+= 5.1.0 =
+* Fix: Change DB ip field from int(11) to bigint(20). Because of this some IP was writen wrong. Also, change some other DB fields types, but it's no so important.
 
 = 5.0.3 =
 * Fix: Some bugs with variables and antivirus check.
